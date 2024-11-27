@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[43,)"
+license="MIT"
+[[mods]] 
+modId="nuclearradiation"
+version="${file.jarVersion}" 
+displayName="Nuclearcraft Neoteric" 
+logoFile="logo.png"
+credits=""
+authors="igentuman"
+description='''
+A complex nuclear radiation mod for Minecraft
+'''
+
+[[dependencies.nuclearradiation]]
+modId="forge" 
+mandatory=true 
+versionRange="[43,)" 
+ordering="NONE"
+side="BOTH"
+[[dependencies.nuclearradiation]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,)"
+ordering="NONE"
+side="BOTH"
