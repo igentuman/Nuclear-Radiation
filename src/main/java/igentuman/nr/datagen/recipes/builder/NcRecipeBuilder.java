@@ -2,12 +2,9 @@ package igentuman.nr.datagen.recipes.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import igentuman.nr.recipes.ingredient.FluidStackIngredient;
-import igentuman.nr.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -17,10 +14,6 @@ import static igentuman.nr.NuclearRadiation.MODID;
 
 public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
-    private List<NcIngredient> inputItems = List.of();
-    private List<NcIngredient> outputItems = List.of();
-    private List<FluidStackIngredient> inputFluids = List.of();
-    private List<FluidStackIngredient> outputFluids = List.of();
     private static NcRecipeBuilder instance;
     private double timeModifier = 1D;
     private double radiation = 1D;
@@ -44,24 +37,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         return instance;
     }
 
-    public NcRecipeBuilder items(List<NcIngredient> input, List<NcIngredient> output) {
-        instance.inputItems = input;
-        instance.outputItems = output;
-        return instance;
-    }
 
-    public NcRecipeBuilder itemsString(List<NcIngredient> input, List<String> output) {
-        instance.inputItems = input;
-        instance.outputItemsText = output;
-        return instance;
-    }
-
-
-    public NcRecipeBuilder fluids(List<FluidStackIngredient> input, List<FluidStackIngredient> output) {
-        instance.inputFluids = input;
-        instance.outputFluids = output;
-        return instance;
-    }
 
 
     public NcRecipeBuilder modifiers(double timeModifier, double radiation, double powerModifier, double rarity) {
@@ -87,17 +63,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     public ResourceLocation getRecipeId()
     {
         StringBuilder name = new StringBuilder();
-        for (NcIngredient in: inputItems) {
-            name.append(in.getName()).append("-");
-        }
-        for(FluidStackIngredient in: inputFluids) {
-            name.append(in.getName()).append("-");
-        }
-        if(useInputForId) {
-            for(FluidStackIngredient out: outputFluids) {
-                name.append(out.getName()).append("-");
-            }
-        }
+
         name.replace(name.length()-1, name.length(), "");
 
         return new ResourceLocation(MODID, ID+"/"+recipeIdReplacements(name.toString()));
@@ -145,68 +111,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         public void serializeRecipeData(@NotNull JsonObject json) {
             JsonArray inputJson = new JsonArray();
 
-            if(!inputItems.isEmpty()) {
-                for(Ingredient in: inputItems) {
-                    inputJson.add(serializeIngredient(in));
-                }
-                json.add("input", inputJson);
-            }
 
-            JsonArray outJson = new JsonArray();
-
-            if(!outputItems.isEmpty()) {
-                for (Ingredient out: outputItems) {
-                    outJson.add(serializeIngredient(out));
-                }
-                json.add("output", outJson);
-            }
-
-            if(!outputItemsText.isEmpty()) {
-                outJson = new JsonArray();
-                for(String out: outputItemsText) {
-                    JsonObject item = new JsonObject();
-                    item.addProperty("item", out);
-                    outJson.add(item);
-                }
-                json.add("output", outJson);
-            }
-
-            inputJson = new JsonArray();
-            for(FluidStackIngredient in: inputFluids) {
-                inputJson.add(in.serialize());
-            }
-            if(!inputFluids.isEmpty()) {
-                json.add("inputFluids", inputJson);
-            }
-
-            outJson = new JsonArray();
-            if(!outputFluids.isEmpty()) {
-                for (FluidStackIngredient out: outputFluids) {
-                    outJson.add(out.serialize());
-                }
-                json.add("outputFluids", outJson);
-            }
-            if(heatRequired > 0) {
-                json.addProperty("heatRequired", heatRequired);
-            }
-            if(coolingRate > 0) {
-                json.addProperty("coolingRate", coolingRate);
-            }
-            if(timeModifier > 0) {
-                json.addProperty("timeModifier", timeModifier);
-            }
-            if(radiation != 0) {
-                json.addProperty("radiation", radiation);
-            }
-            if(powerModifier > 0) {
-                json.addProperty("powerModifier", powerModifier);
-            }
-            if(rarityModifier != 1D && rarityModifier != 0) {
-                json.addProperty("rarityModifier", rarityModifier);
-            }
-            if(temperature != 0D) {
-                json.addProperty("temperature", temperature);
-            }
         }
     }
 }

@@ -4,19 +4,23 @@ import igentuman.nr.content.NCRadiationDamageSource;
 import igentuman.nr.radiation.ItemRadiation;
 import igentuman.nr.radiation.ItemShielding;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import static igentuman.nr.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nr.setup.Registration.RADIATION_RESISTANCE;
-import static igentuman.nr.util.NcUtils.getModId;
 
 public class PlayerRadiation implements IPlayerRadiationCapability {
 
@@ -65,6 +69,27 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
             rad += (int) (ItemRadiation.byItem(itemStack.getItem())*1000000);
         }
         return rad/5;//player is not getting radiation instantly
+    }
+
+    public static ResourceLocation getName(Item element) {
+        return getName(ForgeRegistries.ITEMS, element);
+    }
+
+    private static <T> ResourceLocation getName(IForgeRegistry<T> registry, T element) {
+        return registry.getKey(element);
+    }
+
+    public static String getModId(@NotNull ItemStack stack) {
+        Item item = stack.getItem();
+        String modid = item.getCreatorModId(stack);
+        if (modid == null) {
+            ResourceLocation registryName = getName(item);
+            if (registryName == null) {
+                return "";
+            }
+            return registryName.getNamespace();
+        }
+        return modid;
     }
 
     public static int getRadiationShielding(LivingEntity player, String...modFilter)

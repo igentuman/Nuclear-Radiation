@@ -1,10 +1,8 @@
 package igentuman.nr.radiation.data;
 
 import igentuman.nr.NuclearRadiation;
-import igentuman.nr.compat.mekanism.MekanismRadiation;
 import igentuman.nr.network.toClient.PacketPlayerRadiationData;
 import igentuman.nr.network.toClient.PacketWorldRadiationData;
-import igentuman.nr.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -112,9 +110,9 @@ public class RadiationManager extends SavedData {
         }
         LevelChunk chunk = level.getChunkAt(new BlockPos(x, y, z));
         int appliedRadiation = worldRadiation.addRadiation(level, value, chunk.getPos().x, chunk.getPos().z);
-        if(ModUtil.isMekanismLoadeed() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
+        /*if(ModUtil.isMekanismLoadeed() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
             ignoredPos = new int[]{x, y, z};
             MekanismRadiation.radiate(x, y, z, appliedRadiation/1000, level);
-        }
+        }*/
     }
 }

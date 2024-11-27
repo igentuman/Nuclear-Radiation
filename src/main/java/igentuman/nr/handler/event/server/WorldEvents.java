@@ -1,9 +1,6 @@
 package igentuman.nr.handler.event.server;
 
-import igentuman.nr.block.turbine.TurbineBladeBlock;
-import igentuman.nr.item.HEVItem;
 import igentuman.nr.item.HazmatItem;
-import igentuman.nr.multiblock.MultiblockHandler;
 import igentuman.nr.radiation.data.RadiationEvents;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nr.NuclearRadiation.MODID;
-import static igentuman.nr.setup.registration.NCItems.HEV_BOOTS;
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class WorldEvents {
 
@@ -40,9 +36,7 @@ public class WorldEvents {
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         BlockState state = event.getState();
         if(state == null) return;
-        if(trackingBlocks.contains(state.getBlock())) {
-            MultiblockHandler.trackBlockChange(event.getPos());
-        }
+
         if (state != null && !state.isAir() && state.hasBlockEntity()) {
 
         }
@@ -52,12 +46,7 @@ public class WorldEvents {
         boolean placed = true;
         BlockState state = event.getState();
         if(state == null) return;
-        if(trackingBlocks.contains(state.getBlock())) {
-            MultiblockHandler.trackBlockChange(event.getPos());
-        }
-        if(state.getBlock() instanceof TurbineBladeBlock) {
-            placed = TurbineBladeBlock.processBlockPlace(event.getLevel(), event.getPos(), event.getPlacedBlock(), state, event.getPlacedAgainst());
-        }
+
         if(!placed) {
             event.setCanceled(true);
         }
@@ -83,7 +72,7 @@ public class WorldEvents {
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
-            MultiblockHandler.tick();
+
         }
     }
 
@@ -94,24 +83,7 @@ public class WorldEvents {
         }
     }
 
-    public static int getHEVProtectionRate(Player player) {
-        int rate = 0;
-        for(ItemStack stack : player.getArmorSlots()) {
-            if((stack.getItem() instanceof HEVItem) && isCharged(stack)) {
-                rate++;
-            }
-        }
-        return rate;
-    }
 
-    public static boolean isFullyEquipped(Player player) {
-        for(ItemStack stack : player.getArmorSlots()) {
-            if(!(stack.getItem() instanceof HazmatItem) && !(stack.getItem() instanceof HEVItem)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public static boolean isCharged(ItemStack item)
     {
@@ -124,26 +96,9 @@ public class WorldEvents {
     public static void onPlayerDamage(LivingHurtEvent event) {
         if (event.getEntity() instanceof Player player) {
             if (event.getSource() != null && event.getSource().is(DamageTypes.MAGIC)) {
-                if(isFullyEquipped(player)) {
-                    event.setAmount(event.getAmount()/10F);
-                }
+
             }
-            if(event.getSource() != null && event.getSource().is(DamageTypes.FALL)) {
-                player.getArmorSlots().forEach(stack -> {
-                    if(stack.getItem().equals(HEV_BOOTS.get()) && isCharged(stack)) {
-                        consumeEnergy(stack, 1000);
-                        event.setCanceled(true);
-                        return;
-                    }
-                });
-            }
-            int protectionRate = getHEVProtectionRate(player);
-            if(protectionRate > 0) {
-                event.setAmount(event.getAmount() - (event.getAmount() * (protectionRate * 0.1F)));
-                for(ItemStack stack : player.getArmorSlots()) {
-                    consumeEnergy(stack, 1000);
-                }
-            }
+
         }
     }
 

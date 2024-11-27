@@ -4,7 +4,6 @@ import igentuman.nr.compat.mekanism.MekanismRadiation;
 import igentuman.nr.radiation.FluidRadiation;
 import igentuman.nr.radiation.ItemRadiation;
 import igentuman.nr.radiation.RadiationCleaningItems;
-import igentuman.nr.util.ModUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -66,9 +65,9 @@ public class RadiationEvents {
                 entity.addEffect(new MobEffectInstance(RADIATION_RESISTANCE.get(), 1200, 2, false, true));
             }
             radCap.setRadiation(Math.max(0, radCap.getRadiation() - radiation/1000));
-            if(ModUtil.isMekanismLoadeed() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
+           /* if(ModUtil.isMekanismLoadeed() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
                 MekanismRadiation.addEntityRadiation((Player) entity, -radiation/10000000);
-            }
+            }*/
         }
     }
 

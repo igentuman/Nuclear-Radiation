@@ -1,6 +1,5 @@
 package igentuman.nr.handler.event.client;
 
-import igentuman.nr.multiblock.fission.FissionBlocks;
 import igentuman.nr.radiation.ItemRadiation;
 import igentuman.nr.radiation.ItemShielding;
 import igentuman.nr.radiation.RadiationCleaningItems;
@@ -19,8 +18,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import java.util.Locale;
 
 import static igentuman.nr.NuclearRadiation.MODID;
-import static igentuman.nr.handler.config.CommonConfig.ENERGY_STORAGE;
-import static igentuman.nr.handler.config.FissionConfig.FISSION_CONFIG;
 import static net.minecraft.world.item.Items.FILLED_MAP;
 import static net.minecraft.world.item.Items.LIGHTNING_ROD;
 
@@ -39,29 +36,11 @@ public class TooltipHandler {
         addRadiationLevelTooltip(event, item);
         addShieldingTooltip(event, event.getItemStack());
         addRadiationCleaningEffect(event, event.getItemStack());
-        addModeratorTooltip(event, event.getItemStack());
     }
 
-    private static void addModeratorTooltip(ItemTooltipEvent event, ItemStack itemStack) {
-        for(Block block: FissionBlocks.moderators()) {
-            if(itemStack.is(block.asItem())) {
-                event.getToolTip().add(Component.translatable("tooltip.nr.moderator.desc", FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get(), FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get()).withStyle(ChatFormatting.GOLD));
-            }
-        }
-    }
 
     private static void miscTooltips(ItemTooltipEvent event, ItemStack itemStack) {
-        if(itemStack.is(LIGHTNING_ROD) && ENERGY_STORAGE.LIGHTNING_ROD_CHARGE.get() > 0) {
-            event.getToolTip().add(Component.translatable("tooltip.nr.lightning_rod_charge", ENERGY_STORAGE.LIGHTNING_ROD_CHARGE.get()).withStyle(ChatFormatting.GOLD));
-        }
-        if(!itemStack.hasTag()) return;
-        assert itemStack.getTag() != null;
-        if(itemStack.getTag().contains("is_nc_analyzed")) {
-            event.getToolTip().add(Component.translatable("tooltip.nr.analyzed").withStyle(ChatFormatting.GOLD));
-            if(itemStack.getItem().equals(FILLED_MAP)) {
-                event.getToolTip().add(Component.translatable("tooltip.nr.use_in_leacher").withStyle(ChatFormatting.GOLD));
-            }
-        }
+
 
     }
 

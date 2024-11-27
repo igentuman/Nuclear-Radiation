@@ -20,11 +20,7 @@ public class Registration {
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         Registries.init();
-        NCBlocks.init();
         NCItems.init();
-        NCFluids.init();
-        WorldGeneration.register(bus);
-        NCEnergyBlocks.init();
         CreativeTabs.init();
         NcParticleTypes.init();
         NCSounds.init();
