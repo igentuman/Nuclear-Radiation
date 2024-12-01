@@ -1,7 +1,6 @@
-package igentuman.nr.radiation.client;
+package igentuman.nr.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import igentuman.nr.client.NcClient;
 import igentuman.nr.radiation.data.PlayerRadiation;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;

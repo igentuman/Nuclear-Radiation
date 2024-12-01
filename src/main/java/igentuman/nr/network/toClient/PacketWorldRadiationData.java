@@ -1,7 +1,7 @@
 package igentuman.nr.network.toClient;
 
 import igentuman.nr.network.INcPacket;
-import igentuman.nr.radiation.client.ClientRadiationData;
+import igentuman.nr.client.ClientRadiationData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 

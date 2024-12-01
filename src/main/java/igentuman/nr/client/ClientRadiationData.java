@@ -1,4 +1,4 @@
-package igentuman.nr.radiation.client;
+package igentuman.nr.client;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,7 +1,6 @@
-package igentuman.nr.radiation.client;
+package igentuman.nr.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import igentuman.nr.client.NcClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -9,10 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
-import java.util.Random;
-
 import static igentuman.nr.NuclearRadiation.MODID;
-import static igentuman.nr.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class WhiteNoiseOverlay {
 

@@ -1,6 +1,6 @@
 package igentuman.nr.client.sound;
 
-import igentuman.nr.radiation.client.ClientRadiationData;
+import igentuman.nr.client.ClientRadiationData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
