@@ -1,0 +1,15 @@
+package igentuman.nr.api;
+
+import net.minecraft.world.phys.Vec3;
+
+public interface IPointRadiationSource extends IRadiationSource {
+    double radius();
+
+    Vec3 emissionCenter();
+
+    double xRayBq();
+
+    double alphaBetaBq();
+
+    double neutronBq();
+}

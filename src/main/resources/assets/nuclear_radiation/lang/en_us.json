@@ -1,0 +1,21 @@
+{
+  "itemGroup.nuclear_radiation": "Nuclear Radiation",
+  "block.nuclear_radiation.example_block": "Example Block",
+  "item.nuclear_radiation.example_item": "Example Item",
+
+  "item.nuclear_radiation.geiger_counter": "Geiger Counter",
+  "item.nuclear_radiation.dosimeter": "Dosimeter",
+
+  "item.nuclear_radiation.iodine_pill": "Iodine Pill",
+  "item.nuclear_radiation.prussian_blue": "Prussian Blue",
+  "item.nuclear_radiation.rad_protection_potion": "Rad-Protection Potion",
+  "item.nuclear_radiation.anti_rad_injection": "Anti-Rad Injection",
+  "item.nuclear_radiation.radaway": "Radaway",
+
+  "effect.nuclear_radiation.radiation_protection": "Radiation Protection",
+  "effect.nuclear_radiation.radiation_purge": "Radiation Purge",
+  "effect.nuclear_radiation.iodine_protection": "Iodine Block",
+  "effect.nuclear_radiation.cesium_purge": "Cesium Purge",
+
+  "nuclear_radiation.configuration.title": "Nuclear Radiation Configs"
+}

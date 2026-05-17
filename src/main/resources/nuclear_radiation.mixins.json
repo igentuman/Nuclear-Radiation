@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "igentuman.nr.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BlockEntitySetChangedMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
