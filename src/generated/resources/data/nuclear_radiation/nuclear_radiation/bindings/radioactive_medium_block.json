@@ -1,0 +1,9 @@
+{
+  "type": "block",
+  "isotopes": {
+    "nr:cs_137": {
+      "atoms": 5.0E14
+    }
+  },
+  "target": "#nuclear_radiation:radioactive/medium"
+}

@@ -1,0 +1,12 @@
+{
+  "type": "block",
+  "isotopes": {
+    "nr:u_235": {
+      "atoms": 7.2E15
+    },
+    "nr:u_238": {
+      "atoms": 9.93E17
+    }
+  },
+  "target": "#nuclear_radiation:radioactive/uranium_ore"
+}

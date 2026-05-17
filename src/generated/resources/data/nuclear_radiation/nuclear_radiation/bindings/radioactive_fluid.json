@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:cs_137": {
+      "atoms": 1.0E13
+    }
+  },
+  "target": "#nuclear_radiation:radioactive"
+}

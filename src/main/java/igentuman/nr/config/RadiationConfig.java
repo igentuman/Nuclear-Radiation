@@ -2,6 +2,8 @@ package igentuman.nr.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
+import java.util.List;
+
 public final class RadiationConfig {
 
     public static final ModConfigSpec SPEC;
@@ -15,7 +17,7 @@ public final class RadiationConfig {
     public static final ModConfigSpec.BooleanValue IGNORE_SPECTATOR;
     public static final ModConfigSpec.DoubleValue ACTIVITY_FLOOR_BQ;
     public static final ModConfigSpec.DoubleValue CONTAMINATION_SPREAD_FACTOR;
-    public static final ModConfigSpec.ConfigValue<java.util.List<? extends String>> IGNORED_ENTITIES;
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> IGNORED_ENTITIES;
     public static final ModConfigSpec.DoubleValue THRESHOLD_MILD;
     public static final ModConfigSpec.DoubleValue THRESHOLD_MODERATE;
     public static final ModConfigSpec.DoubleValue THRESHOLD_SEVERE;

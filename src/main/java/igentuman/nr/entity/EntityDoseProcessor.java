@@ -1,5 +1,6 @@
 package igentuman.nr.entity;
 
+import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.api.Isotope;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.core.RadiationQuality;
@@ -64,6 +65,7 @@ public final class EntityDoseProcessor {
 
         double recovery = RadiationConfig.BASE_DECAY_SV_PER_HOUR.get()
                 * data.decayMultiplier()
+                * GeneralConfig.ENTITY_DECAY_MULTIPLIER.get()
                 * (intervalSeconds / Units.SECONDS_PER_HOUR);
         if (recovery > 0 && data.svTotalCareer() > 0) {
             data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() - recovery));

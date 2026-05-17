@@ -1,5 +1,6 @@
 package igentuman.nr;
 
+import igentuman.nr.config.GeneralConfig;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -76,7 +77,7 @@ public class NuclearRadiation {
 
         modEventBus.addListener(this::addCreative);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, GeneralConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.COMMON, RadiationConfig.SPEC, "nuclear_radiation-radiation.toml");
 
         Isotopes.bootstrap();

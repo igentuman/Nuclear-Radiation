@@ -17,5 +17,9 @@
   "effect.nuclear_radiation.iodine_protection": "Iodine Block",
   "effect.nuclear_radiation.cesium_purge": "Cesium Purge",
 
-  "nuclear_radiation.configuration.title": "Nuclear Radiation Configs"
+  "nuclear_radiation.configuration.title": "Nuclear Radiation Configs",
+
+  "jei.nuclear_radiation.category.isotope_stats": "Isotope Stats",
+  "jei.nuclear_radiation.category.radioactive_items": "Radioactive Items",
+  "jei.nuclear_radiation.category.decay_graph": "Decay Graph"
 }

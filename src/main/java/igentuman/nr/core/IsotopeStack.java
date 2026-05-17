@@ -1,5 +1,6 @@
 package igentuman.nr.core;
 
+import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.api.Isotope;
 
 public class IsotopeStack {
@@ -40,7 +41,9 @@ public class IsotopeStack {
     public void advanceDecay(long currentTick) {
         long delta = currentTick - timestamp;
         if (delta <= 0) return;
-        atoms = Units.decayAtoms(atoms, isotope.halfLifeTicks(), delta);
+        double multiplier = GeneralConfig.ISOTOPE_DECAY_MULTIPLIER.get();
+        long effectiveDelta = (long) Math.ceil(delta * multiplier);
+        atoms = Units.decayAtoms(atoms, isotope.halfLifeTicks(), effectiveDelta);
         timestamp = currentTick;
     }
 
