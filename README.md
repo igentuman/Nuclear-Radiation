@@ -62,7 +62,7 @@ Three input paths for assigning `RadiationProfile` to items/blocks/fluids:
 
 ## Architecture Highlights
 
-- **Threading**: single worker thread owns chunk vector recompute, decay math, raycasts. World writes always on main thread.
+- **Threading**: main thread snapshots sources and enqueues `Job`s into a `LinkedBlockingQueue`; a single daemon background thread (`nuclear-radiation-sim`) blocks on that queue, runs chunk vector accumulation and falloff math (`compute()`), then posts results back via a `ConcurrentLinkedQueue<Runnable>`; results are applied to `vectorByDim` on the main thread inside `drainMainThreadTasks()` each tick.
 - **Persistence**: per-dimension `SavedData` (`RadiationLevelData`) + `AttachmentType` on chunks/entities. No deprecated capabilities.
 - **Performance**: chunk vector cache reduces N entities × M sources from O(N·M) to O(N) per tick. Hard source-radius cutoff `R`.
 - **Tick gating**: independent `world_sim_interval_ticks` and `entity_sim_interval_ticks`; doses scale by interval.

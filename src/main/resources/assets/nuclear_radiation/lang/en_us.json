@@ -21,5 +21,18 @@
 
   "jei.nuclear_radiation.category.isotope_stats": "Isotope Stats",
   "jei.nuclear_radiation.category.radioactive_items": "Radioactive Items",
-  "jei.nuclear_radiation.category.decay_graph": "Decay Graph"
+  "jei.nuclear_radiation.category.decay_graph": "Decay Graph",
+
+  "jei.nuclear_radiation.isotope_stats.id": "ID: %s",
+  "jei.nuclear_radiation.isotope_stats.half_life": "Half-life: %s",
+  "jei.nuclear_radiation.isotope_stats.radiation_mix": "Radiation mix:",
+  "jei.nuclear_radiation.isotope_stats.alpha_beta": " alpha/beta: %s",
+  "jei.nuclear_radiation.isotope_stats.x_gamma": " x/gamma:    %s",
+  "jei.nuclear_radiation.isotope_stats.neutron": " neutron:    %s",
+  "jei.nuclear_radiation.isotope_stats.quality": "Q: xR %s / b %s / a %s / n %s",
+  "jei.nuclear_radiation.isotope_stats.decays_to": "Decays to: %s",
+
+  "jei.nuclear_radiation.radioactive_items.total": "Total: %s",
+  "jei.nuclear_radiation.radioactive_items.isotopes": "Isotopes:",
+  "jei.nuclear_radiation.radioactive_items.isotope_entry": " %s  %s"
 }

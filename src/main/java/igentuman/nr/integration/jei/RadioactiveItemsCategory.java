@@ -15,6 +15,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
+import static igentuman.nr.util.TextUtils.__;
+
 public class RadioactiveItemsCategory implements IRecipeCategory<RadioactiveItemEntry> {
 
     public static final int WIDTH = 162;
@@ -33,7 +35,7 @@ public class RadioactiveItemsCategory implements IRecipeCategory<RadioactiveItem
 
     @Override
     public Component getTitle() {
-        return Component.translatable("jei.nuclear_radiation.category.radioactive_items");
+        return __("jei.nuclear_radiation.category.radioactive_items");
     }
 
     @Override
@@ -59,11 +61,11 @@ public class RadioactiveItemsCategory implements IRecipeCategory<RadioactiveItem
 
         g.drawString(font, recipe.stack().getHoverName(), x, y, 0x202020, false);
         y += line;
-        g.drawString(font, Component.literal("Total: " + JeiFormat.activity(recipe.profile().totalActivityBq())),
+        g.drawString(font, __("jei.nuclear_radiation.radioactive_items.total", JeiFormat.activity(recipe.profile().totalActivityBq())),
                 x, y, 0x0E5A1A, false);
 
         y = 30;
-        g.drawString(font, Component.literal("Isotopes:"), 6, y, 0x8B4500, false);
+        g.drawString(font, __("jei.nuclear_radiation.radioactive_items.isotopes"), 6, y, 0x8B4500, false);
         y += line;
 
         int max = Math.min(6, recipe.profile().stacks().size());
@@ -71,8 +73,7 @@ public class RadioactiveItemsCategory implements IRecipeCategory<RadioactiveItem
         for (IsotopeStack s : recipe.profile().stacks()) {
             if (i >= max) break;
             String idShort = stripNs(s.isotope().id());
-            String text = String.format(" %s  %s", padRight(idShort, 8), JeiFormat.activity(s.currentActivityBq()));
-            g.drawString(font, Component.literal(text), 6, y, 0x303030, false);
+            g.drawString(font, __("jei.nuclear_radiation.radioactive_items.isotope_entry", padRight(idShort, 8), JeiFormat.activity(s.currentActivityBq())), 6, y, 0x303030, false);
             y += line;
             i++;
         }

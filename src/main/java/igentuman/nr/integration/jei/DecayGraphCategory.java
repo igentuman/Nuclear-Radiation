@@ -15,6 +15,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
+import static igentuman.nr.util.TextUtils.__;
+
 public class DecayGraphCategory implements IRecipeCategory<Isotope> {
 
     public static final int WIDTH = 162;
@@ -43,7 +45,7 @@ public class DecayGraphCategory implements IRecipeCategory<Isotope> {
 
     @Override
     public Component getTitle() {
-        return Component.translatable("jei.nuclear_radiation.category.decay_graph");
+        return __("jei.nuclear_radiation.category.decay_graph");
     }
 
     @Override
