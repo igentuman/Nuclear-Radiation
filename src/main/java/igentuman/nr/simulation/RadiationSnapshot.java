@@ -12,7 +12,8 @@ public final class RadiationSnapshot {
                              double radius,
                              double xRayBq,
                              double neutronBq,
-                             double alphaBetaBq) {}
+                             double alphaBq,
+                             double betaBq) {}
 
     public record EntityData(int entityId,
                              double x, double y, double z) {}
@@ -29,6 +30,6 @@ public final class RadiationSnapshot {
 
     public static SourceData of(IPointRadiationSource s) {
         var c = s.emissionCenter();
-        return new SourceData(s.getId(), c.x, c.y, c.z, s.radius(), s.xRayBq(), s.neutronBq(), s.alphaBetaBq());
+        return new SourceData(s.getId(), c.x, c.y, c.z, s.radius(), s.xRayBq(), s.neutronBq(), s.alphaBq(), s.betaBq());
     }
 }

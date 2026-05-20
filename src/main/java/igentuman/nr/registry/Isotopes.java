@@ -14,6 +14,7 @@ public final class Isotopes {
     public static final String CS_137  = "nr:cs_137";
     public static final String I_131   = "nr:i_131";
     public static final String SR_90   = "nr:sr_90";
+    public static final String Y_90    = "nr:y_90";
     public static final String CO_60   = "nr:co_60";
     public static final String CF_252  = "nr:cf_252";
 
@@ -21,49 +22,57 @@ public final class Isotopes {
         if (IsotopeRegistry.contains(U_238)) return;
 
         IsotopeBuilder.create(U_238)
-                .alphaBeta(0.93f).xray(0.05f).neutron(0.02f)
+                .alpha(0.95f).beta(0.0f).xray(0.05f).neutron(0.0f)
                 .halfLife(saturate(4.468e9 * TICKS_PER_YEAR))
                 .quality(1.0f, 1.0f, 20.0f, 10.0f)
                 .register();
 
         IsotopeBuilder.create(U_235)
-                .alphaBeta(0.82f).xray(0.15f).neutron(0.03f)
+                .alpha(0.85f).beta(0.0f).xray(0.15f).neutron(0.0f)
                 .halfLife(saturate(7.04e8 * TICKS_PER_YEAR))
                 .quality(1.0f, 1.0f, 20.0f, 10.0f)
                 .register();
 
         IsotopeBuilder.create(PU_239)
-                .alphaBeta(0.93f).xray(0.05f).neutron(0.02f)
+                .alpha(0.95f).beta(0.0f).xray(0.05f).neutron(0.0f)
                 .halfLife(saturate(24110.0 * TICKS_PER_YEAR))
                 .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .branch(U_235, 1.0)
                 .register();
 
         IsotopeBuilder.create(CS_137)
-                .alphaBeta(0.7f).xray(0.3f)
+                .alpha(0.0f).beta(0.7f).xray(0.3f).neutron(0.0f)
                 .halfLife(saturate(30.17 * TICKS_PER_YEAR))
                 .quality(1.0f, 1.0f, 20.0f, 10.0f)
                 .register();
 
         IsotopeBuilder.create(I_131)
-                .alphaBeta(0.6f).xray(0.4f)
+                .alpha(0.0f).beta(0.6f).xray(0.4f).neutron(0.0f)
                 .halfLife(saturate(8.02 * TICKS_PER_DAY))
                 .quality(1.0f, 1.0f, 20.0f, 10.0f)
                 .register();
 
         IsotopeBuilder.create(SR_90)
-                .alphaBeta(0.95f).xray(0.05f)
+                .alpha(0.0f).beta(0.95f).xray(0.05f).neutron(0.0f)
                 .halfLife(saturate(28.79 * TICKS_PER_YEAR))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .branch(Y_90, 1.0)
+                .register();
+
+        IsotopeBuilder.create(Y_90)
+                .alpha(0.0f).beta(1.0f).xray(0.0f).neutron(0.0f)
+                .halfLife(saturate(2.667 * TICKS_PER_DAY))
                 .quality(1.0f, 1.0f, 20.0f, 10.0f)
                 .register();
 
         IsotopeBuilder.create(CO_60)
-                .alphaBeta(0.2f).xray(0.8f)
+                .alpha(0.0f).beta(0.2f).xray(0.8f).neutron(0.0f)
                 .halfLife(saturate(5.27 * TICKS_PER_YEAR))
                 .quality(1.0f, 1.0f, 20.0f, 10.0f)
                 .register();
 
         IsotopeBuilder.create(CF_252)
-                .alphaBeta(0.65f).xray(0.05f).neutron(0.3f)
+                .alpha(0.65f).beta(0.0f).xray(0.05f).neutron(0.30f)
                 .halfLife(saturate(2.645 * TICKS_PER_YEAR))
                 .quality(1.0f, 1.0f, 20.0f, 20.0f)
                 .register();

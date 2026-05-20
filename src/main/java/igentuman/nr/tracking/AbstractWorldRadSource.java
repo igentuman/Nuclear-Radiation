@@ -1,7 +1,7 @@
 package igentuman.nr.tracking;
 
 import igentuman.nr.config.RadiationConfig;
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.RadiationProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -54,10 +54,11 @@ public abstract class AbstractWorldRadSource implements WorldRadSource {
         return new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
     }
     @Override public double xRayBq()    { return profile.xRayActivityBq(); }
-    @Override public double alphaBetaBq() { return profile.alphaBetaActivityBq(); }
+    @Override public double alphaBq()   { return profile.alphaActivityBq(); }
+    @Override public double betaBq()    { return profile.betaActivityBq(); }
     @Override public double neutronBq() { return profile.neutronActivityBq(); }
 
     public void advanceDecay(long currentTick) {
-        profile.advanceDecay(currentTick);
+        this.expiryGameTime = profile.advanceDecay(currentTick, RadiationConfig.ACTIVITY_FLOOR_BQ.get());
     }
 }

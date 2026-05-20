@@ -9,7 +9,9 @@ public interface IPointRadiationSource extends IRadiationSource {
 
     double xRayBq();
 
-    double alphaBetaBq();
+    double alphaBq();
+
+    double betaBq();
 
     double neutronBq();
 }

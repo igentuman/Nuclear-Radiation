@@ -41,8 +41,10 @@ public class GeigerCounterItem extends Item {
         if (v == null) return 0.0;
         double dx = entity.getX() - (cp.x * 16.0 + 8.0);
         double dz = entity.getZ() - (cp.z * 16.0 + 8.0);
-        double bqXRay = Math.max(0.0, v.centerScalarXRay + v.gradientXRay.x * dx + v.gradientXRay.z * dz);
-        double bqNeutron = Math.max(0.0, v.centerScalarNeutron + v.gradientNeutron.x * dx + v.gradientNeutron.z * dz);
+        double dy = entity.getY() - v.centerY;
+        double yAtten = 1.0 / (1.0 + dy * dy * 0.25);
+        double bqXRay = Math.max(0.0, v.centerScalarXRay + v.gradientXRay.x * dx + v.gradientXRay.z * dz) * yAtten;
+        double bqNeutron = Math.max(0.0, v.centerScalarNeutron + v.gradientNeutron.x * dx + v.gradientNeutron.z * dz) * yAtten;
         return bqXRay + bqNeutron;
     }
 }

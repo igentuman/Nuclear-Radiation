@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:u_235": {
+      "atoms": 3.14E22
+    },
+    "nr:u_238": {
+      "atoms": 4.27E24
+    }
+  },
+  "target": "#nuclear_radiation:radioactive/uranium_dust"
+}

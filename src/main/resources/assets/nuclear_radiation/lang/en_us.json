@@ -26,7 +26,8 @@
   "jei.nuclear_radiation.isotope_stats.id": "ID: %s",
   "jei.nuclear_radiation.isotope_stats.half_life": "Half-life: %s",
   "jei.nuclear_radiation.isotope_stats.radiation_mix": "Radiation mix:",
-  "jei.nuclear_radiation.isotope_stats.alpha_beta": " alpha/beta: %s",
+  "jei.nuclear_radiation.isotope_stats.alpha": " alpha:      %s",
+  "jei.nuclear_radiation.isotope_stats.beta": " beta:       %s",
   "jei.nuclear_radiation.isotope_stats.x_gamma": " x/gamma:    %s",
   "jei.nuclear_radiation.isotope_stats.neutron": " neutron:    %s",
   "jei.nuclear_radiation.isotope_stats.quality": "Q: xR %s / b %s / a %s / n %s",
@@ -34,5 +35,17 @@
 
   "jei.nuclear_radiation.radioactive_items.total": "Total: %s",
   "jei.nuclear_radiation.radioactive_items.isotopes": "Isotopes:",
-  "jei.nuclear_radiation.radioactive_items.isotope_entry": " %s  %s"
+  "jei.nuclear_radiation.radioactive_items.isotope_entry": " %s  %s",
+
+  "tooltip.nuclear_radiation.isotope": "Isotope: %s",
+  "tooltip.nuclear_radiation.half_life": "Half-life: %s",
+
+  "isotope.nuclear_radiation.u_238": "Uranium-238",
+  "isotope.nuclear_radiation.u_235": "Uranium-235",
+  "isotope.nuclear_radiation.pu_239": "Plutonium-239",
+  "isotope.nuclear_radiation.cs_137": "Cesium-137",
+  "isotope.nuclear_radiation.i_131": "Iodine-131",
+  "isotope.nuclear_radiation.sr_90": "Strontium-90",
+  "isotope.nuclear_radiation.co_60": "Cobalt-60",
+  "isotope.nuclear_radiation.cf_252": "Californium-252"
 }

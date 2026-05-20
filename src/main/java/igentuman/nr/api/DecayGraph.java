@@ -1,4 +1,4 @@
-package igentuman.nr.core;
+package igentuman.nr.api;
 
 import java.util.ArrayList;
 import java.util.Collections;

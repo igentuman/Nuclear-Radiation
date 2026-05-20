@@ -92,6 +92,10 @@ public class NuclearRadiation {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(EXAMPLE_BLOCK_ITEM);
         }
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(NRTools.GEIGER_COUNTER);
+            event.accept(NRTools.DOSIMETER);
+        }
     }
 
     @SubscribeEvent

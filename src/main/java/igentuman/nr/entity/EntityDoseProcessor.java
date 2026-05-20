@@ -3,9 +3,10 @@ package igentuman.nr.entity;
 import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.api.Isotope;
 import igentuman.nr.config.RadiationConfig;
-import igentuman.nr.core.RadiationQuality;
-import igentuman.nr.core.Units;
+import igentuman.nr.api.RadiationQuality;
+import igentuman.nr.api.Units;
 import igentuman.nr.inventory.InventoryRadCache;
+import igentuman.nr.network.ChunkVectorDebugPayload;
 import igentuman.nr.network.NRNetwork;
 import igentuman.nr.network.RadiationSyncPayload;
 import igentuman.nr.persistence.EntityRadiationData;
@@ -77,6 +78,19 @@ public final class EntityDoseProcessor {
             double bq = GeigerCounterItem.readBq(level, entity);
             NRNetwork.sendTo(player, new RadiationSyncPayload(
                     data.svTotalCareer(), data.svPerHour(), bq));
+
+            if (RadiationConfig.DEBUG_RADIATION_VECTORS.get()) {
+                ChunkPos cp = entity.chunkPosition();
+                ChunkRadVector vec = RadiationSimulator.get().getChunkVector(level, cp);
+                if (vec != null) {
+                    NRNetwork.sendTo(player, new ChunkVectorDebugPayload(
+                            cp.x, cp.z,
+                            vec.gradientXRay.x, vec.gradientXRay.z,
+                            vec.gradientNeutron.x, vec.gradientNeutron.z,
+                            vec.centerScalarXRay, vec.centerScalarNeutron,
+                            vec.maxBq, vec.centerY));
+                }
+            }
         }
     }
 
@@ -89,8 +103,10 @@ public final class EntityDoseProcessor {
 
         double dx = entity.getX() - (cp.x * 16.0 + 8.0);
         double dz = entity.getZ() - (cp.z * 16.0 + 8.0);
-        double bqXRay = Math.max(0.0, vec.centerScalarXRay + vec.gradientXRay.x * dx + vec.gradientXRay.z * dz);
-        double bqNeutron = Math.max(0.0, vec.centerScalarNeutron + vec.gradientNeutron.x * dx + vec.gradientNeutron.z * dz);
+        double dy = entity.getY() - vec.centerY;
+        double yAtten = 1.0 / (1.0 + dy * dy * 0.25);
+        double bqXRay = Math.max(0.0, vec.centerScalarXRay + vec.gradientXRay.x * dx + vec.gradientXRay.z * dz) * yAtten;
+        double bqNeutron = Math.max(0.0, vec.centerScalarNeutron + vec.gradientNeutron.x * dx + vec.gradientNeutron.z * dz) * yAtten;
 
         AttenuationResult shielding = computeShielding(level, entity);
 
@@ -144,9 +160,11 @@ public final class EntityDoseProcessor {
             double bq = Units.atomsToBq(atoms, iso.halfLifeTicks());
             RadiationQuality q = iso.quality();
             double bqXRay = bq * iso.xRayStrength();
-            double bqAB = bq * iso.alphaBetaStrength();
+            double bqAlpha = bq * iso.alphaStrength();
+            double bqBeta = bq * iso.betaStrength();
             double bqN = bq * iso.neutronStrength();
-            sv += (bqXRay * q.qXRay + bqAB * q.qAlpha + bqN * q.qNeutron) * gyPerBqSec * intervalSeconds;
+            sv += (bqXRay * q.qXRay + bqAlpha * q.qAlpha + bqBeta * q.qBeta + bqN * q.qNeutron)
+                    * gyPerBqSec * intervalSeconds;
         }
         return sv;
     }
@@ -157,13 +175,17 @@ public final class EntityDoseProcessor {
         InventoryRadCache cache = InventoryRadCache.get(entity);
         cache.rescan(entity, now);
         double armorBlocks = RadiationConfig.ARMOR_BLOCKS_INVENTORY.get();
+        double inventoryAlphaPass = RadiationConfig.INVENTORY_ALPHA_PASS.get();
+        double inventoryBetaPass = RadiationConfig.INVENTORY_BETA_PASS.get();
         double xRayMul   = 1.0 - armor.xray()    * armorBlocks;
-        double alphaMul  = 1.0 - armor.alpha()   * armorBlocks;
+        double alphaMul  = (1.0 - armor.alpha() * armorBlocks) * inventoryAlphaPass;
+        double betaMul   = (1.0 - armor.beta()  * armorBlocks) * inventoryBetaPass;
         double neutronMul = 1.0 - armor.neutron() * armorBlocks;
-        double svXRay = cache.svXRayPerSecPerGyBq()      * gyPerBqSec * intervalSeconds * xRayMul;
-        double svAB   = cache.svAlphaBetaPerSecPerGyBq() * gyPerBqSec * intervalSeconds * alphaMul;
-        double svN    = cache.svNeutronPerSecPerGyBq()   * gyPerBqSec * intervalSeconds * neutronMul;
-        return svXRay + svAB + svN;
+        double svXRay = cache.svXRayPerSecPerGyBq()    * gyPerBqSec * intervalSeconds * xRayMul;
+        double svAlpha = cache.svAlphaPerSecPerGyBq()  * gyPerBqSec * intervalSeconds * alphaMul;
+        double svBeta = cache.svBetaPerSecPerGyBq()    * gyPerBqSec * intervalSeconds * betaMul;
+        double svN    = cache.svNeutronPerSecPerGyBq() * gyPerBqSec * intervalSeconds * neutronMul;
+        return svXRay + svAlpha + svBeta + svN;
     }
 
     private static double clamp01(double v) {

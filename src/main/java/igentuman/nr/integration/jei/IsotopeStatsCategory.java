@@ -1,7 +1,7 @@
 package igentuman.nr.integration.jei;
 
 import igentuman.nr.api.Isotope;
-import igentuman.nr.core.RadiationQuality;
+import igentuman.nr.api.RadiationQuality;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -82,7 +82,9 @@ public class IsotopeStatsCategory implements IRecipeCategory<Isotope> {
         g.pose().scale(scale, scale, 1f);
         int sx = Math.round(x / scale);
         int sy = Math.round(y / scale);
-        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.alpha_beta", JeiFormat.percent(recipe.alphaBetaStrength())), sx, sy, 0x303030, false);
+        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.alpha", JeiFormat.percent(recipe.alphaStrength())), sx, sy, 0x303030, false);
+        sy += font.lineHeight + 2;
+        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.beta", JeiFormat.percent(recipe.betaStrength())), sx, sy, 0x303030, false);
         sy += font.lineHeight + 2;
         g.drawString(font, __("jei.nuclear_radiation.isotope_stats.x_gamma", JeiFormat.percent(recipe.xRayStrength())), sx, sy, 0x303030, false);
         sy += font.lineHeight + 2;
@@ -94,7 +96,7 @@ public class IsotopeStatsCategory implements IRecipeCategory<Isotope> {
                 String.format("%.1f", q.qXRay), String.format("%.1f", q.qBeta),
                 String.format("%.1f", q.qAlpha), String.format("%.1f", q.qNeutron)), sx, sy, 0x1A3D7A, false);
         g.pose().popPose();
-        y += smallLine * 4;
+        y += smallLine * 5;
 
         String decay = recipe.decaysTo().map(Isotope::id).orElse("stable");
         g.drawString(font, __("jei.nuclear_radiation.isotope_stats.decays_to", decay), x, y, 0x8B0000, false);

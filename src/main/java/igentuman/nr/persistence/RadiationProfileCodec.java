@@ -3,8 +3,8 @@ package igentuman.nr.persistence;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import igentuman.nr.api.Isotope;
-import igentuman.nr.core.IsotopeStack;
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.IsotopeStack;
+import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.registry.IsotopeRegistry;
 
 import java.util.List;

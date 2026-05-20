@@ -1,10 +1,8 @@
 package igentuman.nr.tracking;
 
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.RadiationProfile;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.level.Level;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;

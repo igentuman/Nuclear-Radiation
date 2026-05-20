@@ -1,5 +1,6 @@
 package igentuman.nr.entity;
 
+import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.config.RadiationConfig;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -11,6 +12,7 @@ public final class RadiationEffects {
     private RadiationEffects() {}
 
     public static void apply(LivingEntity entity, double svPerHour) {
+        if (!GeneralConfig.RADIATION_HARM_EFFECTS.get()) return;
         double mild = RadiationConfig.THRESHOLD_MILD.get();
         double mod  = RadiationConfig.THRESHOLD_MODERATE.get();
         double sev  = RadiationConfig.THRESHOLD_SEVERE.get();

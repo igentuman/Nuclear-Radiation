@@ -1,7 +1,7 @@
 package igentuman.nr.builder;
 
 import igentuman.nr.api.Isotope;
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.registry.IsotopeRegistry;
 import igentuman.nr.registry.Isotopes;
 import org.junit.jupiter.api.BeforeAll;

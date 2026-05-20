@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#c:dusts/thorium",
+      "required": false
+    },
+    {
+      "id": "#c:ingots/thorium",
+      "required": false
+    }
+  ]
+}

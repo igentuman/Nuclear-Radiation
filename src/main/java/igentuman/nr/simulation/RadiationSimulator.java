@@ -177,11 +177,15 @@ public class RadiationSimulator implements IRadiationSimulator {
         }
     }
 
+    static final double CHUNK_Y_REF = 64.0;
+
     private static final class ChunkAccum {
         final int cx;
         final int cz;
         double sumXRay;
         double sumNeutron;
+        double sumYXRay;
+        double sumYNeutron;
         double maxBq;
         Vec3 weightedXRay = Vec3.ZERO;
         Vec3 weightedNeutron = Vec3.ZERO;
@@ -195,13 +199,16 @@ public class RadiationSimulator implements IRadiationSimulator {
             double cxCenter = cx * 16.0 + 8.0;
             double czCenter = cz * 16.0 + 8.0;
             double dx = s.x() - cxCenter;
+            double dy = s.y() - CHUNK_Y_REF;
             double dz = s.z() - czCenter;
-            double dist2 = dx * dx + dz * dz + 1.0;
+            double dist2 = dx * dx + dy * dy + dz * dz + 1.0;
             double falloff = 1.0 / dist2;
             double xray = s.xRayBq() * falloff;
             double neutron = s.neutronBq() * falloff;
             sumXRay += xray;
             sumNeutron += neutron;
+            sumYXRay += s.y() * xray;
+            sumYNeutron += s.y() * neutron;
             double total = xray + neutron;
             if (total > maxBq) maxBq = total;
             weightedXRay = weightedXRay.add(dx * xray, 0, dz * xray);
@@ -215,6 +222,8 @@ public class RadiationSimulator implements IRadiationSimulator {
             v.maxBq = maxBq;
             v.computedTick = tick;
             v.ttlTicks = ttl;
+            double totalBq = sumXRay + sumNeutron;
+            v.centerY = totalBq > 0 ? (sumYXRay + sumYNeutron) / totalBq : CHUNK_Y_REF;
             if (sumXRay > 0) v.gradientXRay = weightedXRay.scale(1.0 / sumXRay);
             if (sumNeutron > 0) v.gradientNeutron = weightedNeutron.scale(1.0 / sumNeutron);
             return v;

@@ -2,7 +2,7 @@ package igentuman.nr.integration.jei;
 
 import igentuman.nr.api.Isotope;
 import igentuman.nr.binding.RadiationBindings;
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.registry.IsotopeRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;

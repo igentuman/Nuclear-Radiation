@@ -2,7 +2,7 @@
   "type": "item",
   "isotopes": {
     "nr:u_238": {
-      "atoms": 1.0E16
+      "atoms": 2.5E21
     }
   },
   "target": "#nuclear_radiation:radioactive/low"

@@ -1,6 +1,6 @@
 package igentuman.nr.integration.jei;
 
-import igentuman.nr.core.IsotopeStack;
+import igentuman.nr.api.IsotopeStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;

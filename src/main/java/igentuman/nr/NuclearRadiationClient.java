@@ -1,7 +1,9 @@
 package igentuman.nr;
 
+import igentuman.nr.network.ClientRadiationCache;
+import igentuman.nr.tools.NRTools;
 import igentuman.nr.tools.client.RadiationHudLayer;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -22,6 +24,18 @@ public class NuclearRadiationClient {
 
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> ItemProperties.register(
+                NRTools.GEIGER_COUNTER.get(),
+                ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "radiation"),
+                (stack, level, entity, seed) -> {
+                    double bq = ClientRadiationCache.bqAtPlayer();
+                    if (bq < 1.0)      return 0f;
+                    if (bq < 10.0)     return 1f;
+                    if (bq < 100.0)    return 2f;
+                    if (bq < 1000.0)   return 3f;
+                    if (bq < 10000.0)  return 4f;
+                    return 5f;
+                }));
     }
 
     @SubscribeEvent

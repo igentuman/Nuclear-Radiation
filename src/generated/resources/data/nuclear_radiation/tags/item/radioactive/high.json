@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#c:dusts/plutonium",
+      "required": false
+    },
+    {
+      "id": "#c:ingots/plutonium",
+      "required": false
+    }
+  ]
+}

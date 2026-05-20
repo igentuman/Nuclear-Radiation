@@ -1,7 +1,5 @@
 package igentuman.nr.api;
 
-import igentuman.nr.core.RadiationQuality;
-
 import java.util.Optional;
 
 public interface Isotope {
@@ -9,7 +7,9 @@ public interface Isotope {
 
     float xRayStrength();
 
-    float alphaBetaStrength();
+    float alphaStrength();
+
+    float betaStrength();
 
     float neutronStrength();
 

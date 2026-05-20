@@ -1,7 +1,7 @@
-package igentuman.nr.core;
+package igentuman.nr.api;
 
 import igentuman.nr.config.GeneralConfig;
-import igentuman.nr.api.Isotope;
+import igentuman.nr.config.RadiationConfig;
 
 public class IsotopeStack {
     private final Isotope isotope;
@@ -38,19 +38,34 @@ public class IsotopeStack {
         return Units.atomsToBq(atoms, isotope.halfLifeTicks());
     }
 
-    public void advanceDecay(long currentTick) {
+    public double advanceDecay(long currentTick) {
         long delta = currentTick - timestamp;
-        if (delta <= 0) return;
+        if (delta <= 0) return 0.0;
         double multiplier = GeneralConfig.ISOTOPE_DECAY_MULTIPLIER.get();
+        if (isStatic(isotope, multiplier)) {
+            timestamp = currentTick;
+            return 0.0;
+        }
         long effectiveDelta = (long) Math.ceil(delta * multiplier);
+        double before = atoms;
         atoms = Units.decayAtoms(atoms, isotope.halfLifeTicks(), effectiveDelta);
         timestamp = currentTick;
+        double decayed = before - atoms;
+        return decayed > 0 ? decayed : 0.0;
     }
 
     public long expiryTick(double floorBq) {
+        if (isStatic(isotope, GeneralConfig.ISOTOPE_DECAY_MULTIPLIER.get())) return Long.MAX_VALUE;
         long dt = Units.ticksUntilActivityFloor(currentActivityBq(), isotope.halfLifeTicks(), floorBq);
         if (dt == Long.MAX_VALUE) return Long.MAX_VALUE;
         long e = timestamp + dt;
         return e < timestamp ? Long.MAX_VALUE : e;
+    }
+
+    public static boolean isStatic(Isotope iso, double decayMultiplier) {
+        if (iso.halfLifeTicks() <= 0) return true;
+        if (decayMultiplier <= 0.0) return true;
+        double thresholdTicks = RadiationConfig.STATIC_HALF_LIFE_YEARS.get() * Units.TICKS_PER_YEAR;
+        return (iso.halfLifeTicks() / decayMultiplier) > thresholdTicks;
     }
 }

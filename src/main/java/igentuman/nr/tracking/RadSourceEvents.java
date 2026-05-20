@@ -2,7 +2,7 @@ package igentuman.nr.tracking;
 
 import igentuman.nr.binding.RadiationBindings;
 import igentuman.nr.config.RadiationConfig;
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.persistence.ChunkRadiationData;
 import igentuman.nr.persistence.NRAttachments;
 import net.minecraft.core.BlockPos;

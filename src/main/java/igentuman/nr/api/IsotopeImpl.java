@@ -1,13 +1,12 @@
-package igentuman.nr.core;
-
-import igentuman.nr.api.Isotope;
+package igentuman.nr.api;
 
 import java.util.Optional;
 
 public final class IsotopeImpl implements Isotope {
     private final String id;
     private final float xRayStrength;
-    private final float alphaBetaStrength;
+    private final float alphaStrength;
+    private final float betaStrength;
     private final float neutronStrength;
     private final long halfLifeTicks;
     private final String decaysToId;
@@ -15,14 +14,16 @@ public final class IsotopeImpl implements Isotope {
 
     public IsotopeImpl(String id,
                        float xRayStrength,
-                       float alphaBetaStrength,
+                       float alphaStrength,
+                       float betaStrength,
                        float neutronStrength,
                        long halfLifeTicks,
                        String decaysToId,
                        RadiationQuality quality) {
         this.id = id;
         this.xRayStrength = xRayStrength;
-        this.alphaBetaStrength = alphaBetaStrength;
+        this.alphaStrength = alphaStrength;
+        this.betaStrength = betaStrength;
         this.neutronStrength = neutronStrength;
         this.halfLifeTicks = halfLifeTicks;
         this.decaysToId = decaysToId;
@@ -31,7 +32,8 @@ public final class IsotopeImpl implements Isotope {
 
     @Override public String id() { return id; }
     @Override public float xRayStrength() { return xRayStrength; }
-    @Override public float alphaBetaStrength() { return alphaBetaStrength; }
+    @Override public float alphaStrength() { return alphaStrength; }
+    @Override public float betaStrength() { return betaStrength; }
     @Override public float neutronStrength() { return neutronStrength; }
     @Override public long halfLifeTicks() { return halfLifeTicks; }
     @Override public RadiationQuality quality() { return quality; }

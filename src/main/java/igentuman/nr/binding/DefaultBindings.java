@@ -20,59 +20,77 @@ public final class DefaultBindings {
 
         list.add(BindingDefinition.builder("uranium_ore_item")
                 .itemTag(RadiationTags.ITEM_URANIUM_ORE)
-                .isotope(Isotopes.U_238, 9.93e17)
-                .isotope(Isotopes.U_235, 7.2e15)
+                .isotope(Isotopes.U_238, 1.26e24)
+                .isotope(Isotopes.U_235, 9.22e21)
                 .build());
 
         list.add(BindingDefinition.builder("uranium_ore_block")
                 .blockTag(RadiationTags.BLOCK_URANIUM_ORE)
-                .isotope(Isotopes.U_238, 9.93e17)
-                .isotope(Isotopes.U_235, 7.2e15)
+                .isotope(Isotopes.U_238, 1.26e24)
+                .isotope(Isotopes.U_235, 9.22e21)
+                .build());
+
+        list.add(BindingDefinition.builder("uranium_raw_item")
+                .itemTag(RadiationTags.ITEM_URANIUM_RAW)
+                .isotope(Isotopes.U_238, 2.51e24)
+                .isotope(Isotopes.U_235, 1.84e22)
+                .build());
+
+        list.add(BindingDefinition.builder("uranium_ingot_item")
+                .itemTag(RadiationTags.ITEM_URANIUM_INGOT)
+                .isotope(Isotopes.U_238, 4.27e24)
+                .isotope(Isotopes.U_235, 3.14e22)
+                .build());
+
+        list.add(BindingDefinition.builder("uranium_dust_item")
+                .itemTag(RadiationTags.ITEM_URANIUM_DUST)
+                .isotope(Isotopes.U_238, 4.27e24)
+                .isotope(Isotopes.U_235, 3.14e22)
                 .build());
 
         list.add(BindingDefinition.builder("spent_fuel_item")
                 .itemTag(RadiationTags.ITEM_SPENT_FUEL)
-                .isotope(Isotopes.CS_137, 5.0e15)
-                .isotope(Isotopes.SR_90, 5.0e15)
-                .isotope(Isotopes.PU_239, 1.0e14)
-                .isotope(Isotopes.U_238, 5.0e17)
+                .isotope(Isotopes.U_238, 4.0e24)
+                .isotope(Isotopes.PU_239, 2.5e22)
+                .isotope(Isotopes.CS_137, 2.6e22)
+                .isotope(Isotopes.SR_90, 8.0e21)
                 .build());
 
         list.add(BindingDefinition.builder("radioactive_low_item")
                 .itemTag(RadiationTags.ITEM_LOW)
-                .isotope(Isotopes.U_238, 1.0e16)
+                .isotope(Isotopes.U_238, 2.5e21)
                 .build());
 
         list.add(BindingDefinition.builder("radioactive_medium_item")
                 .itemTag(RadiationTags.ITEM_MEDIUM)
-                .isotope(Isotopes.CS_137, 5.0e14)
+                .isotope(Isotopes.CS_137, 4.4e20)
                 .build());
 
         list.add(BindingDefinition.builder("radioactive_high_item")
                 .itemTag(RadiationTags.ITEM_HIGH)
-                .isotope(Isotopes.CO_60, 1.0e15)
-                .isotope(Isotopes.CS_137, 5.0e15)
+                .isotope(Isotopes.CO_60, 1.0e21)
+                .isotope(Isotopes.CS_137, 4.4e21)
                 .build());
 
         list.add(BindingDefinition.builder("radioactive_low_block")
                 .blockTag(RadiationTags.BLOCK_LOW)
-                .isotope(Isotopes.U_238, 1.0e16)
+                .isotope(Isotopes.U_238, 2.5e21)
                 .build());
 
         list.add(BindingDefinition.builder("radioactive_medium_block")
                 .blockTag(RadiationTags.BLOCK_MEDIUM)
-                .isotope(Isotopes.CS_137, 5.0e14)
+                .isotope(Isotopes.CS_137, 4.4e20)
                 .build());
 
         list.add(BindingDefinition.builder("radioactive_high_block")
                 .blockTag(RadiationTags.BLOCK_HIGH)
-                .isotope(Isotopes.CO_60, 1.0e15)
-                .isotope(Isotopes.CS_137, 5.0e15)
+                .isotope(Isotopes.CO_60, 1.0e21)
+                .isotope(Isotopes.CS_137, 4.4e21)
                 .build());
 
         list.add(BindingDefinition.builder("radioactive_fluid")
                 .fluidTag(RadiationTags.FLUID_RADIOACTIVE)
-                .isotope(Isotopes.CS_137, 1.0e13)
+                .isotope(Isotopes.CS_137, 4.4e18)
                 .build());
 
         return list;

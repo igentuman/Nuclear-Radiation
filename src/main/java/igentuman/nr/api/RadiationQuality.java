@@ -1,4 +1,4 @@
-package igentuman.nr.core;
+package igentuman.nr.api;
 
 public final class RadiationQuality {
     public static final RadiationQuality DEFAULT = new RadiationQuality(1.0f, 1.0f, 20.0f, 10.0f);

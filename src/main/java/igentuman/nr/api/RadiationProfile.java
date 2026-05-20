@@ -1,10 +1,13 @@
-package igentuman.nr.core;
+package igentuman.nr.api;
 
-import igentuman.nr.api.Isotope;
+import igentuman.nr.registry.IsotopeRegistry;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RadiationProfile {
@@ -60,10 +63,18 @@ public class RadiationProfile {
         return sum;
     }
 
-    public double alphaBetaActivityBq() {
+    public double alphaActivityBq() {
         double sum = 0.0;
         for (IsotopeStack s : isotopes.values()) {
-            sum += s.currentActivityBq() * s.isotope().alphaBetaStrength();
+            sum += s.currentActivityBq() * s.isotope().alphaStrength();
+        }
+        return sum;
+    }
+
+    public double betaActivityBq() {
+        double sum = 0.0;
+        for (IsotopeStack s : isotopes.values()) {
+            sum += s.currentActivityBq() * s.isotope().betaStrength();
         }
         return sum;
     }
@@ -77,7 +88,51 @@ public class RadiationProfile {
     }
 
     public void advanceDecay(long currentTick) {
-        for (IsotopeStack s : isotopes.values()) s.advanceDecay(currentTick);
+        advanceDecay(currentTick, Double.NEGATIVE_INFINITY);
+    }
+
+    public long advanceDecay(long currentTick, double floorBq) {
+        long maxExpiry = Long.MIN_VALUE;
+        boolean computeExpiry = floorBq > Double.NEGATIVE_INFINITY;
+        List<IsotopeStack> snapshot = new ArrayList<>(isotopes.values());
+        Map<String, Double> ingrowth = null;
+        for (IsotopeStack s : snapshot) {
+            double decayed = s.advanceDecay(currentTick);
+            if (computeExpiry && maxExpiry != Long.MAX_VALUE) {
+                long e = s.expiryTick(floorBq);
+                if (e == Long.MAX_VALUE) maxExpiry = Long.MAX_VALUE;
+                else if (e > maxExpiry) maxExpiry = e;
+            }
+            if (decayed <= 0.0) continue;
+            List<DecayEdge> edges = DecayGraph.outputs(s.isotope().id());
+            if (edges.isEmpty()) continue;
+            if (ingrowth == null) ingrowth = new HashMap<>();
+            for (DecayEdge edge : edges) {
+                if (edge.targetIsotopeId() == null) continue;
+                ingrowth.merge(edge.targetIsotopeId(), decayed * edge.probability(), Double::sum);
+            }
+        }
+        if (ingrowth != null) {
+            for (Map.Entry<String, Double> e : ingrowth.entrySet()) {
+                double add = e.getValue();
+                if (add <= 0.0) continue;
+                IsotopeStack daughter = isotopes.get(e.getKey());
+                if (daughter == null) {
+                    Isotope iso = IsotopeRegistry.get(e.getKey());
+                    if (iso == null) continue;
+                    daughter = new IsotopeStack(iso, add, currentTick);
+                    isotopes.put(iso.id(), daughter);
+                } else {
+                    daughter.setAtoms(daughter.atoms() + add);
+                }
+                if (computeExpiry && maxExpiry != Long.MAX_VALUE) {
+                    long de = daughter.expiryTick(floorBq);
+                    if (de == Long.MAX_VALUE) maxExpiry = Long.MAX_VALUE;
+                    else if (de > maxExpiry) maxExpiry = de;
+                }
+            }
+        }
+        return maxExpiry;
     }
 
     public long expiryTick(double floorBq) {

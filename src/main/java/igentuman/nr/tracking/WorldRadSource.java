@@ -1,7 +1,7 @@
 package igentuman.nr.tracking;
 
 import igentuman.nr.api.IPointRadiationSource;
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.RadiationProfile;
 
 public interface WorldRadSource extends IPointRadiationSource {
 

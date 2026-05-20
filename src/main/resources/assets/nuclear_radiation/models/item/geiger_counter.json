@@ -1,0 +1,14 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": { 
+        "layer0": "nuclear_radiation:item/geiger_counter_0"
+    },
+    "overrides": [
+        { "predicate": { "nuclear_radiation:radiation": 0 }, "model": "nuclear_radiation:item/geiger_counter_0" },
+        { "predicate": { "nuclear_radiation:radiation": 1 }, "model": "nuclear_radiation:item/geiger_counter_1" },
+        { "predicate": { "nuclear_radiation:radiation": 2 }, "model": "nuclear_radiation:item/geiger_counter_2" },
+        { "predicate": { "nuclear_radiation:radiation": 3 }, "model": "nuclear_radiation:item/geiger_counter_3" },
+        { "predicate": { "nuclear_radiation:radiation": 4 }, "model": "nuclear_radiation:item/geiger_counter_4" },
+        { "predicate": { "nuclear_radiation:radiation": 5 }, "model": "nuclear_radiation:item/geiger_counter_5" }
+    ]
+}

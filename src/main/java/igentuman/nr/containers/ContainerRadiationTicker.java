@@ -2,8 +2,8 @@ package igentuman.nr.containers;
 
 import igentuman.nr.binding.RadiationBindings;
 import igentuman.nr.config.RadiationConfig;
-import igentuman.nr.core.IsotopeStack;
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.IsotopeStack;
+import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.tracking.ContainerRadSource;
 import igentuman.nr.tracking.WorldRadSource;
 import igentuman.nr.tracking.WorldSourceRegistry;

@@ -20,9 +20,15 @@ public final class NRNetwork {
         PayloadRegistrar reg = event.registrar(NuclearRadiation.MODID).versioned(VERSION);
         reg.playToClient(RadiationSyncPayload.TYPE, RadiationSyncPayload.STREAM_CODEC,
                 (payload, ctx) -> ClientRadiationCache.update(payload));
+        reg.playToClient(ChunkVectorDebugPayload.TYPE, ChunkVectorDebugPayload.STREAM_CODEC,
+                (payload, ctx) -> ClientChunkVectorCache.update(payload));
     }
 
     public static void sendTo(ServerPlayer player, RadiationSyncPayload payload) {
+        PacketDistributor.sendToPlayer(player, payload);
+    }
+
+    public static void sendTo(ServerPlayer player, ChunkVectorDebugPayload payload) {
         PacketDistributor.sendToPlayer(player, payload);
     }
 }

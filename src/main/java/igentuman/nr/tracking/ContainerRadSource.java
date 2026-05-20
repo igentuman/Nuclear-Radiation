@@ -1,6 +1,6 @@
 package igentuman.nr.tracking;
 
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.RadiationProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -28,6 +28,9 @@ public final class ContainerRadSource extends AbstractWorldRadSource {
     @Override public double neutronBq() {
         return super.neutronBq() * (1.0 - containerAttenuation);
     }
+
+    @Override public double alphaBq() { return 0.0; }
+    @Override public double betaBq()  { return 0.0; }
 
     @Override
     public boolean contaminatesArea() { return false; }

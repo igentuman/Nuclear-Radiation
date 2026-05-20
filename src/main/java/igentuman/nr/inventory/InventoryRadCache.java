@@ -2,10 +2,10 @@ package igentuman.nr.inventory;
 
 import igentuman.nr.binding.RadiationBindings;
 import igentuman.nr.binding.RadiationComponent;
-import igentuman.nr.core.IsotopeStack;
-import igentuman.nr.core.RadiationProfile;
-import igentuman.nr.core.RadiationQuality;
-import igentuman.nr.core.Units;
+import igentuman.nr.api.IsotopeStack;
+import igentuman.nr.api.RadiationProfile;
+import igentuman.nr.api.RadiationQuality;
+import igentuman.nr.api.Units;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -29,20 +29,24 @@ public class InventoryRadCache {
     }
 
     private double cachedBqXRay;
-    private double cachedBqAlphaBeta;
+    private double cachedBqAlpha;
+    private double cachedBqBeta;
     private double cachedBqNeutron;
     private double cachedSvXRayPerSec;
-    private double cachedSvAlphaBetaPerSec;
+    private double cachedSvAlphaPerSec;
+    private double cachedSvBetaPerSec;
     private double cachedSvNeutronPerSec;
     private int cachedInventoryHash;
     private long lastScanTick = Long.MIN_VALUE;
 
-    public double bqXRay() { return cachedBqXRay; }
-    public double bqAlphaBeta() { return cachedBqAlphaBeta; }
+    public double bqXRay()   { return cachedBqXRay; }
+    public double bqAlpha()  { return cachedBqAlpha; }
+    public double bqBeta()   { return cachedBqBeta; }
     public double bqNeutron() { return cachedBqNeutron; }
 
-    public double svXRayPerSecPerGyBq() { return cachedSvXRayPerSec; }
-    public double svAlphaBetaPerSecPerGyBq() { return cachedSvAlphaBetaPerSec; }
+    public double svXRayPerSecPerGyBq()    { return cachedSvXRayPerSec; }
+    public double svAlphaPerSecPerGyBq()   { return cachedSvAlphaPerSec; }
+    public double svBetaPerSecPerGyBq()    { return cachedSvBetaPerSec; }
     public double svNeutronPerSecPerGyBq() { return cachedSvNeutronPerSec; }
 
     public void rescan(LivingEntity entity, long now) {
@@ -51,8 +55,8 @@ public class InventoryRadCache {
             return;
         }
 
-        double bqX = 0.0, bqAB = 0.0, bqN = 0.0;
-        double qX = 0.0, qAB = 0.0, qN = 0.0;
+        double bqX = 0.0, bqA = 0.0, bqB = 0.0, bqN = 0.0;
+        double qX = 0.0, qA = 0.0, qB = 0.0, qN = 0.0;
         for (IInventoryRadSlotProvider provider : SlotProviders.all()) {
             for (var iter = provider.slots(entity).iterator(); iter.hasNext(); ) {
                 RadiatedSlot slot = iter.next();
@@ -70,22 +74,27 @@ public class InventoryRadCache {
                     if (bq <= 0.0) continue;
                     RadiationQuality q = s.isotope().quality();
                     double bqXi = bq * s.isotope().xRayStrength();
-                    double bqABi = bq * s.isotope().alphaBetaStrength();
-                    double bqNi  = bq * s.isotope().neutronStrength();
-                    bqX  += bqXi;
-                    bqAB += bqABi;
-                    bqN  += bqNi;
-                    qX  += bqXi  * q.qXRay;
-                    qAB += bqABi * q.qAlpha;
-                    qN  += bqNi  * q.qNeutron;
+                    double bqAi = bq * s.isotope().alphaStrength();
+                    double bqBi = bq * s.isotope().betaStrength();
+                    double bqNi = bq * s.isotope().neutronStrength();
+                    bqX += bqXi;
+                    bqA += bqAi;
+                    bqB += bqBi;
+                    bqN += bqNi;
+                    qX += bqXi * q.qXRay;
+                    qA += bqAi * q.qAlpha;
+                    qB += bqBi * q.qBeta;
+                    qN += bqNi * q.qNeutron;
                 }
             }
         }
         this.cachedBqXRay = bqX;
-        this.cachedBqAlphaBeta = bqAB;
+        this.cachedBqAlpha = bqA;
+        this.cachedBqBeta = bqB;
         this.cachedBqNeutron = bqN;
         this.cachedSvXRayPerSec = qX;
-        this.cachedSvAlphaBetaPerSec = qAB;
+        this.cachedSvAlphaPerSec = qA;
+        this.cachedSvBetaPerSec = qB;
         this.cachedSvNeutronPerSec = qN;
         this.cachedInventoryHash = hash;
         this.lastScanTick = now;

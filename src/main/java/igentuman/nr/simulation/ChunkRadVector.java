@@ -7,6 +7,7 @@ public class ChunkRadVector {
     public Vec3 gradientNeutron = Vec3.ZERO;
     public double centerScalarXRay;
     public double centerScalarNeutron;
+    public double centerY;
     public double maxBq;
     public long computedTick;
     public long ttlTicks;

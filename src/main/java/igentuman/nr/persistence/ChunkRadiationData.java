@@ -3,7 +3,7 @@ package igentuman.nr.persistence;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import igentuman.nr.config.RadiationConfig;
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.RadiationProfile;
 
 public class ChunkRadiationData {
 

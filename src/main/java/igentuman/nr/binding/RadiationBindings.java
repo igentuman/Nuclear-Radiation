@@ -1,7 +1,7 @@
 package igentuman.nr.binding;
 
 import igentuman.nr.NuclearRadiation;
-import igentuman.nr.core.RadiationProfile;
+import igentuman.nr.api.RadiationProfile;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

@@ -1,10 +1,11 @@
-package igentuman.nr.core;
+package igentuman.nr.api;
 
 public final class Units {
     public static final double SECONDS_PER_TICK = 0.05;
     public static final double TICKS_PER_SECOND = 20.0;
     public static final double SECONDS_PER_HOUR = 3600.0;
     public static final double TICKS_PER_HOUR = TICKS_PER_SECOND * SECONDS_PER_HOUR;
+    public static final double TICKS_PER_YEAR = TICKS_PER_SECOND * SECONDS_PER_HOUR * 24.0 * 365.25;
 
     public static final double LN2 = 0.6931471805599453;
 
