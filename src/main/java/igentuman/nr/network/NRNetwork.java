@@ -22,6 +22,8 @@ public final class NRNetwork {
                 (payload, ctx) -> ClientRadiationCache.update(payload));
         reg.playToClient(ChunkVectorDebugPayload.TYPE, ChunkVectorDebugPayload.STREAM_CODEC,
                 (payload, ctx) -> ClientChunkVectorCache.update(payload));
+        reg.playToClient(ShieldingRaysDebugPayload.TYPE, ShieldingRaysDebugPayload.STREAM_CODEC,
+                (payload, ctx) -> ClientShieldingRaysCache.update(payload));
     }
 
     public static void sendTo(ServerPlayer player, RadiationSyncPayload payload) {
@@ -29,6 +31,10 @@ public final class NRNetwork {
     }
 
     public static void sendTo(ServerPlayer player, ChunkVectorDebugPayload payload) {
+        PacketDistributor.sendToPlayer(player, payload);
+    }
+
+    public static void sendTo(ServerPlayer player, ShieldingRaysDebugPayload payload) {
         PacketDistributor.sendToPlayer(player, payload);
     }
 }

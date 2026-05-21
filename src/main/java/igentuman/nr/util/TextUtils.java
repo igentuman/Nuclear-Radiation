@@ -129,6 +129,67 @@ public class TextUtils
 		return TextUtils.numberFormat(mass)+" T";
 	}
 
+	public static String formatSv(double sv) {
+		return formatSiSmall(sv, "Sv");
+	}
+
+	public static String formatSvPerHour(double svh) {
+		return formatSiSmall(svh, "Sv/h");
+	}
+
+	public static String formatBq(double bq) {
+		return formatSi(bq, "Bq");
+	}
+
+	public static String formatSi(double value, String unit) {
+		double abs = Math.abs(value);
+		if (abs == 0) {
+			return "0 " + unit;
+		}
+		if (abs >= 1e15) {
+			return String.format(Locale.US, "%.2f P%s", value / 1e15, unit);
+		}
+		if (abs >= 1e12) {
+			return String.format(Locale.US, "%.2f T%s", value / 1e12, unit);
+		}
+		if (abs >= 1e9) {
+			return String.format(Locale.US, "%.2f G%s", value / 1e9, unit);
+		}
+		if (abs >= 1e6) {
+			return String.format(Locale.US, "%.2f M%s", value / 1e6, unit);
+		}
+		if (abs >= 1e3) {
+			return String.format(Locale.US, "%.2f k%s", value / 1e3, unit);
+		}
+		if (abs >= 1) {
+			return String.format(Locale.US, "%.2f %s", value, unit);
+		}
+		return formatSiSmall(value, unit);
+	}
+
+	public static String formatSiSmall(double value, String unit) {
+		double abs = Math.abs(value);
+		if (abs == 0) {
+			return "0 " + unit;
+		}
+		if (abs >= 1) {
+			return String.format(Locale.US, "%.2f %s", value, unit);
+		}
+		if (abs >= 1e-3) {
+			return String.format(Locale.US, "%.2f m%s", value * 1e3, unit);
+		}
+		if (abs >= 1e-6) {
+			return String.format(Locale.US, "%.2f µ%s", value * 1e6, unit);
+		}
+		if (abs >= 1e-9) {
+			return String.format(Locale.US, "%.2f n%s", value * 1e9, unit);
+		}
+		if (abs >= 1e-12) {
+			return String.format(Locale.US, "%.2f p%s", value * 1e12, unit);
+		}
+		return String.format(Locale.US, "%.2e %s", value, unit);
+	}
+
 	public static String formatRads(long radiation) {
 		if(radiation >= 1000000) {
 			return String.format(Locale.US,"%.2f", (float)radiation/1000000)+" Rad";

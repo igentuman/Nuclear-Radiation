@@ -53,7 +53,6 @@ public class RadSourceEvents {
         BlockState state = event.getPlacedBlock();
         BlockPos pos = event.getPos();
         WorldSourceRegistry reg = WorldSourceRegistry.get(server);
-        reg.raycastCache().invalidateChunk(new ChunkPos(pos));
 
         RadiationProfile blockProfile = RadiationBindings.of(state);
         if (!blockProfile.isEmpty()) {
@@ -71,7 +70,6 @@ public class RadSourceEvents {
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
         WorldSourceRegistry reg = WorldSourceRegistry.get(server);
-        reg.raycastCache().invalidateChunk(new ChunkPos(event.getPos()));
         WorldRadSource src = reg.atBlock(event.getPos());
         if (src != null) reg.remove(src.getId());
     }
@@ -94,7 +92,6 @@ public class RadSourceEvents {
         }
         if (existing instanceof FluidRadSource) {
             reg.remove(existing.getId());
-            reg.raycastCache().invalidateChunk(new ChunkPos(pos));
         }
     }
 
@@ -105,7 +102,6 @@ public class RadSourceEvents {
         if (reg.atBlock(pos) != null) return;
         reg.register(new FluidRadSource(UUID.randomUUID(), server.dimension(), pos.immutable(),
                 profile, server.getGameTime()));
-        reg.raycastCache().invalidateChunk(new ChunkPos(pos));
     }
 
     @SubscribeEvent
@@ -127,7 +123,6 @@ public class RadSourceEvents {
         if (!(event.getChunk() instanceof LevelChunk chunk)) return;
         WorldSourceRegistry reg = WorldSourceRegistry.get(server);
         ChunkPos cp = chunk.getPos();
-        reg.raycastCache().invalidateChunk(cp);
         for (WorldRadSource s : reg.all()) {
             BlockPos p = s.getPosition();
             if ((p.getX() >> 4) == cp.x && (p.getZ() >> 4) == cp.z) {

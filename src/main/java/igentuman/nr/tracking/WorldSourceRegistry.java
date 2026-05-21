@@ -3,7 +3,6 @@ package igentuman.nr.tracking;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.persistence.ChunkRadiationData;
 import igentuman.nr.persistence.NRAttachments;
-import igentuman.nr.shielding.RaycastCache;
 import igentuman.nr.simulation.RadiationSimulator;
 import igentuman.nr.simulation.SourceSpatialIndex;
 import net.minecraft.core.BlockPos;
@@ -36,13 +35,10 @@ public class WorldSourceRegistry {
     private final Map<UUID, WorldRadSource> byId = new HashMap<>();
     private final Map<Long, WorldRadSource> byBlock = new HashMap<>();
     private final Map<UUID, ItemEntityRadSource> byItemEntity = new HashMap<>();
-    private final RaycastCache raycastCache = new RaycastCache();
 
     private WorldSourceRegistry(ServerLevel level) {
         this.level = level;
     }
-
-    public RaycastCache raycastCache() { return raycastCache; }
 
     public synchronized void register(WorldRadSource s) {
         if (s == null) return;

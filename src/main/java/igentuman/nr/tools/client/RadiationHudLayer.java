@@ -3,6 +3,7 @@ package igentuman.nr.tools.client;
 import igentuman.nr.network.ClientRadiationCache;
 import igentuman.nr.tools.DosimeterItem;
 import igentuman.nr.tools.GeigerCounterItem;
+import igentuman.nr.util.TextUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -26,16 +27,16 @@ public class RadiationHudLayer implements LayeredDraw.Layer {
         int x = 4;
         int y = 4;
         if (geiger) {
-            String s = String.format("Bq: %.2e", ClientRadiationCache.bqAtPlayer());
-            graphics.drawString(font, s, x, y, 0x55FF55, true);
+            graphics.drawString(font, TextUtils.formatBq(ClientRadiationCache.bqAtPlayer()),
+                    x, y, 0x55FF55, true);
             y += 10;
         }
         if (dosi) {
             double svh = ClientRadiationCache.svPerHour();
             int color = colorForRate(svh);
-            graphics.drawString(font, String.format("Sv/h: %.6f", svh), x, y, color, true);
+            graphics.drawString(font, "Rate: " + TextUtils.formatSvPerHour(svh), x, y, color, true);
             y += 10;
-            graphics.drawString(font, String.format("Sv total: %.6f", ClientRadiationCache.svTotal()),
+            graphics.drawString(font, "Total: " + TextUtils.formatSv(ClientRadiationCache.svTotal()),
                     x, y, 0xFFFFFF, true);
         }
     }

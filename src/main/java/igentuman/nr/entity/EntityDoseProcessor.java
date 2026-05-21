@@ -12,21 +12,20 @@ import igentuman.nr.network.RadiationSyncPayload;
 import igentuman.nr.persistence.EntityRadiationData;
 import igentuman.nr.persistence.NRAttachments;
 import igentuman.nr.registry.IsotopeRegistry;
+import igentuman.nr.network.ShieldingRaysDebugPayload;
 import igentuman.nr.shielding.ArmorProtectionRegistry;
 import igentuman.nr.shielding.AttenuationResult;
-import igentuman.nr.shielding.RaycastCache;
 import igentuman.nr.shielding.ShieldingRaycast;
 import igentuman.nr.simulation.ChunkRadVector;
 import igentuman.nr.simulation.RadiationSimulator;
 import igentuman.nr.tools.GeigerCounterItem;
-import igentuman.nr.tracking.WorldRadSource;
-import igentuman.nr.tracking.WorldSourceRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -99,14 +98,21 @@ public final class EntityDoseProcessor {
                                           ArmorProtectionRegistry.Protection armor) {
         ChunkPos cp = entity.chunkPosition();
         ChunkRadVector vec = RadiationSimulator.get().getChunkVector(level, cp);
-        if (vec == null) return 0.0;
+        if (vec == null || vec.contribs.isEmpty()) return 0.0;
 
-        double dx = entity.getX() - (cp.x * 16.0 + 8.0);
-        double dz = entity.getZ() - (cp.z * 16.0 + 8.0);
-        double dy = entity.getY() - vec.centerY;
-        double yAtten = 1.0 / (1.0 + dy * dy * 0.25);
-        double bqXRay = Math.max(0.0, vec.centerScalarXRay + vec.gradientXRay.x * dx + vec.gradientXRay.z * dz) * yAtten;
-        double bqNeutron = Math.max(0.0, vec.centerScalarNeutron + vec.gradientNeutron.x * dx + vec.gradientNeutron.z * dz) * yAtten;
+        double ex = entity.getX();
+        double ey = entity.getY();
+        double ez = entity.getZ();
+        double bqXRay = 0.0;
+        double bqNeutron = 0.0;
+        for (ChunkRadVector.Contrib c : vec.contribs) {
+            double dx = ex - c.x();
+            double dy = ey - c.y();
+            double dz = ez - c.z();
+            double inv = 1.0 / (dx * dx + dy * dy + dz * dz + 1.0);
+            bqXRay += c.xRayBq() * inv;
+            bqNeutron += c.neutronBq() * inv;
+        }
 
         AttenuationResult shielding = computeShielding(level, entity);
 
@@ -117,36 +123,120 @@ public final class EntityDoseProcessor {
         return svXRay + svNeutron;
     }
 
-    private static AttenuationResult computeShielding(ServerLevel level, LivingEntity entity) {
-        WorldSourceRegistry reg = WorldSourceRegistry.get(level);
-        int radius = RadiationConfig.MAX_SOURCE_RADIUS_M.get();
-        Vec3 to = entity.getEyePosition();
-        List<WorldRadSource> nearby = reg.queryRadius(to, radius);
-        if (nearby.isEmpty()) return AttenuationResult.UNATTENUATED;
+    private static final int SAMPLE_RAYS = 4;
+    private static final double SAMPLE_ANGLE_RAD = Math.toRadians(12.0);
+    private static final byte CHANNEL_XRAY = 0;
+    private static final byte CHANNEL_NEUTRON = 1;
 
-        RaycastCache cache = reg.raycastCache();
-        ChunkPos targetChunk = new ChunkPos((int) Math.floor(to.x) >> 4, (int) Math.floor(to.z) >> 4);
-        double weightX = 0.0, sumX = 0.0;
-        double weightN = 0.0, sumN = 0.0;
-        for (WorldRadSource s : nearby) {
-            if (!s.isActive()) continue;
-            Vec3 from = s.emissionCenter();
-            ChunkPos srcChunk = new ChunkPos((int) Math.floor(from.x) >> 4, (int) Math.floor(from.z) >> 4);
-            AttenuationResult r = cache.get(srcChunk, targetChunk);
-            if (r == null) {
-                r = ShieldingRaycast.cast(level, from, to);
-                cache.put(srcChunk, targetChunk, r);
-            }
-            double wx = Math.max(0.0, s.xRayBq());
-            double wn = Math.max(0.0, s.neutronBq());
-            sumX += r.xrayPass() * wx;
-            weightX += wx;
-            sumN += r.neutronPass() * wn;
-            weightN += wn;
+    private record RayHit(Vec3 endpoint, double xrayPass, double neutronPass) {}
+
+    private static AttenuationResult computeShielding(ServerLevel level, LivingEntity entity) {
+        ChunkPos cp = entity.chunkPosition();
+        ChunkRadVector vec = RadiationSimulator.get().getChunkVector(level, cp);
+        if (vec == null) return AttenuationResult.UNATTENUATED;
+
+        Vec3 eye = entity.getEyePosition();
+        double radius = RadiationConfig.MAX_SOURCE_RADIUS_M.get();
+        double chunkCenterX = cp.x * 16.0 + 8.0;
+        double chunkCenterZ = cp.z * 16.0 + 8.0;
+
+        double gx = vec.gradientXRay.x + vec.gradientNeutron.x;
+        double gz = vec.gradientXRay.z + vec.gradientNeutron.z;
+        if (gx * gx + gz * gz < 1.0e-6) return AttenuationResult.UNATTENUATED;
+
+        boolean debug = RadiationConfig.DEBUG_RADIATION_VECTORS.get()
+                && entity instanceof ServerPlayer;
+        List<RayHit> hits = debug ? new ArrayList<>(SAMPLE_RAYS + 1) : null;
+
+        double targetX = chunkCenterX + gx;
+        double targetZ = chunkCenterZ + gz;
+        double dirX = targetX - eye.x;
+        double dirY = vec.centerY - eye.y;
+        double dirZ = targetZ - eye.z;
+        double dirLen = Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
+        if (dirLen < 1.0e-6) return AttenuationResult.UNATTENUATED;
+        dirX /= dirLen; dirY /= dirLen; dirZ /= dirLen;
+
+        double rayLen = Math.min(dirLen, radius);
+
+        double upX = 0, upY = 1, upZ = 0;
+        double uX, uY, uZ;
+        if (Math.abs(dirY) > 0.95) {
+            uX = 1; uY = 0; uZ = 0;
+        } else {
+            uX = dirY * upZ - dirZ * upY;
+            uY = dirZ * upX - dirX * upZ;
+            uZ = dirX * upY - dirY * upX;
         }
-        double xPass = weightX > 0 ? sumX / weightX : 1.0;
-        double nPass = weightN > 0 ? sumN / weightN : 1.0;
-        return new AttenuationResult(xPass, nPass);
+        double uLen = Math.sqrt(uX * uX + uY * uY + uZ * uZ);
+        if (uLen < 1.0e-6) { uX = 1; uY = 0; uZ = 0; }
+        else { uX /= uLen; uY /= uLen; uZ /= uLen; }
+        double vX = dirY * uZ - dirZ * uY;
+        double vY = dirZ * uX - dirX * uZ;
+        double vZ = dirX * uY - dirY * uX;
+
+        double sumX = 0.0;
+        double sumN = 0.0;
+        int count = 0;
+        double sin = Math.sin(SAMPLE_ANGLE_RAD);
+        double cos = Math.cos(SAMPLE_ANGLE_RAD);
+
+        AttenuationResult r0 = castBoth(level, eye, dirX, dirY, dirZ, rayLen, hits);
+        sumX += r0.xrayPass();
+        sumN += r0.neutronPass();
+        count++;
+
+        double[][] offsets = {
+                { uX,  uY,  uZ},
+                {-uX, -uY, -uZ},
+                { vX,  vY,  vZ},
+                {-vX, -vY, -vZ},
+        };
+        for (int i = 0; i < SAMPLE_RAYS; i++) {
+            double[] o = offsets[i];
+            double ox = dirX * cos + o[0] * sin;
+            double oy = dirY * cos + o[1] * sin;
+            double oz = dirZ * cos + o[2] * sin;
+            double ol = Math.sqrt(ox * ox + oy * oy + oz * oz);
+            ox /= ol; oy /= ol; oz /= ol;
+            AttenuationResult r = castBoth(level, eye, ox, oy, oz, rayLen, hits);
+            sumX += r.xrayPass();
+            sumN += r.neutronPass();
+            count++;
+        }
+
+        if (debug && hits != null && !hits.isEmpty()) {
+            sendRaysDebug((ServerPlayer) entity, eye, hits);
+        }
+
+        return new AttenuationResult(sumX / count, sumN / count);
+    }
+
+    private static AttenuationResult castBoth(ServerLevel level, Vec3 eye,
+                                              double dx, double dy, double dz, double len,
+                                              List<RayHit> hits) {
+        Vec3 endpoint = new Vec3(eye.x + dx * len, eye.y + dy * len, eye.z + dz * len);
+        AttenuationResult r = ShieldingRaycast.cast(level, eye, endpoint);
+        if (hits != null) hits.add(new RayHit(endpoint, r.xrayPass(), r.neutronPass()));
+        return r;
+    }
+
+    private static void sendRaysDebug(ServerPlayer player, Vec3 origin, List<RayHit> hits) {
+        int n = hits.size() * 2;
+        double[] ex = new double[n];
+        double[] ey = new double[n];
+        double[] ez = new double[n];
+        float[] pv = new float[n];
+        byte[] ch = new byte[n];
+        int idx = 0;
+        for (RayHit h : hits) {
+            ex[idx] = h.endpoint.x; ey[idx] = h.endpoint.y; ez[idx] = h.endpoint.z;
+            pv[idx] = (float) h.xrayPass;   ch[idx] = CHANNEL_XRAY;    idx++;
+            ex[idx] = h.endpoint.x; ey[idx] = h.endpoint.y; ez[idx] = h.endpoint.z;
+            pv[idx] = (float) h.neutronPass; ch[idx] = CHANNEL_NEUTRON; idx++;
+        }
+        igentuman.nr.network.NRNetwork.sendTo(player,
+                new ShieldingRaysDebugPayload(origin.x, origin.y, origin.z, ex, ey, ez, pv, ch));
     }
 
     private static double computeInternal(EntityRadiationData data, double gyPerBqSec,

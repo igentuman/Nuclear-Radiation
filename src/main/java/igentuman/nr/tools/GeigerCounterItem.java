@@ -38,13 +38,17 @@ public class GeigerCounterItem extends Item {
     public static double readBq(ServerLevel level, LivingEntity entity) {
         ChunkPos cp = entity.chunkPosition();
         ChunkRadVector v = RadiationSimulator.get().getChunkVector(level, cp);
-        if (v == null) return 0.0;
-        double dx = entity.getX() - (cp.x * 16.0 + 8.0);
-        double dz = entity.getZ() - (cp.z * 16.0 + 8.0);
-        double dy = entity.getY() - v.centerY;
-        double yAtten = 1.0 / (1.0 + dy * dy * 0.25);
-        double bqXRay = Math.max(0.0, v.centerScalarXRay + v.gradientXRay.x * dx + v.gradientXRay.z * dz) * yAtten;
-        double bqNeutron = Math.max(0.0, v.centerScalarNeutron + v.gradientNeutron.x * dx + v.gradientNeutron.z * dz) * yAtten;
-        return bqXRay + bqNeutron;
+        if (v == null || v.contribs.isEmpty()) return 0.0;
+        double ex = entity.getX();
+        double ey = entity.getY();
+        double ez = entity.getZ();
+        double bq = 0.0;
+        for (ChunkRadVector.Contrib c : v.contribs) {
+            double dx = ex - c.x();
+            double dy = ey - c.y();
+            double dz = ez - c.z();
+            bq += (c.xRayBq() + c.neutronBq()) / (dx * dx + dy * dy + dz * dz + 1.0);
+        }
+        return bq;
     }
 }

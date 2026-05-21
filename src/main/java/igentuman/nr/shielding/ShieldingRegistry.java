@@ -21,6 +21,7 @@ public final class ShieldingRegistry {
     }
 
     public static Coeffs get(BlockState state) {
+        if (state.isAir()) return null;
         ensureDefaults();
         if (state.getBlock() instanceof IShieldingBlock s) {
             return new Coeffs(s.xrayAttenuationCoeff(), s.neutronAttenuationCoeff());

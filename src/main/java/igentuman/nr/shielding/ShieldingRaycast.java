@@ -10,7 +10,7 @@ import net.minecraft.world.phys.Vec3;
 
 public final class ShieldingRaycast {
 
-    private static final int MAX_STEPS = 32;
+    private static final int MAX_STEPS = 1024;
 
     private ShieldingRaycast() {}
 

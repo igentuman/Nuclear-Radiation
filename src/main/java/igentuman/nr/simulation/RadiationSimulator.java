@@ -182,6 +182,7 @@ public class RadiationSimulator implements IRadiationSimulator {
     private static final class ChunkAccum {
         final int cx;
         final int cz;
+        final List<ChunkRadVector.Contrib> contribs = new ArrayList<>();
         double sumXRay;
         double sumNeutron;
         double sumYXRay;
@@ -196,6 +197,8 @@ public class RadiationSimulator implements IRadiationSimulator {
         }
 
         void contribute(RadiationSnapshot.SourceData s, double maxR) {
+            contribs.add(new ChunkRadVector.Contrib(s.x(), s.y(), s.z(), s.xRayBq(), s.neutronBq()));
+
             double cxCenter = cx * 16.0 + 8.0;
             double czCenter = cz * 16.0 + 8.0;
             double dx = s.x() - cxCenter;
@@ -217,6 +220,7 @@ public class RadiationSimulator implements IRadiationSimulator {
 
         ChunkRadVector toVector(long tick, long ttl) {
             ChunkRadVector v = new ChunkRadVector();
+            v.contribs = contribs;
             v.centerScalarXRay = sumXRay;
             v.centerScalarNeutron = sumNeutron;
             v.maxBq = maxBq;

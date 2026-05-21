@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import igentuman.nr.NuclearRadiation;
 import igentuman.nr.network.ChunkVectorDebugPayload;
 import igentuman.nr.network.ClientChunkVectorCache;
+import igentuman.nr.network.ClientShieldingRaysCache;
+import igentuman.nr.network.ShieldingRaysDebugPayload;
 import net.minecraft.client.Camera;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -51,13 +53,17 @@ public final class RadiationDebugRenderer {
                 p.displayClientMessage(net.minecraft.network.chat.Component.literal(
                         "Radiation debug vectors: " + (enabled ? "ON" : "OFF")), true);
             }
-            if (!enabled) ClientChunkVectorCache.clear();
+            if (!enabled) {
+                ClientChunkVectorCache.clear();
+                ClientShieldingRaysCache.clear();
+            }
         }
         keyWasDown = down;
 
         if (!enabled) return;
         ChunkVectorDebugPayload pl = ClientChunkVectorCache.get();
-        if (pl == null) return;
+        ShieldingRaysDebugPayload rays = ClientShieldingRaysCache.get();
+        if (pl == null && rays == null) return;
 
         Minecraft mc = Minecraft.getInstance();
         Camera cam = event.getCamera();
@@ -70,34 +76,66 @@ public final class RadiationDebugRenderer {
         MultiBufferSource.BufferSource buffers = mc.renderBuffers().bufferSource();
         VertexConsumer vc = buffers.getBuffer(RenderType.lines());
 
-        double cx = pl.chunkX() * 16.0 + 8.0;
-        double cz = pl.chunkZ() * 16.0 + 8.0;
-        double surfaceY = mc.level != null
-                ? mc.level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) cx, (int) cz) + 1.0
-                : 80.0;
-        double sourceY = pl.centerY();
+        if (pl != null) {
+            double cx = pl.chunkX() * 16.0 + 8.0;
+            double cz = pl.chunkZ() * 16.0 + 8.0;
+            double surfaceY = mc.level != null
+                    ? mc.level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) cx, (int) cz) + 1.0
+                    : 80.0;
+            double sourceY = pl.centerY();
 
-        double xrayLen = clamp(Math.log10(Math.max(1.0, pl.scalarXRay() + 1.0)), 0.5, 16.0);
-        double neutronLen = clamp(Math.log10(Math.max(1.0, pl.scalarNeutron() + 1.0)), 0.5, 16.0);
+            double xrayLen = clamp(Math.log10(Math.max(1.0, pl.scalarXRay() + 1.0)), 0.5, 16.0);
+            double neutronLen = clamp(Math.log10(Math.max(1.0, pl.scalarNeutron() + 1.0)), 0.5, 16.0);
 
-        // X-ray gradient (green) — tilts from surface toward source position (X,Y,Z)
-        drawArrow3D(vc, pose, cx, surfaceY, cz,
-                cx + pl.gradXRayX() * xrayLen, sourceY, cz + pl.gradXRayZ() * xrayLen,
-                0.2f, 1.0f, 0.2f);
+            drawArrow3D(vc, pose, cx, surfaceY, cz,
+                    cx + pl.gradXRayX() * xrayLen, sourceY, cz + pl.gradXRayZ() * xrayLen,
+                    0.2f, 1.0f, 0.2f);
 
-        // Neutron gradient (red)
-        drawArrow3D(vc, pose, cx, surfaceY + 0.05, cz,
-                cx + pl.gradNeutronX() * neutronLen, sourceY + 0.05, cz + pl.gradNeutronZ() * neutronLen,
-                1.0f, 0.3f, 0.3f);
+            drawArrow3D(vc, pose, cx, surfaceY + 0.05, cz,
+                    cx + pl.gradNeutronX() * neutronLen, sourceY + 0.05, cz + pl.gradNeutronZ() * neutronLen,
+                    1.0f, 0.3f, 0.3f);
 
-        // Vertical Y marker (cyan): surface → source Y at chunk center, shows vertical offset
-        line(vc, pose, cx, surfaceY, cz, cx, sourceY, cz, 0.2f, 0.8f, 1.0f);
+            line(vc, pose, cx, surfaceY, cz, cx, sourceY, cz, 0.2f, 0.8f, 1.0f);
 
-        // Chunk bounds (yellow box) at source Y
-        drawChunkOutline(vc, pose, pl.chunkX(), pl.chunkZ(), sourceY - 0.5);
+            drawChunkOutline(vc, pose, pl.chunkX(), pl.chunkZ(), sourceY - 0.5);
+        }
+
+        if (rays != null) drawShieldingRays(vc, pose, rays);
 
         buffers.endBatch(RenderType.lines());
         pose.popPose();
+    }
+
+    private static void drawShieldingRays(VertexConsumer vc, PoseStack pose,
+                                          ShieldingRaysDebugPayload rays) {
+        double ox = rays.originX();
+        double oy = rays.originY();
+        double oz = rays.originZ();
+        int n = rays.endX().length;
+        for (int i = 0; i < n; i++) {
+            double ex = rays.endX()[i];
+            double ey = rays.endY()[i];
+            double ez = rays.endZ()[i];
+            float pass = rays.passValue()[i];
+            byte ch = rays.channel()[i];
+            float r, g, b;
+            if (ch == 0) {
+                // x-ray: green = pass-through, red = blocked
+                r = 1.0f - pass;
+                g = pass;
+                b = 0.0f;
+            } else {
+                // neutron: blue = pass-through, red = blocked
+                r = 1.0f - pass;
+                g = 0.0f;
+                b = pass;
+            }
+            line(vc, pose, ox, oy, oz, ex, ey, ez, r, g, b);
+            // small endpoint marker
+            line(vc, pose, ex - 0.2, ey, ez, ex + 0.2, ey, ez, r, g, b);
+            line(vc, pose, ex, ey - 0.2, ez, ex, ey + 0.2, ez, r, g, b);
+            line(vc, pose, ex, ey, ez - 0.2, ex, ey, ez + 0.2, r, g, b);
+        }
     }
 
     private static void drawArrow(VertexConsumer vc, PoseStack pose,
