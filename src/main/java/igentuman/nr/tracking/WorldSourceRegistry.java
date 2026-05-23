@@ -42,6 +42,7 @@ public class WorldSourceRegistry {
 
     public synchronized void register(WorldRadSource s) {
         if (s == null) return;
+        if (s.activityBq() < RadiationConfig.WORLD_SOURCE_MIN_BQ.get()) return;
         byId.put(s.getId(), s);
         long pkey = packPos(s.getPosition());
         if (s instanceof ItemEntityRadSource ie) {
@@ -93,7 +94,9 @@ public class WorldSourceRegistry {
 
     public void tickDecay(long now) {
         List<UUID> dead = new ArrayList<>();
-        double floor = RadiationConfig.ACTIVITY_FLOOR_BQ.get();
+        double floor = Math.max(
+                RadiationConfig.ACTIVITY_FLOOR_BQ.get(),
+                RadiationConfig.WORLD_SOURCE_MIN_BQ.get());
         for (WorldRadSource s : all()) {
             if (now >= s.expiryGameTime()) {
                 dead.add(s.getId());

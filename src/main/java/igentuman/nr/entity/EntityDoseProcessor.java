@@ -6,10 +6,12 @@ import igentuman.nr.api.Units;
 import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.inventory.InventoryRadCache;
+import igentuman.nr.network.ChunkContaminationDebugPayload;
 import igentuman.nr.network.ChunkVectorDebugPayload;
 import igentuman.nr.network.NRNetwork;
 import igentuman.nr.network.RadiationSyncPayload;
 import igentuman.nr.network.ShieldingRaysDebugPayload;
+import igentuman.nr.persistence.ChunkRadiationData;
 import igentuman.nr.persistence.EntityRadiationData;
 import igentuman.nr.persistence.NRAttachments;
 import igentuman.nr.registry.IsotopeRegistry;
@@ -23,6 +25,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -89,8 +92,53 @@ public final class EntityDoseProcessor {
                             vec.centerScalarXRay, vec.centerScalarNeutron,
                             vec.maxBq, vec.centerY));
                 }
+                sendChunkContamination(level, player, cp);
             }
         }
+    }
+
+    private static final int CONTAMINATION_RADIUS = 2;
+
+    private static void sendChunkContamination(ServerLevel level, ServerPlayer player, ChunkPos center) {
+        int side = CONTAMINATION_RADIUS * 2 + 1;
+        int max = side * side;
+        int[] cxs = new int[max];
+        int[] czs = new int[max];
+        double[] air = new double[max];
+        double[] water = new double[max];
+        double[] soil = new double[max];
+        int n = 0;
+        for (int dx = -CONTAMINATION_RADIUS; dx <= CONTAMINATION_RADIUS; dx++) {
+            for (int dz = -CONTAMINATION_RADIUS; dz <= CONTAMINATION_RADIUS; dz++) {
+                int x = center.x + dx;
+                int z = center.z + dz;
+                LevelChunk chunk = level.getChunkSource().getChunkNow(x, z);
+                if (chunk == null) continue;
+                ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
+                double a = data.air().totalActivityBq();
+                double w = data.water().totalActivityBq();
+                double s = data.soil().totalActivityBq();
+                if (a <= 0.0 && w <= 0.0 && s <= 0.0) continue;
+                cxs[n] = x;
+                czs[n] = z;
+                air[n] = a;
+                water[n] = w;
+                soil[n] = s;
+                n++;
+            }
+        }
+        if (n == 0) return;
+        int[] cxOut = new int[n];
+        int[] czOut = new int[n];
+        double[] airOut = new double[n];
+        double[] waterOut = new double[n];
+        double[] soilOut = new double[n];
+        System.arraycopy(cxs, 0, cxOut, 0, n);
+        System.arraycopy(czs, 0, czOut, 0, n);
+        System.arraycopy(air, 0, airOut, 0, n);
+        System.arraycopy(water, 0, waterOut, 0, n);
+        System.arraycopy(soil, 0, soilOut, 0, n);
+        NRNetwork.sendTo(player, new ChunkContaminationDebugPayload(cxOut, czOut, airOut, waterOut, soilOut));
     }
 
     private static double computeExternal(ServerLevel level, LivingEntity entity,

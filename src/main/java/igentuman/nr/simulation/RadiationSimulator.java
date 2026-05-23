@@ -49,6 +49,9 @@ public class RadiationSimulator implements IRadiationSimulator {
         workQueue.clear();
         if (worker != null) worker.interrupt();
         worker = null;
+        indexByDim.clear();
+        vectorByDim.clear();
+        mainThreadTasks.clear();
         NuclearRadiation.LOGGER.info("Radiation worker thread stopped");
     }
 
@@ -162,10 +165,15 @@ public class RadiationSimulator implements IRadiationSimulator {
     }
 
     private void apply(ResourceKey<Level> dim, RadiationResult result) {
-        Map<Long, ChunkRadVector> map = vectorByDim.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
+        if (result.vectorUpdates.isEmpty()) {
+            vectorByDim.remove(dim);
+            return;
+        }
+        Map<Long, ChunkRadVector> map = new ConcurrentHashMap<>(result.vectorUpdates.size() * 2);
         for (Map.Entry<ChunkPos, ChunkRadVector> e : result.vectorUpdates.entrySet()) {
             map.put(SourceSpatialIndex.chunkKey(e.getKey()), e.getValue());
         }
+        vectorByDim.put(dim, map);
     }
 
     private void drainMainThreadTasks() {

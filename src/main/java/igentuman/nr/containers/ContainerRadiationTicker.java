@@ -60,7 +60,7 @@ public final class ContainerRadiationTicker {
         Set<BlockPos> dirty = DIRTY.get(level);
         if (dirty == null || dirty.isEmpty()) return;
         long now = level.getGameTime();
-        double floor = RadiationConfig.ACTIVITY_FLOOR_BQ.get();
+        double floor = RadiationConfig.WORLD_SOURCE_MIN_BQ.get();
         List<BlockPos> batch = new ArrayList<>(dirty);
         dirty.removeAll(batch);
         for (BlockPos pos : batch) {

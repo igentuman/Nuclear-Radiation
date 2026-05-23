@@ -1,7 +1,10 @@
 package igentuman.nr.simulation;
 
+import igentuman.nr.containers.ContainerRadiationTicker;
+import igentuman.nr.tracking.WorldSourceRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -16,6 +19,14 @@ public class SimulationEvents {
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
         RadiationSimulator.get().stopWorker();
+    }
+
+    @SubscribeEvent
+    public void onLevelUnload(LevelEvent.Unload event) {
+        if (event.getLevel() instanceof ServerLevel server) {
+            WorldSourceRegistry.unload(server);
+            ContainerRadiationTicker.unloadLevel(server);
+        }
     }
 
     @SubscribeEvent

@@ -20,14 +20,14 @@ public final class DefaultBindings {
 
         list.add(BindingDefinition.builder("uranium_ore_item")
                 .itemTag(RadiationTags.ITEM_URANIUM_ORE)
-                .isotope(Isotopes.U_238, 1.26e24)
-                .isotope(Isotopes.U_235, 9.22e21)
+                .isotope(Isotopes.U_238, 9.72e21)
+                .isotope(Isotopes.U_235, 7.11e19)
                 .build());
 
         list.add(BindingDefinition.builder("uranium_ore_block")
                 .blockTag(RadiationTags.BLOCK_URANIUM_ORE)
-                .isotope(Isotopes.U_238, 1.26e24)
-                .isotope(Isotopes.U_235, 9.22e21)
+                .isotope(Isotopes.U_238, 9.72e21)
+                .isotope(Isotopes.U_235, 7.11e19)
                 .build());
 
         list.add(BindingDefinition.builder("uranium_raw_item")

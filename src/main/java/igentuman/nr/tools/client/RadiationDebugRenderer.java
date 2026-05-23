@@ -3,7 +3,9 @@ package igentuman.nr.tools.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import igentuman.nr.NuclearRadiation;
+import igentuman.nr.network.ChunkContaminationDebugPayload;
 import igentuman.nr.network.ChunkVectorDebugPayload;
+import igentuman.nr.network.ClientChunkContaminationCache;
 import igentuman.nr.network.ClientChunkVectorCache;
 import igentuman.nr.network.ClientShieldingRaysCache;
 import igentuman.nr.network.ShieldingRaysDebugPayload;
@@ -56,6 +58,7 @@ public final class RadiationDebugRenderer {
             if (!enabled) {
                 ClientChunkVectorCache.clear();
                 ClientShieldingRaysCache.clear();
+                ClientChunkContaminationCache.clear();
             }
         }
         keyWasDown = down;
@@ -63,7 +66,8 @@ public final class RadiationDebugRenderer {
         if (!enabled) return;
         ChunkVectorDebugPayload pl = ClientChunkVectorCache.get();
         ShieldingRaysDebugPayload rays = ClientShieldingRaysCache.get();
-        if (pl == null && rays == null) return;
+        ChunkContaminationDebugPayload contam = ClientChunkContaminationCache.get();
+        if (pl == null && rays == null && contam == null) return;
 
         Minecraft mc = Minecraft.getInstance();
         Camera cam = event.getCamera();
@@ -101,9 +105,79 @@ public final class RadiationDebugRenderer {
         }
 
         if (rays != null) drawShieldingRays(vc, pose, rays);
+        if (contam != null) drawContamination(vc, pose, mc, contam);
 
         buffers.endBatch(RenderType.lines());
         pose.popPose();
+    }
+
+    private static void drawContamination(VertexConsumer vc, PoseStack pose, Minecraft mc,
+                                          ChunkContaminationDebugPayload contam) {
+        int n = contam.chunkX().length;
+        for (int i = 0; i < n; i++) {
+            int cx = contam.chunkX()[i];
+            int cz = contam.chunkZ()[i];
+            double centerX = cx * 16.0 + 8.0;
+            double centerZ = cz * 16.0 + 8.0;
+            double baseY = mc.level != null
+                    ? mc.level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) centerX, (int) centerZ) + 1.0
+                    : 80.0;
+
+            double air = contam.airBq()[i];
+            double water = contam.waterBq()[i];
+            double soil = contam.soilBq()[i];
+
+            double airH = barHeight(air);
+            double waterH = barHeight(water);
+            double soilH = barHeight(soil);
+
+            double y0 = baseY;
+            // soil = brown, bottom
+            if (soilH > 0) {
+                drawBar(vc, pose, centerX, y0, centerZ, soilH, 0.55f, 0.35f, 0.15f);
+                y0 += soilH;
+            }
+            // water = blue, middle
+            if (waterH > 0) {
+                drawBar(vc, pose, centerX, y0, centerZ, waterH, 0.2f, 0.4f, 1.0f);
+                y0 += waterH;
+            }
+            // air = cyan, top
+            if (airH > 0) {
+                drawBar(vc, pose, centerX, y0, centerZ, airH, 0.4f, 1.0f, 1.0f);
+            }
+
+            drawChunkOutline(vc, pose, cx, cz, baseY - 0.05);
+        }
+    }
+
+    private static double barHeight(double bq) {
+        if (bq <= 0.0) return 0.0;
+        return clamp(Math.log10(bq/10000 + 1.0), 0.001, 8.0);
+    }
+
+    private static void drawBar(VertexConsumer vc, PoseStack pose,
+                                double cx, double y0, double cz, double h,
+                                float r, float g, float b) {
+        double s = 0.25;
+        double x0 = cx - s, x1 = cx + s;
+        double z0 = cz - s, z1 = cz + s;
+        double y1 = y0 + h;
+        // four verticals
+        line(vc, pose, x0, y0, z0, x0, y1, z0, r, g, b);
+        line(vc, pose, x1, y0, z0, x1, y1, z0, r, g, b);
+        line(vc, pose, x1, y0, z1, x1, y1, z1, r, g, b);
+        line(vc, pose, x0, y0, z1, x0, y1, z1, r, g, b);
+        // bottom ring
+        line(vc, pose, x0, y0, z0, x1, y0, z0, r, g, b);
+        line(vc, pose, x1, y0, z0, x1, y0, z1, r, g, b);
+        line(vc, pose, x1, y0, z1, x0, y0, z1, r, g, b);
+        line(vc, pose, x0, y0, z1, x0, y0, z0, r, g, b);
+        // top ring
+        line(vc, pose, x0, y1, z0, x1, y1, z0, r, g, b);
+        line(vc, pose, x1, y1, z0, x1, y1, z1, r, g, b);
+        line(vc, pose, x1, y1, z1, x0, y1, z1, r, g, b);
+        line(vc, pose, x0, y1, z1, x0, y1, z0, r, g, b);
     }
 
     private static void drawShieldingRays(VertexConsumer vc, PoseStack pose,
