@@ -1,18 +1,18 @@
 package igentuman.nr.entity;
 
-import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.api.Isotope;
-import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.api.RadiationQuality;
 import igentuman.nr.api.Units;
+import igentuman.nr.config.GeneralConfig;
+import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.inventory.InventoryRadCache;
 import igentuman.nr.network.ChunkVectorDebugPayload;
 import igentuman.nr.network.NRNetwork;
 import igentuman.nr.network.RadiationSyncPayload;
+import igentuman.nr.network.ShieldingRaysDebugPayload;
 import igentuman.nr.persistence.EntityRadiationData;
 import igentuman.nr.persistence.NRAttachments;
 import igentuman.nr.registry.IsotopeRegistry;
-import igentuman.nr.network.ShieldingRaysDebugPayload;
 import igentuman.nr.shielding.ArmorProtectionRegistry;
 import igentuman.nr.shielding.AttenuationResult;
 import igentuman.nr.shielding.ShieldingRaycast;
@@ -235,7 +235,7 @@ public final class EntityDoseProcessor {
             ex[idx] = h.endpoint.x; ey[idx] = h.endpoint.y; ez[idx] = h.endpoint.z;
             pv[idx] = (float) h.neutronPass; ch[idx] = CHANNEL_NEUTRON; idx++;
         }
-        igentuman.nr.network.NRNetwork.sendTo(player,
+        NRNetwork.sendTo(player,
                 new ShieldingRaysDebugPayload(origin.x, origin.y, origin.z, ex, ey, ez, pv, ch));
     }
 

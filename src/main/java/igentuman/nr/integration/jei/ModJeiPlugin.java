@@ -4,6 +4,7 @@ import igentuman.nr.api.Isotope;
 import igentuman.nr.binding.RadiationBindings;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.registry.IsotopeRegistry;
+import igentuman.nr.shielding.ArmorProtectionRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @JeiPlugin
@@ -34,7 +36,8 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new IsotopeStatsCategory(gh),
                 new RadioactiveItemsCategory(gh),
-                new DecayGraphCategory(gh)
+                new DecayGraphCategory(gh),
+                new ArmorProtectionCategory(gh)
         );
     }
 
@@ -47,6 +50,18 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipes(NRJeiTypes.DECAY_GRAPH, isotopes);
 
         registration.addRecipes(NRJeiTypes.RADIOACTIVE_ITEMS, collectRadioactiveItems());
+        registration.addRecipes(NRJeiTypes.ARMOR_PROTECTION, collectArmorProtection());
+    }
+
+    private static List<ArmorProtectionEntry> collectArmorProtection() {
+        List<ArmorProtectionEntry> out = new ArrayList<>();
+        for (Map.Entry<Item, ArmorProtectionRegistry.Protection> e : ArmorProtectionRegistry.all().entrySet()) {
+            ArmorProtectionRegistry.Protection p = e.getValue();
+            if (p.xray() <= 0 && p.alpha() <= 0 && p.beta() <= 0 && p.neutron() <= 0) continue;
+            out.add(new ArmorProtectionEntry(new ItemStack(e.getKey()), p));
+        }
+        out.sort(Comparator.comparing(en -> BuiltInRegistries.ITEM.getKey(en.stack().getItem()).toString()));
+        return out;
     }
 
     private static List<RadioactiveItemEntry> collectRadioactiveItems() {

@@ -5,6 +5,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,14 @@ public final class ArmorProtectionRegistry {
 
     public static void register(Item item, Protection p) {
         BY_ITEM.put(item, p);
+    }
+
+    public static void clear() {
+        BY_ITEM.clear();
+    }
+
+    public static Map<Item, Protection> all() {
+        return Collections.unmodifiableMap(BY_ITEM);
     }
 
     public static Protection get(ItemStack stack) {

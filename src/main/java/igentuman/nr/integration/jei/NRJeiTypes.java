@@ -19,4 +19,7 @@ public final class NRJeiTypes {
 
     public static final RecipeType<Isotope> DECAY_GRAPH = RecipeType.create(
             NuclearRadiation.MODID, "decay_graph", Isotope.class);
+
+    public static final RecipeType<ArmorProtectionEntry> ARMOR_PROTECTION = RecipeType.create(
+            NuclearRadiation.MODID, "armor_protection", ArmorProtectionEntry.class);
 }

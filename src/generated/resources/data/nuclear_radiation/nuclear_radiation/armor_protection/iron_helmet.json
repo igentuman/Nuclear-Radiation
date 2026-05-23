@@ -1,0 +1,7 @@
+{
+  "alpha": 0.2,
+  "beta": 0.1,
+  "neutron": 0.01,
+  "target": "minecraft:iron_helmet",
+  "xray": 0.04
+}

@@ -22,6 +22,13 @@
   "jei.nuclear_radiation.category.isotope_stats": "Isotope Stats",
   "jei.nuclear_radiation.category.radioactive_items": "Radioactive Items",
   "jei.nuclear_radiation.category.decay_graph": "Decay Graph",
+  "jei.nuclear_radiation.category.armor_protection": "Armor Radiation Protection",
+
+  "jei.nuclear_radiation.armor_protection.xray": "X-ray/gamma: %s",
+  "jei.nuclear_radiation.armor_protection.alpha": "Alpha: %s",
+  "jei.nuclear_radiation.armor_protection.beta": "Beta: %s",
+  "jei.nuclear_radiation.armor_protection.neutron": "Neutron: %s",
+
 
   "jei.nuclear_radiation.isotope_stats.id": "ID: %s",
   "jei.nuclear_radiation.isotope_stats.half_life": "Half-life: %s",
@@ -39,6 +46,12 @@
 
   "tooltip.nuclear_radiation.isotope": "Isotope: %s",
   "tooltip.nuclear_radiation.half_life": "Half-life: %s",
+
+  "tooltip.nuclear_radiation.armor_protection": "Radiation Protection",
+  "tooltip.nuclear_radiation.armor.xray": " X-ray/gamma: %s",
+  "tooltip.nuclear_radiation.armor.alpha": " Alpha: %s",
+  "tooltip.nuclear_radiation.armor.beta": " Beta: %s",
+  "tooltip.nuclear_radiation.armor.neutron": " Neutron: %s",
 
   "isotope.nuclear_radiation.u_238": "Uranium-238",
   "isotope.nuclear_radiation.u_235": "Uranium-235",

@@ -2,6 +2,7 @@ package igentuman.nr.binding;
 
 import igentuman.nr.api.IsotopeStack;
 import igentuman.nr.api.RadiationProfile;
+import igentuman.nr.shielding.ArmorProtectionRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -11,6 +12,8 @@ public class RadiationTooltip {
 
     @SubscribeEvent
     public void onTooltip(ItemTooltipEvent event) {
+        addArmorProtectionTooltip(event);
+
         RadiationProfile p = RadiationBindings.of(event.getItemStack());
         if (p.isEmpty()) return;
 
@@ -32,6 +35,26 @@ public class RadiationTooltip {
                     formatTime(halfLifeSeconds))
                     .withStyle(ChatFormatting.DARK_GRAY));
         }
+    }
+
+    private static void addArmorProtectionTooltip(ItemTooltipEvent event) {
+        ArmorProtectionRegistry.Protection prot = ArmorProtectionRegistry.get(event.getItemStack());
+        if (prot.xray() <= 0 && prot.alpha() <= 0 && prot.beta() <= 0 && prot.neutron() <= 0) return;
+
+        event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.armor_protection")
+                .withStyle(ChatFormatting.AQUA));
+        event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.armor.xray", formatPercent(prot.xray()))
+                .withStyle(ChatFormatting.GRAY));
+        event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.armor.alpha", formatPercent(prot.alpha()))
+                .withStyle(ChatFormatting.GRAY));
+        event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.armor.beta", formatPercent(prot.beta()))
+                .withStyle(ChatFormatting.GRAY));
+        event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.armor.neutron", formatPercent(prot.neutron()))
+                .withStyle(ChatFormatting.GRAY));
+    }
+
+    private static String formatPercent(double v) {
+        return String.format("%.1f%%", v * 100.0);
     }
 
     private static String isotopeTranslationKey(String id) {

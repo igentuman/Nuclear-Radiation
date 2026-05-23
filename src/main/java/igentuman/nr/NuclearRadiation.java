@@ -16,6 +16,7 @@ import igentuman.nr.containers.ContainerEvents;
 import igentuman.nr.entity.EntityExposureEvents;
 import igentuman.nr.medicine.NREffects;
 import igentuman.nr.medicine.NRMedicineItems;
+import igentuman.nr.shielding.ArmorProtectionReloadListener;
 import igentuman.nr.simulation.SimulationEvents;
 import igentuman.nr.tools.NRTools;
 import igentuman.nr.tracking.RadSourceEvents;
@@ -51,12 +52,6 @@ public class NuclearRadiation {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
-    public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
-
-    public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
-            .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
-
     public NuclearRadiation(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
         BLOCKS.register(modEventBus);
@@ -89,9 +84,6 @@ public class NuclearRadiation {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-            event.accept(EXAMPLE_BLOCK_ITEM);
-        }
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(NRTools.GEIGER_COUNTER);
             event.accept(NRTools.DOSIMETER);
@@ -106,5 +98,6 @@ public class NuclearRadiation {
     @SubscribeEvent
     public void onAddReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new RadiationBindingsReloadListener());
+        event.addListener(new ArmorProtectionReloadListener());
     }
 }

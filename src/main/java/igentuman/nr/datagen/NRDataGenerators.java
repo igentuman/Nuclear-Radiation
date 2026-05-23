@@ -23,6 +23,7 @@ public final class NRDataGenerators {
         ExistingFileHelper existing = event.getExistingFileHelper();
 
         gen.addProvider(event.includeServer(), new RadiationBindingProvider(output));
+        gen.addProvider(event.includeServer(), new ArmorProtectionProvider(output));
 
         NRBlockTagsProvider blockTags = new NRBlockTagsProvider(output, lookup, existing);
         gen.addProvider(event.includeServer(), blockTags);

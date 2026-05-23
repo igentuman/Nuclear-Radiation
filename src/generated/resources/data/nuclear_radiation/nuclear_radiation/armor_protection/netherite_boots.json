@@ -1,0 +1,7 @@
+{
+  "alpha": 0.25,
+  "beta": 0.15,
+  "neutron": 0.04,
+  "target": "minecraft:netherite_boots",
+  "xray": 0.1
+}
