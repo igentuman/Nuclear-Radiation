@@ -1,6 +1,6 @@
 package igentuman.nr.tools;
 
-import igentuman.nr.simulation.ChunkRadVector;
+import igentuman.nr.simulation.SubChunkRadVector;
 import igentuman.nr.simulation.RadiationSimulator;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -28,7 +28,7 @@ public class GeigerCounterItem extends Item {
         if ((server.getGameTime() % 20) != 0) return;
 
         double bq = readBq(server, living);
-        if (bq <= 0.0) return;
+        if (bq < 1e-9) return;
 
         float clickRate = (float) Math.min(2.0, 0.3 + Math.log10(1.0 + bq) * 0.2);
         server.playSound(null, living.blockPosition(), SoundEvents.NOTE_BLOCK_HAT.value(),
@@ -36,18 +36,29 @@ public class GeigerCounterItem extends Item {
     }
 
     public static double readBq(ServerLevel level, LivingEntity entity) {
+        return readBq(level, entity, 1.0, 1.0);
+    }
+
+    public static double readBq(ServerLevel level, LivingEntity entity,
+                                double xrayPass, double neutronPass) {
         ChunkPos cp = entity.chunkPosition();
-        ChunkRadVector v = RadiationSimulator.get().getChunkVector(level, cp);
-        if (v == null || v.contribs.isEmpty()) return 0.0;
+        int cy = entity.blockPosition().getY() >> 4;
+        SubChunkRadVector v = RadiationSimulator.get().getChunkVector(level, cp, cy);
+        if (v == null || v.isEmpty()) return 0.0;
         double ex = entity.getX();
         double ey = entity.getY();
         double ez = entity.getZ();
         double bq = 0.0;
-        for (ChunkRadVector.Contrib c : v.contribs) {
-            double dx = ex - c.x();
-            double dy = ey - c.y();
-            double dz = ez - c.z();
-            bq += (c.xRayBq() + c.neutronBq()) / (dx * dx + dy * dy + dz * dz + 1.0);
+        for (int d = 0; d < SubChunkRadVector.DIR_COUNT; d++) {
+            double apexX = v.xRayBq[d];
+            double apexN = v.neutronBq[d];
+            if (apexX <= 0 && apexN <= 0) continue;
+            double dx = v.tip[d].x - ex;
+            double dy = v.tip[d].y - ey;
+            double dz = v.tip[d].z - ez;
+            double tipEyeDist2 = dx * dx + dy * dy + dz * dz;
+            double scale = (v.tipApexDist2[d] + 1.0) / (tipEyeDist2 + 1.0);
+            bq += (apexX * xrayPass + apexN * neutronPass) * scale;
         }
         return bq;
     }

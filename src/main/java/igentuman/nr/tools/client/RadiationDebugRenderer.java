@@ -3,7 +3,6 @@ package igentuman.nr.tools.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import igentuman.nr.NuclearRadiation;
-import igentuman.nr.network.ChunkContaminationDebugPayload;
 import igentuman.nr.network.ChunkVectorDebugPayload;
 import igentuman.nr.network.ClientChunkContaminationCache;
 import igentuman.nr.network.ClientChunkVectorCache;
@@ -15,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -37,6 +35,8 @@ public final class RadiationDebugRenderer {
     private static boolean keyWasDown = false;
 
     private RadiationDebugRenderer() {}
+
+    public static boolean isEnabled() { return enabled; }
 
     @SubscribeEvent
     public static void onRegisterKeys(RegisterKeyMappingsEvent event) {
@@ -66,8 +66,7 @@ public final class RadiationDebugRenderer {
         if (!enabled) return;
         ChunkVectorDebugPayload pl = ClientChunkVectorCache.get();
         ShieldingRaysDebugPayload rays = ClientShieldingRaysCache.get();
-        ChunkContaminationDebugPayload contam = ClientChunkContaminationCache.get();
-        if (pl == null && rays == null && contam == null) return;
+        if (pl == null && rays == null) return;
 
         Minecraft mc = Minecraft.getInstance();
         Camera cam = event.getCamera();
@@ -81,103 +80,32 @@ public final class RadiationDebugRenderer {
         VertexConsumer vc = buffers.getBuffer(RenderType.lines());
 
         if (pl != null) {
-            double cx = pl.chunkX() * 16.0 + 8.0;
-            double cz = pl.chunkZ() * 16.0 + 8.0;
-            double surfaceY = mc.level != null
-                    ? mc.level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) cx, (int) cz) + 1.0
-                    : 80.0;
-            double sourceY = pl.centerY();
+            double ax = pl.apexX();
+            double ay = pl.apexY();
+            double az = pl.apexZ();
 
-            double xrayLen = clamp(Math.log10(Math.max(1.0, pl.scalarXRay() + 1.0)), 0.5, 16.0);
-            double neutronLen = clamp(Math.log10(Math.max(1.0, pl.scalarNeutron() + 1.0)), 0.5, 16.0);
+            for (int d = 0; d < 6; d++) {
+                double bqX = pl.xRayBq()[d];
+                double bqN = pl.neutronBq()[d];
+                if (bqX <= 0 && bqN <= 0) continue;
+                double tx = pl.tipX()[d];
+                double ty = pl.tipY()[d];
+                double tz = pl.tipZ()[d];
+                if (bqX > 0) {
+                    drawArrow3D(vc, pose, ax, ay, az, tx, ty, tz, 0.2f, 1.0f, 0.2f);
+                }
+                if (bqN > 0) {
+                    drawArrow3D(vc, pose, ax, ay + 0.05, az, tx, ty + 0.05, tz, 1.0f, 0.3f, 0.3f);
+                }
+            }
 
-            drawArrow3D(vc, pose, cx, surfaceY, cz,
-                    cx + pl.gradXRayX() * xrayLen, sourceY, cz + pl.gradXRayZ() * xrayLen,
-                    0.2f, 1.0f, 0.2f);
-
-            drawArrow3D(vc, pose, cx, surfaceY + 0.05, cz,
-                    cx + pl.gradNeutronX() * neutronLen, sourceY + 0.05, cz + pl.gradNeutronZ() * neutronLen,
-                    1.0f, 0.3f, 0.3f);
-
-            line(vc, pose, cx, surfaceY, cz, cx, sourceY, cz, 0.2f, 0.8f, 1.0f);
-
-            drawChunkOutline(vc, pose, pl.chunkX(), pl.chunkZ(), sourceY - 0.5);
+            drawSectionBox(vc, pose, pl.chunkX(), pl.chunkY(), pl.chunkZ());
         }
 
         if (rays != null) drawShieldingRays(vc, pose, rays);
-        if (contam != null) drawContamination(vc, pose, mc, contam);
 
         buffers.endBatch(RenderType.lines());
         pose.popPose();
-    }
-
-    private static void drawContamination(VertexConsumer vc, PoseStack pose, Minecraft mc,
-                                          ChunkContaminationDebugPayload contam) {
-        int n = contam.chunkX().length;
-        for (int i = 0; i < n; i++) {
-            int cx = contam.chunkX()[i];
-            int cz = contam.chunkZ()[i];
-            double centerX = cx * 16.0 + 8.0;
-            double centerZ = cz * 16.0 + 8.0;
-            double baseY = mc.level != null
-                    ? mc.level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) centerX, (int) centerZ) + 1.0
-                    : 80.0;
-
-            double air = contam.airBq()[i];
-            double water = contam.waterBq()[i];
-            double soil = contam.soilBq()[i];
-
-            double airH = barHeight(air);
-            double waterH = barHeight(water);
-            double soilH = barHeight(soil);
-
-            double y0 = baseY;
-            // soil = brown, bottom
-            if (soilH > 0) {
-                drawBar(vc, pose, centerX, y0, centerZ, soilH, 0.55f, 0.35f, 0.15f);
-                y0 += soilH;
-            }
-            // water = blue, middle
-            if (waterH > 0) {
-                drawBar(vc, pose, centerX, y0, centerZ, waterH, 0.2f, 0.4f, 1.0f);
-                y0 += waterH;
-            }
-            // air = cyan, top
-            if (airH > 0) {
-                drawBar(vc, pose, centerX, y0, centerZ, airH, 0.4f, 1.0f, 1.0f);
-            }
-
-            drawChunkOutline(vc, pose, cx, cz, baseY - 0.05);
-        }
-    }
-
-    private static double barHeight(double bq) {
-        if (bq <= 0.0) return 0.0;
-        return clamp(Math.log10(bq/10000 + 1.0), 0.001, 8.0);
-    }
-
-    private static void drawBar(VertexConsumer vc, PoseStack pose,
-                                double cx, double y0, double cz, double h,
-                                float r, float g, float b) {
-        double s = 0.25;
-        double x0 = cx - s, x1 = cx + s;
-        double z0 = cz - s, z1 = cz + s;
-        double y1 = y0 + h;
-        // four verticals
-        line(vc, pose, x0, y0, z0, x0, y1, z0, r, g, b);
-        line(vc, pose, x1, y0, z0, x1, y1, z0, r, g, b);
-        line(vc, pose, x1, y0, z1, x1, y1, z1, r, g, b);
-        line(vc, pose, x0, y0, z1, x0, y1, z1, r, g, b);
-        // bottom ring
-        line(vc, pose, x0, y0, z0, x1, y0, z0, r, g, b);
-        line(vc, pose, x1, y0, z0, x1, y0, z1, r, g, b);
-        line(vc, pose, x1, y0, z1, x0, y0, z1, r, g, b);
-        line(vc, pose, x0, y0, z1, x0, y0, z0, r, g, b);
-        // top ring
-        line(vc, pose, x0, y1, z0, x1, y1, z0, r, g, b);
-        line(vc, pose, x1, y1, z0, x1, y1, z1, r, g, b);
-        line(vc, pose, x1, y1, z1, x0, y1, z1, r, g, b);
-        line(vc, pose, x0, y1, z1, x0, y1, z0, r, g, b);
     }
 
     private static void drawShieldingRays(VertexConsumer vc, PoseStack pose,
@@ -194,44 +122,19 @@ public final class RadiationDebugRenderer {
             byte ch = rays.channel()[i];
             float r, g, b;
             if (ch == 0) {
-                // x-ray: green = pass-through, red = blocked
                 r = 1.0f - pass;
                 g = pass;
                 b = 0.0f;
             } else {
-                // neutron: blue = pass-through, red = blocked
                 r = 1.0f - pass;
                 g = 0.0f;
                 b = pass;
             }
             line(vc, pose, ox, oy, oz, ex, ey, ez, r, g, b);
-            // small endpoint marker
             line(vc, pose, ex - 0.2, ey, ez, ex + 0.2, ey, ez, r, g, b);
             line(vc, pose, ex, ey - 0.2, ez, ex, ey + 0.2, ez, r, g, b);
             line(vc, pose, ex, ey, ez - 0.2, ex, ey, ez + 0.2, r, g, b);
         }
-    }
-
-    private static void drawArrow(VertexConsumer vc, PoseStack pose,
-                                  double x1, double y1, double z1,
-                                  double x2, double y2, double z2,
-                                  float r, float g, float b) {
-        line(vc, pose, x1, y1, z1, x2, y2, z2, r, g, b);
-        double dx = x2 - x1;
-        double dz = z2 - z1;
-        double len = Math.sqrt(dx * dx + dz * dz);
-        if (len < 1.0e-4) return;
-        double nx = dx / len;
-        double nz = dz / len;
-        double headLen = Math.min(0.8, len * 0.25);
-        double perpX = -nz;
-        double perpZ = nx;
-        double hx1 = x2 - nx * headLen + perpX * headLen * 0.5;
-        double hz1 = z2 - nz * headLen + perpZ * headLen * 0.5;
-        double hx2 = x2 - nx * headLen - perpX * headLen * 0.5;
-        double hz2 = z2 - nz * headLen - perpZ * headLen * 0.5;
-        line(vc, pose, x2, y2, z2, hx1, y2, hz1, r, g, b);
-        line(vc, pose, x2, y2, z2, hx2, y2, hz2, r, g, b);
     }
 
     private static void drawArrow3D(VertexConsumer vc, PoseStack pose,
@@ -247,7 +150,6 @@ public final class RadiationDebugRenderer {
         double nx = dx / len, ny = dy / len, nz = dz / len;
         double headLen = Math.min(1.0, len * 0.25);
 
-        // pick perpendicular: cross(direction, worldUp); if parallel to up, fall back to X axis
         double upX = 0, upY = 1, upZ = 0;
         double pX = ny * upZ - nz * upY;
         double pY = nz * upX - nx * upZ;
@@ -256,7 +158,6 @@ public final class RadiationDebugRenderer {
         if (pLen < 1.0e-4) { pX = 1; pY = 0; pZ = 0; pLen = 1; }
         pX /= pLen; pY /= pLen; pZ /= pLen;
 
-        // second perpendicular via cross(direction, p1)
         double qX = ny * pZ - nz * pY;
         double qY = nz * pX - nx * pZ;
         double qZ = nx * pY - ny * pX;
@@ -272,16 +173,29 @@ public final class RadiationDebugRenderer {
         line(vc, pose, x2, y2, z2, bx - qX * s, by - qY * s, bz - qZ * s, r, g, b);
     }
 
-    private static void drawChunkOutline(VertexConsumer vc, PoseStack pose, int cx, int cz, double y) {
+    private static void drawSectionBox(VertexConsumer vc, PoseStack pose, int cx, int cy, int cz) {
         double x0 = cx * 16.0;
         double z0 = cz * 16.0;
         double x1 = x0 + 16.0;
         double z1 = z0 + 16.0;
+        double y0 = cy * 16.0;
+        double y1 = y0 + 16.0;
         float r = 1.0f, g = 1.0f, b = 0.2f;
-        line(vc, pose, x0, y, z0, x1, y, z0, r, g, b);
-        line(vc, pose, x1, y, z0, x1, y, z1, r, g, b);
-        line(vc, pose, x1, y, z1, x0, y, z1, r, g, b);
-        line(vc, pose, x0, y, z1, x0, y, z0, r, g, b);
+        // bottom
+        line(vc, pose, x0, y0, z0, x1, y0, z0, r, g, b);
+        line(vc, pose, x1, y0, z0, x1, y0, z1, r, g, b);
+        line(vc, pose, x1, y0, z1, x0, y0, z1, r, g, b);
+        line(vc, pose, x0, y0, z1, x0, y0, z0, r, g, b);
+        // top
+        line(vc, pose, x0, y1, z0, x1, y1, z0, r, g, b);
+        line(vc, pose, x1, y1, z0, x1, y1, z1, r, g, b);
+        line(vc, pose, x1, y1, z1, x0, y1, z1, r, g, b);
+        line(vc, pose, x0, y1, z1, x0, y1, z0, r, g, b);
+        // verticals
+        line(vc, pose, x0, y0, z0, x0, y1, z0, r, g, b);
+        line(vc, pose, x1, y0, z0, x1, y1, z0, r, g, b);
+        line(vc, pose, x1, y0, z1, x1, y1, z1, r, g, b);
+        line(vc, pose, x0, y0, z1, x0, y1, z1, r, g, b);
     }
 
     private static void line(VertexConsumer vc, PoseStack pose,

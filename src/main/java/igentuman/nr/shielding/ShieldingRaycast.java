@@ -55,49 +55,43 @@ public final class ShieldingRaycast {
         double tMaxZ = rdz == 0 ? Double.POSITIVE_INFINITY
                 : (stepZ > 0 ? (z + 1 - from.z) : (from.z - z)) / Math.abs(rdz);
 
-        double tPrev = 0.0;
-
         int cachedCx = Integer.MIN_VALUE;
         int cachedCz = Integer.MIN_VALUE;
         ChunkAccess cachedChunk = null;
 
         for (int i = 0; i < MAX_STEPS; i++) {
-            double tNext = Math.min(Math.min(tMaxX, tMaxY), tMaxZ);
-            if (tNext > dist) tNext = dist;
-            double seg = tNext - tPrev;
-            if (seg > 0) {
-                int cx = x >> 4;
-                int cz = z >> 4;
-                if (cx != cachedCx || cz != cachedCz) {
-                    cachedChunk = WorldUtil.getChunk(cx, cz, level, false);
-                    cachedCx = cx;
-                    cachedCz = cz;
-                }
-                if (cachedChunk != null) {
-                    int sectionIndex = level.getSectionIndex(y);
-                    LevelChunkSection[] sections = cachedChunk.getSections();
-                    if (sectionIndex >= 0 && sectionIndex < sections.length) {
-                        LevelChunkSection section = sections[sectionIndex];
-                        if (section != null && !section.hasOnlyAir()) {
-                            BlockState state = section.getBlockState(x & 15, y & 15, z & 15);
-                            ShieldingRegistry.Coeffs c = ShieldingRegistry.get(state);
-                            if (c != null) {
-                                sumX += c.xray() * seg;
-                                sumN += c.neutron() * seg;
-                            }
+            int cx = x >> 4;
+            int cz = z >> 4;
+            if (cx != cachedCx || cz != cachedCz) {
+                cachedChunk = WorldUtil.getChunk(cx, cz, level, false);
+                cachedCx = cx;
+                cachedCz = cz;
+            }
+            if (cachedChunk != null) {
+                int sectionIndex = level.getSectionIndex(y);
+                LevelChunkSection[] sections = cachedChunk.getSections();
+                if (sectionIndex >= 0 && sectionIndex < sections.length) {
+                    LevelChunkSection section = sections[sectionIndex];
+                    if (section != null && !section.hasOnlyAir()) {
+                        BlockState state = section.getBlockState(x & 15, y & 15, z & 15);
+                        ShieldingRegistry.Coeffs c = ShieldingRegistry.get(state);
+                        if (c != null) {
+                            sumX += c.xray();
+                            sumN += c.neutron();
                         }
                     }
                 }
             }
+            if (x == endX && y == endY && z == endZ) break;
+            double tNext = Math.min(Math.min(tMaxX, tMaxY), tMaxZ);
             if (tNext >= dist) break;
             if (tMaxX < tMaxY) {
-                if (tMaxX < tMaxZ) { x += stepX; tPrev = tMaxX; tMaxX += tDeltaX; }
-                else               { z += stepZ; tPrev = tMaxZ; tMaxZ += tDeltaZ; }
+                if (tMaxX < tMaxZ) { x += stepX; tMaxX += tDeltaX; }
+                else               { z += stepZ; tMaxZ += tDeltaZ; }
             } else {
-                if (tMaxY < tMaxZ) { y += stepY; tPrev = tMaxY; tMaxY += tDeltaY; }
-                else               { z += stepZ; tPrev = tMaxZ; tMaxZ += tDeltaZ; }
+                if (tMaxY < tMaxZ) { y += stepY; tMaxY += tDeltaY; }
+                else               { z += stepZ; tMaxZ += tDeltaZ; }
             }
-            if (x == endX && y == endY && z == endZ) break;
         }
 
         return new AttenuationResult(Math.exp(-sumX), Math.exp(-sumN));

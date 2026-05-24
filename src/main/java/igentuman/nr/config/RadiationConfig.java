@@ -1,8 +1,11 @@
 package igentuman.nr.config;
 
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class RadiationConfig {
 
@@ -24,12 +27,19 @@ public final class RadiationConfig {
     public static final ModConfigSpec.DoubleValue THRESHOLD_MODERATE;
     public static final ModConfigSpec.DoubleValue THRESHOLD_SEVERE;
     public static final ModConfigSpec.DoubleValue THRESHOLD_LETHAL;
+    public static final ModConfigSpec.DoubleValue TOTAL_SV_SCALE_K;
     public static final ModConfigSpec.DoubleValue BASE_DECAY_SV_PER_HOUR;
     public static final ModConfigSpec.DoubleValue GY_PER_BQ_SECOND;
     public static final ModConfigSpec.DoubleValue ARMOR_BLOCKS_INVENTORY;
     public static final ModConfigSpec.DoubleValue INVENTORY_ALPHA_PASS;
     public static final ModConfigSpec.DoubleValue INVENTORY_BETA_PASS;
     public static final ModConfigSpec.BooleanValue DEBUG_RADIATION_VECTORS;
+    public static final ModConfigSpec.DoubleValue DEFAULT_BACKGROUND_USV_PER_HOUR;
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> LEVEL_BACKGROUND_USV_PER_HOUR;
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> BIOME_BACKGROUND_USV_PER_HOUR;
+
+    private static volatile Map<ResourceLocation, Double> levelBackgroundCache;
+    private static volatile Map<ResourceLocation, Double> biomeBackgroundCache;
 
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
@@ -66,6 +76,8 @@ public final class RadiationConfig {
         THRESHOLD_MODERATE = b.defineInRange("moderate", 0.01, 0.0, 1.0e6);
         THRESHOLD_SEVERE   = b.defineInRange("severe", 0.1, 0.0, 1.0e6);
         THRESHOLD_LETHAL   = b.defineInRange("lethal", 1.0, 0.0, 1.0e6);
+        TOTAL_SV_SCALE_K   = b.comment("Cumulative Sv scaling constant K. Effective Sv/h for effect thresholds = svPerHour * (1 + (svTotalCareer/K)^2). Lower K = harsher chronic penalty.")
+                .defineInRange("total_sv_scale_k", 2.0, 1.0e-6, 1.0e6);
         b.pop();
 
         b.push("recovery");
@@ -83,6 +95,31 @@ public final class RadiationConfig {
                 .defineInRange("inventory_alpha_pass", 0.0, 0.0, 1.0);
         INVENTORY_BETA_PASS = b.comment("Fraction of beta radiation that escapes inventory containers/clothing to reach the body. Beta particles are stopped by a few mm of plastic or cm of cloth, default 0.2 (most blocked).")
                 .defineInRange("inventory_beta_pass", 0.2, 0.0, 1.0);
+        b.pop();
+
+        b.push("background");
+        DEFAULT_BACKGROUND_USV_PER_HOUR = b.comment("Global background radiation in uSv/h applied everywhere when no level/biome override matches.")
+                .defineInRange("default_usv_per_hour", 0.1, 0.0, 1.0e6);
+        LEVEL_BACKGROUND_USV_PER_HOUR = b.comment(
+                "Per-dimension background radiation in uSv/h. Format: \"<dim_id>=<value>\".",
+                "Overrides default; biome entries override this.")
+                .defineList("level_usv_per_hour",
+                        List.of(
+                                "minecraft:the_nether=0.5",
+                                "minecraft:the_end=0.3"
+                        ),
+                        () -> "minecraft:overworld=0.1",
+                        o -> o instanceof String && ((String) o).contains("="));
+        BIOME_BACKGROUND_USV_PER_HOUR = b.comment(
+                "Per-biome background radiation in uSv/h. Format: \"<biome_id>=<value>\".",
+                "Highest priority; overrides level and default.")
+                .defineList("biome_usv_per_hour",
+                        List.of(
+                                "minecraft:nether_wastes=5.0",
+                                "minecraft:deep_dark=7.0"
+                        ),
+                        () -> "minecraft:plains=0.1",
+                        o -> o instanceof String && ((String) o).contains("="));
         b.pop();
 
         b.push("debug");
@@ -103,4 +140,44 @@ public final class RadiationConfig {
     }
 
     private RadiationConfig() {}
+
+    public static Double levelBackgroundUSvPerHour(ResourceLocation dim) {
+        if (dim == null) return null;
+        Map<ResourceLocation, Double> map = levelBackgroundCache;
+        if (map == null) {
+            map = parse(LEVEL_BACKGROUND_USV_PER_HOUR.get());
+            levelBackgroundCache = map;
+        }
+        return map.get(dim);
+    }
+
+    public static Double biomeBackgroundUSvPerHour(ResourceLocation biome) {
+        if (biome == null) return null;
+        Map<ResourceLocation, Double> map = biomeBackgroundCache;
+        if (map == null) {
+            map = parse(BIOME_BACKGROUND_USV_PER_HOUR.get());
+            biomeBackgroundCache = map;
+        }
+        return map.get(biome);
+    }
+
+    public static void invalidateBackgroundCaches() {
+        levelBackgroundCache = null;
+        biomeBackgroundCache = null;
+    }
+
+    private static Map<ResourceLocation, Double> parse(List<? extends String> entries) {
+        Map<ResourceLocation, Double> out = new HashMap<>();
+        if (entries == null) return out;
+        for (String s : entries) {
+            int eq = s.indexOf('=');
+            if (eq <= 0 || eq >= s.length() - 1) continue;
+            ResourceLocation key = ResourceLocation.tryParse(s.substring(0, eq).trim());
+            if (key == null) continue;
+            try {
+                out.put(key, Double.parseDouble(s.substring(eq + 1).trim()));
+            } catch (NumberFormatException ignored) {}
+        }
+        return out;
+    }
 }

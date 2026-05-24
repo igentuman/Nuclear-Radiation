@@ -18,14 +18,17 @@ import igentuman.nr.registry.IsotopeRegistry;
 import igentuman.nr.shielding.ArmorProtectionRegistry;
 import igentuman.nr.shielding.AttenuationResult;
 import igentuman.nr.shielding.ShieldingRaycast;
-import igentuman.nr.simulation.ChunkRadVector;
+import igentuman.nr.simulation.SubChunkRadVector;
 import igentuman.nr.simulation.RadiationSimulator;
 import igentuman.nr.tools.GeigerCounterItem;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -51,11 +54,16 @@ public final class EntityDoseProcessor {
 
         ArmorProtectionRegistry.Protection armor = ArmorProtectionRegistry.summed(entity);
 
-        double svExternal = computeExternal(level, entity, gyPerBqSec, intervalSeconds, armor);
+        ExternalResult ext = computeExternal(level, entity, gyPerBqSec, intervalSeconds, armor);
+        AttenuationResult shielding = new AttenuationResult(ext.xrayPass(), ext.neutronPass());
+        double svExternal = ext.sv();
         double svInternal = computeInternal(data, gyPerBqSec, intervalSeconds, now);
         double svInventory = computeInventory(entity, gyPerBqSec, intervalSeconds, now, armor);
+        double svNearbyEntities = computeNearbyEntities(level, entity, gyPerBqSec, intervalSeconds, armor, now);
 
-        double svThisTick = svExternal + svInternal + svInventory;
+        double svBackground = backgroundRadiation(level, entity, intervalSeconds);
+
+        double svThisTick = svExternal + svInternal + svInventory + svNearbyEntities + svBackground;
         double protection = clamp01(data.protectionFactor());
         svThisTick *= (1.0 - protection);
 
@@ -74,23 +82,20 @@ public final class EntityDoseProcessor {
             data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() - recovery));
         }
 
-        RadiationEffects.apply(entity, data.svPerHour());
+        RadiationEffects.apply(entity, data.svPerHour(), data.svTotalCareer());
 
         if (entity instanceof ServerPlayer player) {
-            double bq = GeigerCounterItem.readBq(level, entity);
+            double bq = GeigerCounterItem.readBq(level, entity,
+                    shielding.xrayPass(), shielding.neutronPass());
             NRNetwork.sendTo(player, new RadiationSyncPayload(
                     data.svTotalCareer(), data.svPerHour(), bq));
 
             if (RadiationConfig.DEBUG_RADIATION_VECTORS.get()) {
                 ChunkPos cp = entity.chunkPosition();
-                ChunkRadVector vec = RadiationSimulator.get().getChunkVector(level, cp);
+                int cy = entity.blockPosition().getY() >> 4;
+                SubChunkRadVector vec = RadiationSimulator.get().getChunkVector(level, cp, cy);
                 if (vec != null) {
-                    NRNetwork.sendTo(player, new ChunkVectorDebugPayload(
-                            cp.x, cp.z,
-                            vec.gradientXRay.x, vec.gradientXRay.z,
-                            vec.gradientNeutron.x, vec.gradientNeutron.z,
-                            vec.centerScalarXRay, vec.centerScalarNeutron,
-                            vec.maxBq, vec.centerY));
+                    NRNetwork.sendTo(player, ChunkVectorDebugPayload.of(cp.x, cy, cp.z, vec));
                 }
                 sendChunkContamination(level, player, cp);
             }
@@ -141,132 +146,66 @@ public final class EntityDoseProcessor {
         NRNetwork.sendTo(player, new ChunkContaminationDebugPayload(cxOut, czOut, airOut, waterOut, soilOut));
     }
 
-    private static double computeExternal(ServerLevel level, LivingEntity entity,
-                                          double gyPerBqSec, double intervalSeconds,
-                                          ArmorProtectionRegistry.Protection armor) {
-        ChunkPos cp = entity.chunkPosition();
-        ChunkRadVector vec = RadiationSimulator.get().getChunkVector(level, cp);
-        if (vec == null || vec.contribs.isEmpty()) return 0.0;
-
-        double ex = entity.getX();
-        double ey = entity.getY();
-        double ez = entity.getZ();
-        double bqXRay = 0.0;
-        double bqNeutron = 0.0;
-        for (ChunkRadVector.Contrib c : vec.contribs) {
-            double dx = ex - c.x();
-            double dy = ey - c.y();
-            double dz = ez - c.z();
-            double inv = 1.0 / (dx * dx + dy * dy + dz * dz + 1.0);
-            bqXRay += c.xRayBq() * inv;
-            bqNeutron += c.neutronBq() * inv;
-        }
-
-        AttenuationResult shielding = computeShielding(level, entity);
-
-        double svXRay = bqXRay * gyPerBqSec * DEFAULT_Q.qXRay * intervalSeconds
-                * shielding.xrayPass() * (1.0 - armor.xray());
-        double svNeutron = bqNeutron * gyPerBqSec * DEFAULT_Q.qNeutron * intervalSeconds
-                * shielding.neutronPass() * (1.0 - armor.neutron());
-        return svXRay + svNeutron;
-    }
-
-    private static final int SAMPLE_RAYS = 4;
-    private static final double SAMPLE_ANGLE_RAD = Math.toRadians(12.0);
     private static final byte CHANNEL_XRAY = 0;
     private static final byte CHANNEL_NEUTRON = 1;
 
     private record RayHit(Vec3 endpoint, double xrayPass, double neutronPass) {}
 
-    private static AttenuationResult computeShielding(ServerLevel level, LivingEntity entity) {
+    private record ExternalResult(double sv, double xrayPass, double neutronPass) {}
+
+    private static ExternalResult computeExternal(ServerLevel level, LivingEntity entity,
+                                                  double gyPerBqSec, double intervalSeconds,
+                                                  ArmorProtectionRegistry.Protection armor) {
         ChunkPos cp = entity.chunkPosition();
-        ChunkRadVector vec = RadiationSimulator.get().getChunkVector(level, cp);
-        if (vec == null) return AttenuationResult.UNATTENUATED;
+        int cy = entity.blockPosition().getY() >> 4;
+        SubChunkRadVector vec = RadiationSimulator.get().getChunkVector(level, cp, cy);
+        if (vec == null || vec.isEmpty()) return new ExternalResult(0.0, 1.0, 1.0);
 
         Vec3 eye = entity.getEyePosition();
-        double radius = RadiationConfig.MAX_SOURCE_RADIUS_M.get();
-        double chunkCenterX = cp.x * 16.0 + 8.0;
-        double chunkCenterZ = cp.z * 16.0 + 8.0;
-
-        double gx = vec.gradientXRay.x + vec.gradientNeutron.x;
-        double gz = vec.gradientXRay.z + vec.gradientNeutron.z;
-        if (gx * gx + gz * gz < 1.0e-6) return AttenuationResult.UNATTENUATED;
-
         boolean debug = RadiationConfig.DEBUG_RADIATION_VECTORS.get()
                 && entity instanceof ServerPlayer;
-        List<RayHit> hits = debug ? new ArrayList<>(SAMPLE_RAYS + 1) : null;
+        List<RayHit> hits = debug ? new ArrayList<>(SubChunkRadVector.DIR_COUNT) : null;
 
-        double targetX = chunkCenterX + gx;
-        double targetZ = chunkCenterZ + gz;
-        double dirX = targetX - eye.x;
-        double dirY = vec.centerY - eye.y;
-        double dirZ = targetZ - eye.z;
-        double dirLen = Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
-        if (dirLen < 1.0e-6) return AttenuationResult.UNATTENUATED;
-        dirX /= dirLen; dirY /= dirLen; dirZ /= dirLen;
+        double sv = 0.0;
+        double sumXPass = 0.0, sumXBq = 0.0;
+        double sumNPass = 0.0, sumNBq = 0.0;
 
-        double rayLen = Math.min(dirLen, radius);
+        for (int d = 0; d < SubChunkRadVector.DIR_COUNT; d++) {
+            double apexX = vec.xRayBq[d];
+            double apexN = vec.neutronBq[d];
+            if (apexX <= 0 && apexN <= 0) continue;
 
-        double upX = 0, upY = 1, upZ = 0;
-        double uX, uY, uZ;
-        if (Math.abs(dirY) > 0.95) {
-            uX = 1; uY = 0; uZ = 0;
-        } else {
-            uX = dirY * upZ - dirZ * upY;
-            uY = dirZ * upX - dirX * upZ;
-            uZ = dirX * upY - dirY * upX;
-        }
-        double uLen = Math.sqrt(uX * uX + uY * uY + uZ * uZ);
-        if (uLen < 1.0e-6) { uX = 1; uY = 0; uZ = 0; }
-        else { uX /= uLen; uY /= uLen; uZ /= uLen; }
-        double vX = dirY * uZ - dirZ * uY;
-        double vY = dirZ * uX - dirX * uZ;
-        double vZ = dirX * uY - dirY * uX;
+            Vec3 tip = vec.tip[d];
+            double dxe = tip.x - eye.x;
+            double dye = tip.y - eye.y;
+            double dze = tip.z - eye.z;
+            double tipEyeDist2 = dxe * dxe + dye * dye + dze * dze;
+            double scale = (vec.tipApexDist2[d] + 1.0) / (tipEyeDist2 + 1.0);
+            double bqX = apexX * scale;
+            double bqN = apexN * scale;
 
-        double sumX = 0.0;
-        double sumN = 0.0;
-        int count = 0;
-        double sin = Math.sin(SAMPLE_ANGLE_RAD);
-        double cos = Math.cos(SAMPLE_ANGLE_RAD);
+            AttenuationResult att = ShieldingRaycast.cast(level, eye, tip);
+            double xp = att.xrayPass();
+            double np = att.neutronPass();
 
-        AttenuationResult r0 = castBoth(level, eye, dirX, dirY, dirZ, rayLen, hits);
-        sumX += r0.xrayPass();
-        sumN += r0.neutronPass();
-        count++;
+            sv += bqX * gyPerBqSec * DEFAULT_Q.qXRay * intervalSeconds
+                    * xp * (1.0 - armor.xray());
+            sv += bqN * gyPerBqSec * DEFAULT_Q.qNeutron * intervalSeconds
+                    * np * (1.0 - armor.neutron());
 
-        double[][] offsets = {
-                { uX,  uY,  uZ},
-                {-uX, -uY, -uZ},
-                { vX,  vY,  vZ},
-                {-vX, -vY, -vZ},
-        };
-        for (int i = 0; i < SAMPLE_RAYS; i++) {
-            double[] o = offsets[i];
-            double ox = dirX * cos + o[0] * sin;
-            double oy = dirY * cos + o[1] * sin;
-            double oz = dirZ * cos + o[2] * sin;
-            double ol = Math.sqrt(ox * ox + oy * oy + oz * oz);
-            ox /= ol; oy /= ol; oz /= ol;
-            AttenuationResult r = castBoth(level, eye, ox, oy, oz, rayLen, hits);
-            sumX += r.xrayPass();
-            sumN += r.neutronPass();
-            count++;
+            sumXPass += xp * bqX; sumXBq += bqX;
+            sumNPass += np * bqN; sumNBq += bqN;
+
+            if (debug) hits.add(new RayHit(tip, xp, np));
         }
 
         if (debug && hits != null && !hits.isEmpty()) {
             sendRaysDebug((ServerPlayer) entity, eye, hits);
         }
 
-        return new AttenuationResult(sumX / count, sumN / count);
-    }
-
-    private static AttenuationResult castBoth(ServerLevel level, Vec3 eye,
-                                              double dx, double dy, double dz, double len,
-                                              List<RayHit> hits) {
-        Vec3 endpoint = new Vec3(eye.x + dx * len, eye.y + dy * len, eye.z + dz * len);
-        AttenuationResult r = ShieldingRaycast.cast(level, eye, endpoint);
-        if (hits != null) hits.add(new RayHit(endpoint, r.xrayPass(), r.neutronPass()));
-        return r;
+        double xrayPass = sumXBq > 0 ? sumXPass / sumXBq : 1.0;
+        double neutronPass = sumNBq > 0 ? sumNPass / sumNBq : 1.0;
+        return new ExternalResult(sv, xrayPass, neutronPass);
     }
 
     private static void sendRaysDebug(ServerPlayer player, Vec3 origin, List<RayHit> hits) {
@@ -324,6 +263,58 @@ public final class EntityDoseProcessor {
         double svBeta = cache.svBetaPerSecPerGyBq()    * gyPerBqSec * intervalSeconds * betaMul;
         double svN    = cache.svNeutronPerSecPerGyBq() * gyPerBqSec * intervalSeconds * neutronMul;
         return svXRay + svAlpha + svBeta + svN;
+    }
+
+    private static double computeNearbyEntities(ServerLevel level, LivingEntity self,
+                                                double gyPerBqSec, double intervalSeconds,
+                                                ArmorProtectionRegistry.Protection armor,
+                                                long now) {
+        double radius = RadiationConfig.MAX_SOURCE_RADIUS_M.get();
+        AABB box = self.getBoundingBox().inflate(radius);
+        Vec3 selfEye = self.getEyePosition();
+        double xrayMul = 1.0 - armor.xray();
+        double neutronMul = 1.0 - armor.neutron();
+        double r2 = radius * radius;
+        double sv = 0.0;
+        for (LivingEntity other : level.getEntitiesOfClass(LivingEntity.class, box)) {
+            if (other == self) continue;
+            if (EntityIgnoreFilter.shouldSkip(other)) continue;
+            InventoryRadCache cache = InventoryRadCache.get(other);
+            cache.rescan(other, now);
+            double bqX = cache.bqXRay();
+            double bqN = cache.bqNeutron();
+            if (bqX <= 0.0 && bqN <= 0.0) continue;
+            Vec3 otherPos = other.getEyePosition();
+            double dx = otherPos.x - selfEye.x;
+            double dy = otherPos.y - selfEye.y;
+            double dz = otherPos.z - selfEye.z;
+            double d2 = dx * dx + dy * dy + dz * dz;
+            if (d2 > r2) continue;
+            double falloff = 1.0 / (d2 + 1.0);
+            AttenuationResult att = ShieldingRaycast.cast(level, selfEye, otherPos);
+            sv += bqX * falloff * gyPerBqSec * DEFAULT_Q.qXRay * intervalSeconds
+                    * att.xrayPass() * xrayMul;
+            sv += bqN * falloff * gyPerBqSec * DEFAULT_Q.qNeutron * intervalSeconds
+                    * att.neutronPass() * neutronMul;
+        }
+        return sv;
+    }
+
+    public static double backgroundRadiation(ServerLevel level, LivingEntity entity, double intervalSeconds) {
+        ResourceLocation biomeKey = level.getBiome(entity.blockPosition())
+                .unwrapKey()
+                .map(ResourceKey::location)
+                .orElse(null);
+        Double uSvPerHour = RadiationConfig.biomeBackgroundUSvPerHour(biomeKey);
+        if (uSvPerHour == null) {
+            uSvPerHour = RadiationConfig.levelBackgroundUSvPerHour(level.dimension().location());
+        }
+        if (uSvPerHour == null) {
+            uSvPerHour = RadiationConfig.DEFAULT_BACKGROUND_USV_PER_HOUR.get();
+        }
+        if (uSvPerHour <= 0.0) return 0.0;
+        double svPerHour = uSvPerHour * 1.0e-6;
+        return svPerHour * (intervalSeconds / Units.SECONDS_PER_HOUR);
     }
 
     private static double clamp01(double v) {

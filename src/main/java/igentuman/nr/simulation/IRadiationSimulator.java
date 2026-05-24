@@ -18,5 +18,5 @@ public interface IRadiationSimulator {
 
     void submitChunks(List<IChunkRadiation> chunks);
 
-    ChunkRadVector getChunkVector(ChunkPos pos);
+    SubChunkRadVector getChunkVector(ChunkPos pos, int cy);
 }

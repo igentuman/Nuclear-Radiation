@@ -2,6 +2,7 @@ package igentuman.nr;
 
 import igentuman.nr.network.ClientRadiationCache;
 import igentuman.nr.tools.NRTools;
+import igentuman.nr.tools.client.ContaminationHudLayer;
 import igentuman.nr.tools.client.RadiationHudLayer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -29,11 +30,11 @@ public class NuclearRadiationClient {
                 ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "radiation"),
                 (stack, level, entity, seed) -> {
                     double bq = ClientRadiationCache.bqAtPlayer();
-                    if (bq < 1.0)      return 0f;
-                    if (bq < 10.0)     return 1f;
-                    if (bq < 100.0)    return 2f;
-                    if (bq < 1000.0)   return 3f;
-                    if (bq < 10000.0)  return 4f;
+                    if (bq < 1000.0)      return 0f;
+                    if (bq < 10000.0)     return 1f;
+                    if (bq < 100000.0)    return 2f;
+                    if (bq < 10000000.0)   return 3f;
+                    if (bq < 100000000.0)  return 4f;
                     return 5f;
                 }));
     }
@@ -43,5 +44,8 @@ public class NuclearRadiationClient {
         event.registerAboveAll(
                 ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "radiation_hud"),
                 new RadiationHudLayer());
+        event.registerAboveAll(
+                ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "contamination_hud"),
+                new ContaminationHudLayer());
     }
 }

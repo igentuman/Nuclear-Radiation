@@ -5,17 +5,22 @@ import igentuman.nr.api.IChunkRadiation;
 import igentuman.nr.api.IPointRadiationSource;
 import igentuman.nr.api.IRadiationSource;
 import igentuman.nr.config.RadiationConfig;
+import igentuman.nr.entity.EntityIgnoreFilter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,14 +32,18 @@ public class RadiationSimulator implements IRadiationSimulator {
     public static RadiationSimulator get() { return INSTANCE; }
 
     private final Map<ResourceKey<Level>, SourceSpatialIndex> indexByDim = new ConcurrentHashMap<>();
-    private final Map<ResourceKey<Level>, Map<Long, ChunkRadVector>> vectorByDim = new ConcurrentHashMap<>();
+    private final Map<ResourceKey<Level>, Map<Long, SubChunkRadVector>> vectorByDim = new ConcurrentHashMap<>();
 
     private final LinkedBlockingQueue<Job> workQueue = new LinkedBlockingQueue<>();
     private final Queue<Runnable> mainThreadTasks = new ConcurrentLinkedQueue<>();
     private Thread worker;
     private final AtomicBoolean running = new AtomicBoolean(false);
 
-    private record Job(ResourceKey<Level> dim, RadiationSnapshot snapshot) {}
+    private record Job(ResourceKey<Level> dim,
+                       RadiationSnapshot snapshot,
+                       long[] subChunkKeys,
+                       int radius,
+                       long ttl) {}
 
     public void startWorker() {
         if (running.getAndSet(true)) return;
@@ -72,28 +81,73 @@ public class RadiationSimulator implements IRadiationSimulator {
     @Override
     public void tick(ServerLevel level) {
         long t = level.getGameTime();
-        if (t % RadiationConfig.WORLD_SIM_INTERVAL_TICKS.get() == 0) tickWorld(level);
+        if (t % RadiationConfig.WORLD_SIM_INTERVAL_TICKS.get() == 0) {
+            pruneDeadSources(level);
+            tickWorld(level);
+        }
         if (t % RadiationConfig.ENTITY_SIM_INTERVAL_TICKS.get() == 0) tickEntities(level);
         drainMainThreadTasks();
+    }
+
+    private void pruneDeadSources(ServerLevel level) {
+        SourceSpatialIndex index = indexFor(level);
+        List<UUID> dead = new ArrayList<>();
+        for (IRadiationSource s : index.all()) {
+            if (!s.isActive()) dead.add(s.getId());
+        }
+        for (UUID id : dead) index.remove(id);
     }
 
     @Override
     public void tickWorld(ServerLevel level) {
         SourceSpatialIndex index = indexFor(level);
+        if (index.size() == 0) {
+            vectorByDim.remove(level.dimension());
+            return;
+        }
+
+        Set<Long> occupied = collectOccupiedSubChunks(level);
+        if (occupied.isEmpty()) {
+            vectorByDim.remove(level.dimension());
+            return;
+        }
+
         List<RadiationSnapshot.SourceData> sources = new ArrayList<>();
         for (IRadiationSource s : index.all()) {
             if (!s.isActive()) continue;
-            if (s instanceof IPointRadiationSource p) {
-                sources.add(RadiationSnapshot.of(p));
-            }
+            if (s instanceof IPointRadiationSource p) sources.add(RadiationSnapshot.of(p));
         }
+        if (sources.isEmpty()) {
+            vectorByDim.remove(level.dimension());
+            return;
+        }
+
+        long[] keys = new long[occupied.size()];
+        int i = 0;
+        for (long k : occupied) keys[i++] = k;
+
         RadiationSnapshot snap = new RadiationSnapshot(sources, List.of(), level.getGameTime());
-        workQueue.offer(new Job(level.dimension(), snap));
+        int radius = RadiationConfig.MAX_SOURCE_RADIUS_M.get();
+        long ttl = RadiationConfig.CHUNK_VECTOR_TTL_TICKS.get();
+        workQueue.offer(new Job(level.dimension(), snap, keys, radius, ttl));
+    }
+
+    private Set<Long> collectOccupiedSubChunks(ServerLevel level) {
+        Set<Long> occupied = new HashSet<>();
+        for (Entity e : level.getAllEntities()) {
+            if (!(e instanceof LivingEntity living)) continue;
+            if (EntityIgnoreFilter.shouldSkip(living)) continue;
+            int cx = e.chunkPosition().x;
+            int cy = e.blockPosition().getY() >> 4;
+            int cz = e.chunkPosition().z;
+            occupied.add(SourceSpatialIndex.chunkKey(cx, cy, cz));
+        }
+        return occupied;
     }
 
     @Override
     public void tickEntities(ServerLevel level) {
-        // Entity sampling wiring lands in Phase 7. Skeleton holds the gating point.
+        // Per-entity dose processing handled by EntityDoseProcessor (driven elsewhere).
     }
 
     @Override
@@ -107,18 +161,18 @@ public class RadiationSimulator implements IRadiationSimulator {
     }
 
     @Override
-    public ChunkRadVector getChunkVector(ChunkPos pos) {
-        for (Map<Long, ChunkRadVector> map : vectorByDim.values()) {
-            ChunkRadVector v = map.get(SourceSpatialIndex.chunkKey(pos));
+    public SubChunkRadVector getChunkVector(ChunkPos pos, int cy) {
+        for (Map<Long, SubChunkRadVector> map : vectorByDim.values()) {
+            SubChunkRadVector v = map.get(SourceSpatialIndex.chunkKey(pos.x, cy, pos.z));
             if (v != null) return v;
         }
         return null;
     }
 
-    public ChunkRadVector getChunkVector(ServerLevel level, ChunkPos pos) {
-        Map<Long, ChunkRadVector> map = vectorByDim.get(level.dimension());
+    public SubChunkRadVector getChunkVector(ServerLevel level, ChunkPos pos, int cy) {
+        Map<Long, SubChunkRadVector> map = vectorByDim.get(level.dimension());
         if (map == null) return null;
-        return map.get(SourceSpatialIndex.chunkKey(pos));
+        return map.get(SourceSpatialIndex.chunkKey(pos.x, cy, pos.z));
     }
 
     private void workerLoop() {
@@ -126,7 +180,7 @@ public class RadiationSimulator implements IRadiationSimulator {
             try {
                 Job job = workQueue.take();
                 RadiationResult res = compute(job);
-                mainThreadTasks.offer(() -> apply(job.dim, res));
+                mainThreadTasks.offer(() -> apply(job.dim(), res));
             } catch (InterruptedException e) {
                 if (!running.get()) return;
             } catch (Throwable t) {
@@ -136,30 +190,30 @@ public class RadiationSimulator implements IRadiationSimulator {
     }
 
     private RadiationResult compute(Job job) {
-        RadiationResult result = new RadiationResult(job.snapshot.tick);
-        int radius = RadiationConfig.MAX_SOURCE_RADIUS_M.get();
-        long ttl = RadiationConfig.CHUNK_VECTOR_TTL_TICKS.get();
+        RadiationResult result = new RadiationResult(job.snapshot().tick);
+        int radius = job.radius();
+        long ttl = job.ttl();
+        double r2 = (double) radius * radius;
 
-        Map<Long, ChunkAccum> accum = new HashMap<>();
-        for (RadiationSnapshot.SourceData s : job.snapshot.sources) {
-            int minCx = (int) Math.floor((s.x() - radius)) >> 4;
-            int maxCx = (int) Math.floor((s.x() + radius)) >> 4;
-            int minCz = (int) Math.floor((s.z() - radius)) >> 4;
-            int maxCz = (int) Math.floor((s.z() + radius)) >> 4;
-            for (int cx = minCx; cx <= maxCx; cx++) {
-                for (int cz = minCz; cz <= maxCz; cz++) {
-                    final int fcx = cx;
-                    final int fcz = cz;
-                    long key = SourceSpatialIndex.chunkKey(fcx, fcz);
-                    ChunkAccum a = accum.computeIfAbsent(key, k -> new ChunkAccum(fcx, fcz));
-                    a.contribute(s, radius);
-                }
+        for (long key : job.subChunkKeys()) {
+            int cx = SourceSpatialIndex.unpackCx(key);
+            int cy = SourceSpatialIndex.unpackCy(key);
+            int cz = SourceSpatialIndex.unpackCz(key);
+            double apexX = cx * 16.0 + 8.0;
+            double apexY = cy * 16.0 + 8.0;
+            double apexZ = cz * 16.0 + 8.0;
+            ChunkAccum accum = null;
+            for (RadiationSnapshot.SourceData s : job.snapshot().sources) {
+                double dx = s.x() - apexX;
+                double dy = s.y() - apexY;
+                double dz = s.z() - apexZ;
+                if (dx * dx + dy * dy + dz * dz > r2) continue;
+                if (accum == null) accum = new ChunkAccum(cx, cy, cz);
+                accum.contribute(s);
             }
-        }
-
-        for (ChunkAccum a : accum.values()) {
-            ChunkRadVector v = a.toVector(job.snapshot.tick, ttl);
-            result.vectorUpdates.put(new ChunkPos(a.cx, a.cz), v);
+            if (accum != null) {
+                result.vectorUpdates.put(key, accum.toVector(job.snapshot().tick, ttl));
+            }
         }
         return result;
     }
@@ -169,11 +223,11 @@ public class RadiationSimulator implements IRadiationSimulator {
             vectorByDim.remove(dim);
             return;
         }
-        Map<Long, ChunkRadVector> map = new ConcurrentHashMap<>(result.vectorUpdates.size() * 2);
-        for (Map.Entry<ChunkPos, ChunkRadVector> e : result.vectorUpdates.entrySet()) {
-            map.put(SourceSpatialIndex.chunkKey(e.getKey()), e.getValue());
-        }
-        vectorByDim.put(dim, map);
+        Map<Long, SubChunkRadVector> map = vectorByDim.computeIfAbsent(
+                dim, k -> new ConcurrentHashMap<>());
+        long now = result.tick;
+        map.entrySet().removeIf(e -> e.getValue().isExpired(now));
+        map.putAll(result.vectorUpdates);
     }
 
     private void drainMainThreadTasks() {
@@ -185,59 +239,67 @@ public class RadiationSimulator implements IRadiationSimulator {
         }
     }
 
-    static final double CHUNK_Y_REF = 64.0;
-
     private static final class ChunkAccum {
-        final int cx;
-        final int cz;
-        final List<ChunkRadVector.Contrib> contribs = new ArrayList<>();
-        double sumXRay;
-        double sumNeutron;
-        double sumYXRay;
-        double sumYNeutron;
+        final int cx, cy, cz;
+        final double apexX, apexY, apexZ;
+        final double[] sumXRay = new double[SubChunkRadVector.DIR_COUNT];
+        final double[] sumNeutron = new double[SubChunkRadVector.DIR_COUNT];
+        final double[] wx = new double[SubChunkRadVector.DIR_COUNT];
+        final double[] wy = new double[SubChunkRadVector.DIR_COUNT];
+        final double[] wz = new double[SubChunkRadVector.DIR_COUNT];
+        final double[] sumW = new double[SubChunkRadVector.DIR_COUNT];
+        final Set<UUID> processed = new HashSet<>();
         double maxBq;
-        Vec3 weightedXRay = Vec3.ZERO;
-        Vec3 weightedNeutron = Vec3.ZERO;
 
-        ChunkAccum(int cx, int cz) {
-            this.cx = cx;
-            this.cz = cz;
+        ChunkAccum(int cx, int cy, int cz) {
+            this.cx = cx; this.cy = cy; this.cz = cz;
+            this.apexX = cx * 16.0 + 8.0;
+            this.apexY = cy * 16.0 + 8.0;
+            this.apexZ = cz * 16.0 + 8.0;
         }
 
-        void contribute(RadiationSnapshot.SourceData s, double maxR) {
-            contribs.add(new ChunkRadVector.Contrib(s.x(), s.y(), s.z(), s.xRayBq(), s.neutronBq()));
-
-            double cxCenter = cx * 16.0 + 8.0;
-            double czCenter = cz * 16.0 + 8.0;
-            double dx = s.x() - cxCenter;
-            double dy = s.y() - CHUNK_Y_REF;
-            double dz = s.z() - czCenter;
+        void contribute(RadiationSnapshot.SourceData s) {
+            if (!processed.add(s.id())) return;
+            double dx = s.x() - apexX;
+            double dy = s.y() - apexY;
+            double dz = s.z() - apexZ;
             double dist2 = dx * dx + dy * dy + dz * dz + 1.0;
             double falloff = 1.0 / dist2;
-            double xray = s.xRayBq() * falloff;
-            double neutron = s.neutronBq() * falloff;
-            sumXRay += xray;
-            sumNeutron += neutron;
-            sumYXRay += s.y() * xray;
-            sumYNeutron += s.y() * neutron;
-            double total = xray + neutron;
-            if (total > maxBq) maxBq = total;
-            weightedXRay = weightedXRay.add(dx * xray, 0, dz * xray);
-            weightedNeutron = weightedNeutron.add(dx * neutron, 0, dz * neutron);
+            double xr = s.xRayBq() * falloff;
+            double n  = s.neutronBq() * falloff;
+            int dir = SubChunkRadVector.classify(dx, dy, dz);
+            sumXRay[dir] += xr;
+            sumNeutron[dir] += n;
+            double w = xr + n;
+            sumW[dir] += w;
+            wx[dir] += s.x() * w;
+            wy[dir] += s.y() * w;
+            wz[dir] += s.z() * w;
+            if (w > maxBq) maxBq = w;
         }
 
-        ChunkRadVector toVector(long tick, long ttl) {
-            ChunkRadVector v = new ChunkRadVector();
-            v.contribs = contribs;
-            v.centerScalarXRay = sumXRay;
-            v.centerScalarNeutron = sumNeutron;
+        SubChunkRadVector toVector(long tick, long ttl) {
+            SubChunkRadVector v = new SubChunkRadVector();
+            v.apexX = apexX; v.apexY = apexY; v.apexZ = apexZ;
             v.maxBq = maxBq;
             v.computedTick = tick;
             v.ttlTicks = ttl;
-            double totalBq = sumXRay + sumNeutron;
-            v.centerY = totalBq > 0 ? (sumYXRay + sumYNeutron) / totalBq : CHUNK_Y_REF;
-            if (sumXRay > 0) v.gradientXRay = weightedXRay.scale(1.0 / sumXRay);
-            if (sumNeutron > 0) v.gradientNeutron = weightedNeutron.scale(1.0 / sumNeutron);
+            for (int i = 0; i < SubChunkRadVector.DIR_COUNT; i++) {
+                v.xRayBq[i] = sumXRay[i];
+                v.neutronBq[i] = sumNeutron[i];
+                if (sumW[i] > 0) {
+                    double tx = wx[i] / sumW[i];
+                    double ty = wy[i] / sumW[i];
+                    double tz = wz[i] / sumW[i];
+                    v.tip[i] = new Vec3(tx, ty, tz);
+                    double dxa = tx - apexX, dya = ty - apexY, dza = tz - apexZ;
+                    v.tipApexDist2[i] = dxa * dxa + dya * dya + dza * dza;
+                } else {
+                    double[] n = SubChunkRadVector.DIR_NORMALS[i];
+                    v.tip[i] = new Vec3(apexX + n[0], apexY + n[1], apexZ + n[2]);
+                    v.tipApexDist2[i] = 1.0;
+                }
+            }
             return v;
         }
     }

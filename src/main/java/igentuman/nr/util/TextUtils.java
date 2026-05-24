@@ -143,7 +143,7 @@ public class TextUtils
 
 	public static String formatSi(double value, String unit) {
 		double abs = Math.abs(value);
-		if (abs == 0) {
+		if (abs < 1e-9) {
 			return "0 " + unit;
 		}
 		if (abs >= 1e15) {
@@ -169,7 +169,7 @@ public class TextUtils
 
 	public static String formatSiSmall(double value, String unit) {
 		double abs = Math.abs(value);
-		if (abs == 0) {
+		if (abs < 1e-9) {
 			return "0 " + unit;
 		}
 		if (abs >= 1) {
@@ -181,13 +181,7 @@ public class TextUtils
 		if (abs >= 1e-6) {
 			return String.format(Locale.US, "%.2f µ%s", value * 1e6, unit);
 		}
-		if (abs >= 1e-9) {
-			return String.format(Locale.US, "%.2f n%s", value * 1e9, unit);
-		}
-		if (abs >= 1e-12) {
-			return String.format(Locale.US, "%.2f p%s", value * 1e12, unit);
-		}
-		return String.format(Locale.US, "%.2e %s", value, unit);
+		return String.format(Locale.US, "%.2f n%s", value * 1e9, unit);
 	}
 
 	public static String formatRads(long radiation) {
