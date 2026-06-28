@@ -1,7 +1,6 @@
 package igentuman.nr.tools;
 
-import igentuman.nr.simulation.SubChunkRadVector;
-import igentuman.nr.simulation.RadiationSimulator;
+import igentuman.nr.persistence.NRAttachments;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -10,7 +9,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
 public class GeigerCounterItem extends Item {
@@ -19,47 +17,48 @@ public class GeigerCounterItem extends Item {
         super(props.stacksTo(1));
     }
 
+    // Geiger response is driven by dose rate (Sv/h), not raw field activity (Bq):
+    // a large Bq field can yield a low dose, so scaling on Bq pegs the meter at benign levels.
+    public static final double SILENT_SVH = 1.0e-6;   // below ~1 µSv/h: background, silent
+    private static final double RESP_LOG_LO = -6.0;   // 1 µSv/h   -> scale 0
+    private static final double RESP_LOG_HI = -2.0;   // 10 mSv/h  -> scale 1 (full)
+    public static final double CPM_PER_SVH = 1.75e8;  // ~SBM-20 tube: 1 µSv/h ≈ 175 cpm
+
+    private static final int CLICK_INTERVAL_SLOW = 40;
+    private static final int CLICK_INTERVAL_FAST = 3;
+
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
         if (level.isClientSide) return;
         if (!(level instanceof ServerLevel server)) return;
         if (!(entity instanceof LivingEntity living)) return;
         if (!selected && !(entity instanceof Player p && p.getOffhandItem() == stack)) return;
-        if ((server.getGameTime() % 20) != 0) return;
 
-        double bq = readBq(server, living);
-        if (bq < 1e-9) return;
+        double svh = living.getData(NRAttachments.ENTITY_RADIATION.get()).svPerHour();
+        if (svh <= SILENT_SVH) return;
 
-        float clickRate = (float) Math.min(2.0, 0.3 + Math.log10(1.0 + bq) * 0.2);
+        double t = responseT(svh);
+        if ((server.getGameTime() % clickIntervalTicks(t)) != 0) return;
         server.playSound(null, living.blockPosition(), SoundEvents.NOTE_BLOCK_HAT.value(),
-                SoundSource.PLAYERS, 0.4f, clickRate);
+                SoundSource.PLAYERS, 0.4f, clickPitch(t));
     }
 
-    public static double readBq(ServerLevel level, LivingEntity entity) {
-        return readBq(level, entity, 1.0, 1.0);
+    /** 0..1 geiger scale from dose rate (Sv/h), log-mapped between RESP_LOG_LO and RESP_LOG_HI. */
+    public static double responseT(double svh) {
+        if (svh <= 0) return 0.0;
+        double t = (Math.log10(svh) - RESP_LOG_LO) / (RESP_LOG_HI - RESP_LOG_LO);
+        return t < 0 ? 0 : (t > 1 ? 1 : t);
     }
 
-    public static double readBq(ServerLevel level, LivingEntity entity,
-                                double xrayPass, double neutronPass) {
-        ChunkPos cp = entity.chunkPosition();
-        int cy = entity.blockPosition().getY() >> 4;
-        SubChunkRadVector v = RadiationSimulator.get().getChunkVector(level, cp, cy);
-        if (v == null || v.isEmpty()) return 0.0;
-        double ex = entity.getX();
-        double ey = entity.getY();
-        double ez = entity.getZ();
-        double bq = 0.0;
-        for (int d = 0; d < SubChunkRadVector.DIR_COUNT; d++) {
-            double apexX = v.xRayBq[d];
-            double apexN = v.neutronBq[d];
-            if (apexX <= 0 && apexN <= 0) continue;
-            double dx = v.tip[d].x - ex;
-            double dy = v.tip[d].y - ey;
-            double dz = v.tip[d].z - ez;
-            double tipEyeDist2 = dx * dx + dy * dy + dz * dz;
-            double scale = (v.tipApexDist2[d] + 1.0) / (tipEyeDist2 + 1.0);
-            bq += (apexX * xrayPass + apexN * neutronPass) * scale;
-        }
-        return bq;
+    public static double svhToCpm(double svh) {
+        return svh <= 0 ? 0.0 : svh * CPM_PER_SVH;
+    }
+
+    private static int clickIntervalTicks(double t) {
+        return (int) Math.round(CLICK_INTERVAL_SLOW - t * (CLICK_INTERVAL_SLOW - CLICK_INTERVAL_FAST));
+    }
+
+    private static float clickPitch(double t) {
+        return (float) (0.7 + t * 1.1);
     }
 }

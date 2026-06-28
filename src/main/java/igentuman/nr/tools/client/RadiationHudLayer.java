@@ -17,6 +17,7 @@ public class RadiationHudLayer implements LayeredDraw.Layer {
 
     private static final int BAR_WIDTH = 120;
     private static final int BAR_HEIGHT = 6;
+    private static final double LETHAL_TOTAL_SV = 5.0; // ~LD50 acute whole-body: bar full
 
     @Override
     public void render(GuiGraphics graphics, DeltaTracker delta) {
@@ -33,12 +34,12 @@ public class RadiationHudLayer implements LayeredDraw.Layer {
         int rateColor = colorForRate(svh);
 
         if (geigerHeld) {
-            double bq = ClientRadiationCache.bqAtPlayer();
+            double cpm = GeigerCounterItem.svhToCpm(svh);
             int x = 4;
             int y = 4;
             graphics.drawString(font, "Rate: " + TextUtils.formatSvPerHour(svh), x, y, rateColor, true);
             y += 10;
-            graphics.drawString(font, "CPM: " + TextUtils.formatSi(bq, "cpm"), x, y, 0x55FF55, true);
+            graphics.drawString(font, "CPM: " + TextUtils.formatSi(cpm, "cpm"), x, y, 0x55FF55, true);
         }
 
         if (dosiPresent) {
@@ -60,23 +61,29 @@ public class RadiationHudLayer implements LayeredDraw.Layer {
             graphics.fill(barX - 1, barY - 1, barX + BAR_WIDTH + 1, barY + BAR_HEIGHT + 1, 0xAA000000);
             graphics.fill(barX, barY, barX + BAR_WIDTH, barY + BAR_HEIGHT, 0xFF222222);
 
-            double t = barFraction(svh);
+            double t = barFraction(total);
             int fillWidth = (int) Math.round(BAR_WIDTH * t);
-            int fillColor = rateColor | 0xFF000000;
+            int fillColor = colorForTotalFraction(t) | 0xFF000000;
             if (fillWidth > 0) {
                 graphics.fill(barX, barY, barX + fillWidth, barY + BAR_HEIGHT, fillColor);
             }
         }
     }
 
-    /** Log-scale fraction: 0 at 1 nSv/h, 1.0 at 10 Sv/h (10 decades). */
-    private double barFraction(double svh) {
-        if (svh <= 1e-9) return 0.0;
-        if (svh >= 10.0) return 1.0;
-        double t = (Math.log10(svh) + 9.0) / 10.0;
+    /** Linear fraction of accumulated dose toward acute-lethal reference. */
+    private double barFraction(double svTotal) {
+        if (svTotal <= 0) return 0.0;
+        double t = svTotal / LETHAL_TOTAL_SV;
         if (t < 0) return 0;
         if (t > 1) return 1;
         return t;
+    }
+
+    private int colorForTotalFraction(double t) {
+        if (t < 0.25) return 0x55FF55;
+        if (t < 0.5)  return 0xFFFF55;
+        if (t < 0.75) return 0xFFAA00;
+        return 0xFF5555;
     }
 
     private boolean isHeld(Player p, Class<?> cls) {
@@ -96,20 +103,22 @@ public class RadiationHudLayer implements LayeredDraw.Layer {
     }
 
     /**
-     * Thresholds (Sv/h):
-     *   <0.3 µSv/h  background    green
-     *   <10  µSv/h  elevated      yellow-green
-     *   <5   mSv/h  controlled    orange
-     *   <100 mSv/h  dangerous     red
-     *   <1    Sv/h  very dangerous deep red
-     *   >=1   Sv/h  lethal/hours  magenta
+     * Mekanism RadiationScale bands (Sv/h):
+     *   <1e-7  background  green
+     *   <1e-5  NONE        gray      (10 µSv/h)
+     *   <1e-3  LOW         yellow    (1 mSv/h)
+     *   <0.1   MEDIUM      orange    (100 mSv/h)
+     *   <10    ELEVATED    red       (10 Sv/h)
+     *   <100   HIGH        dark red  (100 Sv/h)
+     *   >=100  EXTREME     magenta
      */
     private int colorForRate(double svh) {
-        if (svh < 3e-7) return 0x55FF55;
-        if (svh < 1e-5) return 0xCCFF55;
-        if (svh < 5e-3) return 0xFFAA00;
-        if (svh < 0.1)  return 0xFF5555;
-        if (svh < 1.0)  return 0xCC0000;
+        if (svh < 1e-7)  return 0x55FF55;
+        if (svh < 1e-5)  return 0xAAAAAA;
+        if (svh < 1e-3)  return 0xFFFF55;
+        if (svh < 0.1)   return 0xFFAA00;
+        if (svh < 10.0)  return 0xFF5555;
+        if (svh < 100.0) return 0xAA0000;
         return 0xFF55FF;
     }
 }

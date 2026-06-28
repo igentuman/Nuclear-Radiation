@@ -20,7 +20,6 @@ import igentuman.nr.shielding.AttenuationResult;
 import igentuman.nr.shielding.ShieldingRaycast;
 import igentuman.nr.simulation.SubChunkRadVector;
 import igentuman.nr.simulation.RadiationSimulator;
-import igentuman.nr.tools.GeigerCounterItem;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -55,19 +54,19 @@ public final class EntityDoseProcessor {
         ArmorProtectionRegistry.Protection armor = ArmorProtectionRegistry.summed(entity);
 
         ExternalResult ext = computeExternal(level, entity, gyPerBqSec, intervalSeconds, armor);
-        AttenuationResult shielding = new AttenuationResult(ext.xrayPass(), ext.neutronPass());
         double svExternal = ext.sv();
         double svInternal = computeInternal(data, gyPerBqSec, intervalSeconds, now);
         double svInventory = computeInventory(entity, gyPerBqSec, intervalSeconds, now, armor);
         double svNearbyEntities = computeNearbyEntities(level, entity, gyPerBqSec, intervalSeconds, armor, now);
+        double svContamination = computeContamination(level, entity, gyPerBqSec, intervalSeconds, armor);
 
         double svBackground = backgroundRadiation(level, entity, intervalSeconds);
 
-        double svThisTick = svExternal + svInternal + svInventory + svNearbyEntities + svBackground;
+        double svThisTick = svExternal + svInternal + svInventory + svNearbyEntities + svContamination + svBackground;
         double protection = clamp01(data.protectionFactor());
         svThisTick *= (1.0 - protection);
 
-        data.addSv(svThisTick);
+        data.addSv(svThisTick*72);
 
         double svPerHourInstant = (svThisTick / intervalSeconds) * Units.SECONDS_PER_HOUR;
         double prev = data.svPerHour();
@@ -85,10 +84,8 @@ public final class EntityDoseProcessor {
         RadiationEffects.apply(entity, data.svPerHour(), data.svTotalCareer());
 
         if (entity instanceof ServerPlayer player) {
-            double bq = GeigerCounterItem.readBq(level, entity,
-                    shielding.xrayPass(), shielding.neutronPass());
             NRNetwork.sendTo(player, new RadiationSyncPayload(
-                    data.svTotalCareer(), data.svPerHour(), bq));
+                    data.svTotalCareer(), data.svPerHour()));
 
             if (RadiationConfig.DEBUG_RADIATION_VECTORS.get()) {
                 ChunkPos cp = entity.chunkPosition();
@@ -224,6 +221,21 @@ public final class EntityDoseProcessor {
         }
         NRNetwork.sendTo(player,
                 new ShieldingRaysDebugPayload(origin.x, origin.y, origin.z, ex, ey, ez, pv, ch));
+    }
+
+    private static double computeContamination(ServerLevel level, LivingEntity entity,
+                                               double gyPerBqSec, double intervalSeconds,
+                                               ArmorProtectionRegistry.Protection armor) {
+        ChunkPos cp = entity.chunkPosition();
+        LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
+        if (chunk == null) return 0.0;
+        ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
+        if (data.air().isEmpty()) return 0.0;
+        double bqX = data.air().xRayActivityBq();
+        double bqN = data.air().neutronActivityBq();
+        double sv = bqX * gyPerBqSec * DEFAULT_Q.qXRay * intervalSeconds * (1.0 - armor.xray());
+        sv += bqN * gyPerBqSec * DEFAULT_Q.qNeutron * intervalSeconds * (1.0 - armor.neutron());
+        return sv;
     }
 
     private static double computeInternal(EntityRadiationData data, double gyPerBqSec,

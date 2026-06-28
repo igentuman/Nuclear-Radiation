@@ -1,6 +1,7 @@
 package igentuman.nr.tracking;
 
 import igentuman.nr.binding.RadiationBindings;
+import igentuman.nr.block.CreativeRadSourceBlockEntity;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.persistence.ChunkRadiationData;
@@ -10,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -63,6 +65,11 @@ public class RadSourceEvents {
         FluidState fluidState = state.getFluidState();
         if (!fluidState.isEmpty()) {
             registerFluidSource(server, reg, pos, fluidState);
+            return;
+        }
+        BlockEntity be = server.getBlockEntity(pos);
+        if (be instanceof CreativeRadSourceBlockEntity creative) {
+            creative.registerSource(server);
         }
     }
 
@@ -72,6 +79,9 @@ public class RadSourceEvents {
         WorldSourceRegistry reg = WorldSourceRegistry.get(server);
         WorldRadSource src = reg.atBlock(event.getPos());
         if (src != null) reg.remove(src.getId());
+        if (server.getBlockEntity(event.getPos()) instanceof CreativeRadSourceBlockEntity creative) {
+            creative.removeSource(server);
+        }
     }
 
     @SubscribeEvent
@@ -126,9 +136,14 @@ public class RadSourceEvents {
         for (WorldRadSource s : reg.all()) {
             BlockPos p = s.getPosition();
             if ((p.getX() >> 4) == cp.x && (p.getZ() >> 4) == cp.z) {
-                if (s instanceof BlockRadSource || s instanceof FluidRadSource) {
+                if (s instanceof BlockRadSource || s instanceof FluidRadSource || s instanceof CreativeRadSource) {
                     reg.remove(s.getId());
                 }
+            }
+        }
+        for (BlockEntity be : chunk.getBlockEntities().values()) {
+            if (be instanceof CreativeRadSourceBlockEntity creative) {
+                creative.removeSource(server);
             }
         }
     }
@@ -183,6 +198,11 @@ public class RadSourceEvents {
                         }
                     }
                 }
+            }
+        }
+        for (BlockEntity be : chunk.getBlockEntities().values()) {
+            if (be instanceof CreativeRadSourceBlockEntity creative) {
+                creative.registerSource(server);
             }
         }
     }

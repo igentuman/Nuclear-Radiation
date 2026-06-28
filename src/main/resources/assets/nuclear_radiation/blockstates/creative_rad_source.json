@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "nuclear_radiation:block/creative_rad_source" }
+  }
+}

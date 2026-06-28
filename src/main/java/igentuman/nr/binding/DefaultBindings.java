@@ -48,14 +48,6 @@ public final class DefaultBindings {
                 .isotope(Isotopes.U_235, 3.14e22)
                 .build());
 
-        list.add(BindingDefinition.builder("spent_fuel_item")
-                .itemTag(RadiationTags.ITEM_SPENT_FUEL)
-                .isotope(Isotopes.U_238, 4.0e24)
-                .isotope(Isotopes.PU_239, 2.5e22)
-                .isotope(Isotopes.CS_137, 2.6e22)
-                .isotope(Isotopes.SR_90, 8.0e21)
-                .build());
-
         list.add(BindingDefinition.builder("radioactive_low_item")
                 .itemTag(RadiationTags.ITEM_LOW)
                 .isotope(Isotopes.U_238, 2.5e21)

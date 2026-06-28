@@ -19,13 +19,19 @@ public final class EntityIgnoreFilter {
 
     public static boolean shouldSkip(LivingEntity entity) {
         if (entity == null || entity.isRemoved()) return true;
+        Set<ResourceLocation> ignored = ignored();
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+        return ignored.contains(id);
+    }
+
+    // Creative/spectator players are still simulated and synced (HUD/geiger update,
+    // dose accumulates); they are only exempt from radiation harm (damage + effects).
+    public static boolean shouldSkipHarm(LivingEntity entity) {
         if (entity instanceof Player p) {
             if (RadiationConfig.IGNORE_CREATIVE.get() && p.isCreative()) return true;
             if (RadiationConfig.IGNORE_SPECTATOR.get() && p.isSpectator()) return true;
         }
-        Set<ResourceLocation> ignored = ignored();
-        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
-        return ignored.contains(id);
+        return false;
     }
 
     private static Set<ResourceLocation> ignored() {

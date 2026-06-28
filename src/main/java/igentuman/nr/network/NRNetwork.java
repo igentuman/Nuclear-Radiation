@@ -1,9 +1,14 @@
 package igentuman.nr.network;
 
 import igentuman.nr.NuclearRadiation;
+import igentuman.nr.NuclearRadiationClient;
+import igentuman.nr.block.CreativeRadSourceBlockEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -26,6 +31,20 @@ public final class NRNetwork {
                 (payload, ctx) -> ClientShieldingRaysCache.update(payload));
         reg.playToClient(ChunkContaminationDebugPayload.TYPE, ChunkContaminationDebugPayload.STREAM_CODEC,
                 (payload, ctx) -> ClientChunkContaminationCache.update(payload));
+        reg.playToClient(CreativeRadSourceOpenPayload.TYPE, CreativeRadSourceOpenPayload.STREAM_CODEC,
+                (payload, ctx) -> {
+                    if (FMLEnvironment.dist == Dist.CLIENT) {
+                        NuclearRadiationClient.handleCreativeRadSourceOpen(payload);
+                    }
+                });
+        reg.playToServer(CreativeRadSourceConfigPayload.TYPE, CreativeRadSourceConfigPayload.STREAM_CODEC,
+                (payload, ctx) -> {
+                    ServerPlayer player = (ServerPlayer) ctx.player();
+                    ServerLevel level = player.serverLevel();
+                    if (level.getBlockEntity(payload.pos()) instanceof CreativeRadSourceBlockEntity be) {
+                        be.applyConfig(payload.alphaBq(), payload.betaBq(), payload.xRayBq(), payload.neutronBq());
+                    }
+                });
     }
 
     public static void sendTo(ServerPlayer player, RadiationSyncPayload payload) {

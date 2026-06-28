@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "nuclear_radiation:block/creative_rad_source"
+  }
+}

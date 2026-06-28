@@ -1,9 +1,12 @@
 package igentuman.nr;
 
+import igentuman.nr.block.client.CreativeRadSourceScreen;
 import igentuman.nr.network.ClientRadiationCache;
+import igentuman.nr.network.CreativeRadSourceOpenPayload;
 import igentuman.nr.tools.NRTools;
 import igentuman.nr.tools.client.ContaminationHudLayer;
 import igentuman.nr.tools.client.RadiationHudLayer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -29,12 +32,18 @@ public class NuclearRadiationClient {
                 NRTools.GEIGER_COUNTER.get(),
                 ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "radiation"),
                 (stack, level, entity, seed) -> {
-                    double bq = ClientRadiationCache.bqAtPlayer();
-                    if (bq < 1000.0)      return 0f;
-                    if (bq < 10000.0)     return 1f;
-                    if (bq < 100000.0)    return 2f;
-                    if (bq < 10000000.0)   return 3f;
-                    if (bq < 100000000.0)  return 4f;
+                    double svh = ClientRadiationCache.svPerHour();
+                    if (svh < 0.00001) { // 10 uSv/h
+                        return 0f;
+                    } else if (svh < 0.001) { // 1 mSv/h
+                        return 1f;
+                    } else if (svh < 0.1) { // 100 mSv/h
+                        return 2f;
+                    } else if (svh < 10) { // 100 Sv/h
+                        return 3f;
+                    } else if (svh < 100) {
+                        return 4f;
+                    }
                     return 5f;
                 }));
     }
@@ -47,5 +56,15 @@ public class NuclearRadiationClient {
         event.registerAboveAll(
                 ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "contamination_hud"),
                 new ContaminationHudLayer());
+    }
+
+    public static void handleCreativeRadSourceOpen(CreativeRadSourceOpenPayload payload) {
+        Minecraft.getInstance().execute(() ->
+                Minecraft.getInstance().setScreen(new CreativeRadSourceScreen(
+                        payload.pos(),
+                        payload.alphaBq(),
+                        payload.betaBq(),
+                        payload.xRayBq(),
+                        payload.neutronBq())));
     }
 }
