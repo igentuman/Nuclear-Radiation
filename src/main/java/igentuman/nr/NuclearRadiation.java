@@ -20,6 +20,7 @@ import igentuman.nr.entity.EntityExposureEvents;
 import igentuman.nr.medicine.NREffects;
 import igentuman.nr.medicine.NRMedicineItems;
 import igentuman.nr.shielding.ArmorProtectionReloadListener;
+import igentuman.nr.shielding.ShieldingBindingsReloadListener;
 import igentuman.nr.simulation.SimulationEvents;
 import igentuman.nr.tools.NRTools;
 import igentuman.nr.tracking.RadSourceEvents;
@@ -129,6 +130,7 @@ public class NuclearRadiation {
     @SubscribeEvent
     public void onAddReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new RadiationBindingsReloadListener());
+        event.addListener(new ShieldingBindingsReloadListener());
         event.addListener(new ArmorProtectionReloadListener());
     }
 }

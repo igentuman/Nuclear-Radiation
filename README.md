@@ -40,7 +40,7 @@ Models radioactive isotopes, decay, contamination, dose, shielding, and medicine
 - Stagger buckets prevent tick spikes (`entityId % interval`)
 
 ### Shielding
-- Block attenuation via `ShieldingRegistry` — vanilla blocks have built-in coefficients (stone, iron, gold, water, obsidian, netherite, etc.). Custom blocks implement `IShieldingBlock` or register via API.
+- Block attenuation via binding system: blocks bind to one of 3 tiers (`light`/`mid`/`heavy`, each a `(xray, neutron)` preset) through tags `nr:shielding/{light,mid,heavy}`, datapack JSON (`nuclear_radiation/shielding/*.json`, supports tier ref or raw override), or the `IShieldingBlock` interface. Resolved by `ShieldingBindings` (direct block binding wins over tag).
 - Single-pass dual-attenuation voxel-DDA raycast (x-ray + neutron in one walk)
 - Cached per `(sourceChunk, targetChunk)`, invalidated on block change
 - Armor attenuation via `ArmorProtectionRegistry` — datapack-driven (`ArmorProtectionReloadListener`); defaults cover vanilla iron/gold/netherite sets with per-type (xray/alpha/beta/neutron) coefficients

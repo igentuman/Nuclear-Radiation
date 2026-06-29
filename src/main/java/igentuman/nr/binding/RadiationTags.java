@@ -25,6 +25,10 @@ public final class RadiationTags {
     public static final TagKey<Block> BLOCK_HIGH = blockTag("radioactive/high");
     public static final TagKey<Block> BLOCK_URANIUM_ORE = blockTag("radioactive/uranium_ore");
 
+    public static final TagKey<Block> BLOCK_SHIELD_LIGHT = blockTag("shielding/light");
+    public static final TagKey<Block> BLOCK_SHIELD_MID = blockTag("shielding/mid");
+    public static final TagKey<Block> BLOCK_SHIELD_HEAVY = blockTag("shielding/heavy");
+
     public static final TagKey<Fluid> FLUID_RADIOACTIVE = fluidTag("radioactive");
 
     private static TagKey<Item> itemTag(String path) {
