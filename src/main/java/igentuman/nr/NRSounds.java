@@ -22,6 +22,11 @@ public final class NRSounds {
                     () -> SoundEvent.createVariableRangeEvent(
                             ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "inject")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> GEIGER_TICK =
+            SOUND_EVENTS.register("geiger_tick",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "geiger_tick")));
+
     private NRSounds() {}
 
     public static void register(IEventBus modBus) { SOUND_EVENTS.register(modBus); }

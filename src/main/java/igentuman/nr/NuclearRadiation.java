@@ -12,6 +12,7 @@ import igentuman.nr.binding.RadiationBindingsReloadListener;
 import igentuman.nr.binding.RadiationComponent;
 import igentuman.nr.binding.RadiationTooltip;
 import igentuman.nr.command.NRCommands;
+import igentuman.nr.config.NRClientConfig;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.util.persistence.NRAttachments;
 import igentuman.nr.registry.Isotopes;
@@ -100,6 +101,7 @@ public class NuclearRadiation {
 
         modContainer.registerConfig(ModConfig.Type.COMMON, GeneralConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.COMMON, RadiationConfig.SPEC, "nuclear_radiation-radiation.toml");
+        modContainer.registerConfig(ModConfig.Type.CLIENT, NRClientConfig.SPEC, "nuclear_radiation-client.toml");
 
         Isotopes.bootstrap();
         DefaultBindings.registerDefaults();

@@ -1,6 +1,8 @@
 package igentuman.nr;
 
 import igentuman.nr.block.client.CreativeRadSourceScreen;
+import igentuman.nr.client.GlowSilhouette;
+import igentuman.nr.client.IonizationGlowRenderer;
 import igentuman.nr.client.RadiationScreenLayer;
 import igentuman.nr.network.ClientRadiationCache;
 import igentuman.nr.network.CreativeRadSourceOpenPayload;
@@ -10,12 +12,14 @@ import igentuman.nr.tools.client.RadiationHudLayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
@@ -55,6 +59,13 @@ public class NuclearRadiationClient {
     @SubscribeEvent
     static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
         RadiationScreenLayer.onRegisterShaders(event);
+        GlowSilhouette.onRegisterShaders(event);
+    }
+
+    @SubscribeEvent
+    static void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(
+                (ResourceManagerReloadListener) rm -> IonizationGlowRenderer.onResourceReload());
     }
 
     @SubscribeEvent

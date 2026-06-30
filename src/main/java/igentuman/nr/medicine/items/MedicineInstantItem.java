@@ -44,7 +44,7 @@ public class MedicineInstantItem extends Item {
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+        return UseAnim.EAT;
     }
 
     @Override

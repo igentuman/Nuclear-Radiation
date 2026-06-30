@@ -52,7 +52,7 @@ public final class RadiationConfig {
         MAX_SOURCE_RADIUS_M = b.comment("Hard cutoff radius for source contribution (meters)")
                 .defineInRange("max_source_radius_m", 64, 1, 1024);
         CHUNK_VECTOR_TTL_TICKS = b.comment("ChunkRadVector freshness ttl")
-                .defineInRange("chunk_vector_ttl_ticks", 20, 1, 1200);
+                .defineInRange("chunk_vector_ttl_ticks", 40, 1, 1200);
         STAGGER_ENTITIES = b.comment("Spread entity dose calc across interval buckets")
                 .define("stagger_entities", true);
         b.pop();
@@ -74,8 +74,8 @@ public final class RadiationConfig {
         b.pop();
 
         b.push("thresholds_sv_per_hour");
-        THRESHOLD_MILD     = b.comment("MEDIUM band: 1 mSv/h").defineInRange("mild", 0.001, 0.0, 1.0e6);
-        THRESHOLD_MODERATE = b.comment("ELEVATED band: 100 mSv/h").defineInRange("moderate", 0.1, 0.0, 1.0e6);
+        THRESHOLD_MILD     = b.comment("MEDIUM band: 1 mSv/h").defineInRange("mild", 1, 0.0, 1.0e6);
+        THRESHOLD_MODERATE = b.comment("ELEVATED band: 5 mSv/h").defineInRange("moderate", 5, 0.0, 1.0e6);
         THRESHOLD_SEVERE   = b.comment("HIGH band: 10 Sv/h").defineInRange("severe", 10.0, 0.0, 1.0e6);
         THRESHOLD_LETHAL   = b.comment("EXTREME band: 100 Sv/h").defineInRange("lethal", 100.0, 0.0, 1.0e6);
         TOTAL_SV_SCALE_K   = b.comment("Cumulative Sv scaling constant K. Effective Sv/h for effect thresholds = svPerHour * (1 + (svTotalCareer/K)^2). Lower K = harsher chronic penalty.")

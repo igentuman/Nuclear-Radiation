@@ -10,5 +10,11 @@
     "sounds": [
       "nuclear_radiation:inject"
     ]
+  },
+  "geiger_tick": {
+    "subtitle": "subtitles.nuclear_radiation.geiger_tick",
+    "sounds": [
+      "nuclear_radiation:geiger_tick"
+    ]
   }
 }

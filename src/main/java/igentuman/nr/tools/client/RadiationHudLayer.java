@@ -17,7 +17,7 @@ public class RadiationHudLayer implements LayeredDraw.Layer {
 
     private static final int BAR_WIDTH = 120;
     private static final int BAR_HEIGHT = 6;
-    private static final double LETHAL_TOTAL_SV = 5.0; // ~LD50 acute whole-body: bar full
+    private static final double LETHAL_TOTAL_SV = 10.0; // ~LD50 acute whole-body: bar full
 
     @Override
     public void render(GuiGraphics graphics, DeltaTracker delta) {

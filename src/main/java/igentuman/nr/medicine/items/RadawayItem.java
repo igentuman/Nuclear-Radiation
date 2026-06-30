@@ -24,10 +24,10 @@ public class RadawayItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack, LivingEntity entity) { return 40; }
+    public int getUseDuration(ItemStack stack, LivingEntity entity) { return 16; }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) { return UseAnim.SPEAR; }
+    public UseAnim getUseAnimation(ItemStack stack) { return UseAnim.BOW; }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {

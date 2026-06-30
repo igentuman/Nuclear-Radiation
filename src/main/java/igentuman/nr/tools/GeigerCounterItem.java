@@ -4,12 +4,15 @@ import igentuman.nr.util.persistence.NRAttachments;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import static igentuman.nr.NRSounds.GEIGER_TICK;
 
 public class GeigerCounterItem extends Item {
 
@@ -25,7 +28,7 @@ public class GeigerCounterItem extends Item {
     public static final double CPM_PER_SVH = 1.75e8;  // ~SBM-20 tube: 1 µSv/h ≈ 175 cpm
 
     private static final int CLICK_INTERVAL_SLOW = 40;
-    private static final int CLICK_INTERVAL_FAST = 3;
+    private static final int CLICK_INTERVAL_FAST = 1;
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
@@ -38,9 +41,11 @@ public class GeigerCounterItem extends Item {
         if (svh <= SILENT_SVH) return;
 
         double t = responseT(svh);
-        if ((server.getGameTime() % clickIntervalTicks(t)) != 0) return;
-        server.playSound(null, living.blockPosition(), SoundEvents.NOTE_BLOCK_HAT.value(),
-                SoundSource.PLAYERS, 0.4f, clickPitch(t));
+        if ((server.getGameTime() % clickIntervalTicks(t, server.getRandom())) != 0) return;
+        float randomVariance = (server.getRandom().nextFloat() - 0.5f) * 0.1f;
+        randomVariance += (float) (t / 10f);
+        server.playSound(null, living.blockPosition(), GEIGER_TICK.get(),
+                SoundSource.PLAYERS, 0.4f + randomVariance, clickPitch(t, server.getRandom()));
     }
 
     /** 0..1 geiger scale from dose rate (Sv/h), log-mapped between RESP_LOG_LO and RESP_LOG_HI. */
@@ -54,11 +59,16 @@ public class GeigerCounterItem extends Item {
         return svh <= 0 ? 0.0 : svh * CPM_PER_SVH;
     }
 
-    private static int clickIntervalTicks(double t) {
-        return (int) Math.round(CLICK_INTERVAL_SLOW - t * (CLICK_INTERVAL_SLOW - CLICK_INTERVAL_FAST));
+    private static int clickIntervalTicks(double t, RandomSource random) {
+        int baseInterval = (int) Math.round(CLICK_INTERVAL_SLOW - t * (CLICK_INTERVAL_SLOW - CLICK_INTERVAL_FAST));
+        double variance = 0.3;
+        int interval = (int) (baseInterval * (1.0 + (random.nextDouble() - 0.5) * 2.0 * variance));
+        return Math.max(CLICK_INTERVAL_FAST, interval);
     }
 
-    private static float clickPitch(double t) {
-        return (float) (0.7 + t * 1.1);
+    private static float clickPitch(double t, RandomSource random) {
+        float basePitch = (float) (0.7 + t * 1.0001);
+        float randomVariance = (random.nextFloat() - 0.5f) * 0.3f;
+        return basePitch + randomVariance;
     }
 }
