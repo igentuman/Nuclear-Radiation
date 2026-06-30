@@ -1,7 +1,7 @@
 package igentuman.nr.tools;
 
-import igentuman.nr.persistence.EntityRadiationData;
-import igentuman.nr.persistence.NRAttachments;
+import igentuman.nr.util.persistence.EntityRadiationData;
+import igentuman.nr.util.persistence.NRAttachments;
 import igentuman.nr.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;

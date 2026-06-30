@@ -1,6 +1,7 @@
 {
   "itemGroup.nuclear_radiation": "Nuclear Radiation",
   "subtitles.nuclear_radiation.vomit": "Vomiting",
+  "subtitles.nuclear_radiation.inject": "Injection",
   "block.nuclear_radiation.example_block": "Example Block",
   "item.nuclear_radiation.example_item": "Example Item",
 
@@ -10,6 +11,7 @@
   "item.nuclear_radiation.iodine_pill": "Iodine Pill",
   "item.nuclear_radiation.prussian_blue": "Prussian Blue",
   "item.nuclear_radiation.rad_protection_potion": "Rad-Protection Potion",
+  "item.nuclear_radiation.rad_protection_potion_2": "Rad-Protection Potion II",
   "item.nuclear_radiation.anti_rad_injection": "Anti-Rad Injection",
   "item.nuclear_radiation.radaway": "Radaway",
 

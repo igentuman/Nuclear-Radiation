@@ -17,6 +17,11 @@ public final class NRSounds {
                     () -> SoundEvent.createVariableRangeEvent(
                             ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "vomit")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> INJECT =
+            SOUND_EVENTS.register("inject",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "inject")));
+
     private NRSounds() {}
 
     public static void register(IEventBus modBus) { SOUND_EVENTS.register(modBus); }

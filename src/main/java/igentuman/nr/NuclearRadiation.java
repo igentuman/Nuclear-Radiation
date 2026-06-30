@@ -13,7 +13,7 @@ import igentuman.nr.binding.RadiationComponent;
 import igentuman.nr.binding.RadiationTooltip;
 import igentuman.nr.command.NRCommands;
 import igentuman.nr.config.RadiationConfig;
-import igentuman.nr.persistence.NRAttachments;
+import igentuman.nr.util.persistence.NRAttachments;
 import igentuman.nr.registry.Isotopes;
 import igentuman.nr.containers.ContainerEvents;
 import igentuman.nr.entity.EntityExposureEvents;
@@ -23,7 +23,7 @@ import igentuman.nr.shielding.ArmorProtectionReloadListener;
 import igentuman.nr.shielding.ShieldingBindingsReloadListener;
 import igentuman.nr.simulation.SimulationEvents;
 import igentuman.nr.tools.NRTools;
-import igentuman.nr.tracking.RadSourceEvents;
+import igentuman.nr.util.tracking.RadSourceEvents;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
@@ -114,6 +114,14 @@ public class NuclearRadiation {
             event.accept(NRTools.GEIGER_COUNTER);
             event.accept(NRTools.DOSIMETER);
             event.accept(CREATIVE_RAD_SOURCE_ITEM);
+        }
+        if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
+            event.accept(NRMedicineItems.IODINE_PILL);
+            event.accept(NRMedicineItems.PRUSSIAN_BLUE);
+            event.accept(NRMedicineItems.RAD_PROTECTION_POTION);
+            event.accept(NRMedicineItems.RAD_PROTECTION_POTION_2);
+            event.accept(NRMedicineItems.ANTI_RAD_INJECTION);
+            event.accept(NRMedicineItems.RADAWAY);
         }
     }
 

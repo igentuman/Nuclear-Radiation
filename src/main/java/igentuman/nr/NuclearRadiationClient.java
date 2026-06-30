@@ -1,6 +1,7 @@
 package igentuman.nr;
 
 import igentuman.nr.block.client.CreativeRadSourceScreen;
+import igentuman.nr.client.RadiationScreenLayer;
 import igentuman.nr.network.ClientRadiationCache;
 import igentuman.nr.network.CreativeRadSourceOpenPayload;
 import igentuman.nr.tools.NRTools;
@@ -16,8 +17,11 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+
+import java.io.IOException;
 
 @Mod(value = NuclearRadiation.MODID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = NuclearRadiation.MODID, value = Dist.CLIENT)
@@ -49,7 +53,15 @@ public class NuclearRadiationClient {
     }
 
     @SubscribeEvent
+    static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
+        RadiationScreenLayer.onRegisterShaders(event);
+    }
+
+    @SubscribeEvent
     static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
+        event.registerBelowAll(
+                ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "radiation_screen_effect"),
+                new RadiationScreenLayer());
         event.registerAboveAll(
                 ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "radiation_hud"),
                 new RadiationHudLayer());

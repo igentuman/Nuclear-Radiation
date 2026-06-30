@@ -2,7 +2,7 @@ package igentuman.nr.entity;
 
 import igentuman.nr.medicine.NREffects;
 import igentuman.nr.medicine.effects.IsotopeSpecificProtectionEffect;
-import igentuman.nr.persistence.EntityRadiationData;
+import igentuman.nr.util.persistence.EntityRadiationData;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -20,7 +20,7 @@ public final class MedicineEffectsApplier {
         if (prot != null) protection = Math.min(0.95, 0.25 + 0.15 * prot.getAmplifier());
 
         MobEffectInstance purge = entity.getEffect(NREffects.PURGE);
-        if (purge != null) decay = 1.0 + 1.0 * (purge.getAmplifier() + 1);
+        if (purge != null) decay = 1.0 + 0.5 * (purge.getAmplifier() + 1);
 
         data.setProtectionFactor(protection);
         data.setDecayMultiplier(decay);

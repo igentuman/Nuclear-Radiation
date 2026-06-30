@@ -1,6 +1,6 @@
 package igentuman.nr.tools;
 
-import igentuman.nr.persistence.NRAttachments;
+import igentuman.nr.util.persistence.NRAttachments;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

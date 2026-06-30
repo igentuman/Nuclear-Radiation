@@ -1,7 +1,7 @@
 package igentuman.nr.simulation;
 
 import igentuman.nr.containers.ContainerRadiationTicker;
-import igentuman.nr.tracking.WorldSourceRegistry;
+import igentuman.nr.util.tracking.WorldSourceRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;

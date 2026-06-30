@@ -4,5 +4,11 @@
     "sounds": [
       "nuclear_radiation:vomit"
     ]
+  },
+  "inject": {
+    "subtitle": "subtitles.nuclear_radiation.inject",
+    "sounds": [
+      "nuclear_radiation:inject"
+    ]
   }
 }
