@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
 @Mixin(value = RadiationManager.class, remap = false)
-public abstract class MekRadiationManager {
+public abstract class MekRadiationManagerMixin {
 
     public boolean isMekRadiationEnabled()
     {

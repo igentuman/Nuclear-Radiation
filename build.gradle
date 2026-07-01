@@ -116,6 +116,10 @@ dependencies {
     compileOnly("cc.tweaked:cc-tweaked-1.21.1-common-api:1.118.0")
     runtimeOnly("cc.tweaked:cc-tweaked-1.21.1-forge:1.118.0")
 
+    implementation "curse.maven:nuclear-science-318646:8252492"
+    implementation "curse.maven:electrodynamics-316867:8252476"
+    implementation "curse.maven:voltaic-api-1237904:8241610"
+
     implementation "curse.maven:spark-361579:6225208"
     runtimeOnly "curse.maven:sodium-394468:6382651"
     runtimeOnly "curse.maven:irisshaders-455508:6661598"

@@ -4,7 +4,11 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "BlockEntitySetChangedMixin",
-    "MekRadiationManager"
+    "BlockItemVoltaicMixin",
+    "CapabilityRadiationRecipientMixin",
+    "ItemVoltaicMixin",
+    "MekRadiationManagerMixin",
+    "NuclearScienceRadiationManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

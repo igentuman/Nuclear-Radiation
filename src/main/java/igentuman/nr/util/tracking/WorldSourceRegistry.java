@@ -46,8 +46,12 @@ public class WorldSourceRegistry {
     public synchronized void register(WorldRadSource s) {
         if (s == null) return;
         if (s.activityBq() < RadiationConfig.WORLD_SOURCE_MIN_BQ.get()) return;
-        byId.put(s.getId(), s);
         long pkey = packPos(s.getPosition());
+        if (s instanceof LeftOverRadSource && byBlock.get(pkey) instanceof LeftOverRadSource old) {
+            old.refresh(s.getProfile());
+            return;
+        }
+        byId.put(s.getId(), s);
         if (s instanceof ItemEntityRadSource ie) {
             byItemEntity.put(ie.entityUuid(), ie);
         } else {

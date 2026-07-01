@@ -1,6 +1,7 @@
 package igentuman.nr.util.tracking;
 
 import igentuman.nr.config.RadiationConfig;
+import igentuman.nr.api.IsotopeStack;
 import igentuman.nr.api.RadiationProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -35,6 +36,13 @@ public abstract class AbstractWorldRadSource implements WorldRadSource {
 
     public void recomputeExpiry() {
         this.expiryGameTime = computeExpiry();
+    }
+
+    // Reset atoms to the fresh profile (no accumulation) and push expiry back out.
+    // Used to refresh a re-asserted source in place instead of stacking duplicates.
+    public void refresh(RadiationProfile fresh) {
+        for (IsotopeStack s : fresh.stacks()) profile.put(s);
+        recomputeExpiry();
     }
 
     @Override public long expiryGameTime() { return expiryGameTime; }
