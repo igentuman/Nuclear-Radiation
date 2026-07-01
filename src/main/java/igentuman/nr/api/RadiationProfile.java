@@ -166,4 +166,10 @@ public class RadiationProfile {
         }
         return new RadiationProfile(copy);
     }
+
+    public void reduceAtoms(double rate) {
+        for (IsotopeStack s : isotopes.values()) {
+            s.setAtoms(s.atoms() / rate);
+        }
+    }
 }

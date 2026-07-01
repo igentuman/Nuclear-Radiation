@@ -22,8 +22,16 @@ public class SimulationEvents {
     }
 
     @SubscribeEvent
+    public void onLevelSave(LevelEvent.Save event) {
+        if (event.getLevel() instanceof ServerLevel server) {
+            WorldSourceRegistry.get(server).saveToLevel();
+        }
+    }
+
+    @SubscribeEvent
     public void onLevelUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel server) {
+            WorldSourceRegistry.get(server).saveToLevel();
             WorldSourceRegistry.unload(server);
             ContainerRadiationTicker.unloadLevel(server);
         }

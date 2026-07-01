@@ -31,8 +31,8 @@ void main() {
     float dose = clamp(DoseIntensity, 0.0, 1.0);
 
     // green tint, ramps with dose
-    vec3 tintColor = mix(vec3(0.45, 0.85, 0.28), vec3(0.18, 0.62, 0.10), dose);
-    float tintAlpha = dose * 0.22;
+    vec3 tintColor = mix(vec3(0.85, 0.28, 0.28), vec3(0.62, 0.10, 0.10), dose);
+    float tintAlpha = dose * 0.12;
 
     // vignette, dark green closing in at high dose
     float vignette = smoothstep(0.40, 1.30, length(centered));

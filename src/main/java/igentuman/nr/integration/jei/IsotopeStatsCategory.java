@@ -67,38 +67,56 @@ public class IsotopeStatsCategory implements IRecipeCategory<Isotope> {
         int x = 4;
         int y = 4;
         int line = font.lineHeight + 2;
-
-        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.id", recipe.id()), x, y, 0x202020, false);
+        String id = recipe.id().toUpperCase().replace("NR:", "").replace("_", "-");
+        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.id", id), x, y, 0x202020, false);
         y += line;
         g.drawString(font, __("jei.nuclear_radiation.isotope_stats.half_life", JeiFormat.halfLife(recipe.halfLifeTicks())), x, y, 0x0E5A1A, false);
         y += line;
 
-        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.radiation_mix"), x, y, 0x8B4500, false);
-        y += line;
-
-        float scale = 0.75f;
-        int smallLine = Math.max(1, (int) Math.ceil(font.lineHeight * scale) + 1);
-        g.pose().pushPose();
-        g.pose().scale(scale, scale, 1f);
-        int sx = Math.round(x / scale);
-        int sy = Math.round(y / scale);
-        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.alpha", JeiFormat.percent(recipe.alphaStrength())), sx, sy, 0x303030, false);
-        sy += font.lineHeight + 2;
-        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.beta", JeiFormat.percent(recipe.betaStrength())), sx, sy, 0x303030, false);
-        sy += font.lineHeight + 2;
-        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.x_gamma", JeiFormat.percent(recipe.xRayStrength())), sx, sy, 0x303030, false);
-        sy += font.lineHeight + 2;
-        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.neutron", JeiFormat.percent(recipe.neutronStrength())), sx, sy, 0x303030, false);
-        sy += font.lineHeight + 2;
-
         RadiationQuality q = recipe.quality();
-        g.drawString(font, __("jei.nuclear_radiation.isotope_stats.quality",
-                String.format("%.1f", q.qXRay), String.format("%.1f", q.qBeta),
-                String.format("%.1f", q.qAlpha), String.format("%.1f", q.qNeutron)), sx, sy, 0x1A3D7A, false);
-        g.pose().popPose();
-        y += smallLine * 5;
+        float wAlpha = recipe.alphaStrength() * q.qAlpha;
+        float wBeta = recipe.betaStrength() * q.qBeta;
+        float wXRay = recipe.xRayStrength() * q.qXRay;
+        float wNeutron = recipe.neutronStrength() * q.qNeutron;
+        float total = wAlpha + wBeta + wXRay + wNeutron;
+
+        if (total > 0f) {
+            g.drawString(font, __("jei.nuclear_radiation.isotope_stats.dose_mix"), x, y, 0x8B4500, false);
+            y += line;
+
+            float scale = 0.75f;
+            int smallLine = Math.max(1, (int) Math.ceil(font.lineHeight * scale) + 1);
+            g.pose().pushPose();
+            g.pose().scale(scale, scale, 1f);
+            int sx = Math.round(x / scale);
+            int sy = Math.round(y / scale);
+            int rows = 0;
+            if (recipe.alphaStrength() > 0f) {
+                g.drawString(font, __("jei.nuclear_radiation.isotope_stats.alpha", JeiFormat.doseShare(wAlpha / total)), sx, sy, 0x303030, false);
+                sy += font.lineHeight + 2;
+                rows++;
+            }
+            if (recipe.betaStrength() > 0f) {
+                g.drawString(font, __("jei.nuclear_radiation.isotope_stats.beta", JeiFormat.doseShare(wBeta / total)), sx, sy, 0x303030, false);
+                sy += font.lineHeight + 2;
+                rows++;
+            }
+            if (recipe.xRayStrength() > 0f) {
+                g.drawString(font, __("jei.nuclear_radiation.isotope_stats.x_gamma", JeiFormat.doseShare(wXRay / total)), sx, sy, 0x303030, false);
+                sy += font.lineHeight + 2;
+                rows++;
+            }
+            if (recipe.neutronStrength() > 0f) {
+                g.drawString(font, __("jei.nuclear_radiation.isotope_stats.neutron", JeiFormat.doseShare(wNeutron / total)), sx, sy, 0x303030, false);
+                sy += font.lineHeight + 2;
+                rows++;
+            }
+            g.pose().popPose();
+            y += smallLine * rows;
+        }
 
         String decay = recipe.decaysTo().map(Isotope::id).orElse("stable");
+        decay = decay.toUpperCase().replace("NR:", "").replace("_", "-");
         g.drawString(font, __("jei.nuclear_radiation.isotope_stats.decays_to", decay), x, y, 0x8B0000, false);
     }
 }

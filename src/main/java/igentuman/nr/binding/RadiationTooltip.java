@@ -21,20 +21,6 @@ public class RadiationTooltip {
         event.getToolTip().add(Component.literal("☢ ")
                 .append(Component.literal(formatActivity(bq)))
                 .withStyle(colorForBq(bq)));
-
-        IsotopeStack top = null;
-        for (IsotopeStack s : p.stacks()) {
-            if (top == null || s.currentActivityBq() > top.currentActivityBq()) top = s;
-        }
-        if (top != null) {
-            double halfLifeSeconds = top.isotope().halfLifeTicks() / 20.0;
-            event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.isotope",
-                    Component.translatable(isotopeTranslationKey(top.isotope().id())))
-                    .withStyle(ChatFormatting.GRAY));
-            event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.half_life",
-                    formatTime(halfLifeSeconds))
-                    .withStyle(ChatFormatting.DARK_GRAY));
-        }
     }
 
     private static void addArmorProtectionTooltip(ItemTooltipEvent event) {
@@ -55,11 +41,6 @@ public class RadiationTooltip {
 
     private static String formatPercent(double v) {
         return String.format("%.1f%%", v * 100.0);
-    }
-
-    private static String isotopeTranslationKey(String id) {
-        String shortId = id.startsWith("nr:") ? id.substring(3) : id;
-        return "isotope.nuclear_radiation." + shortId;
     }
 
     private static ChatFormatting colorForBq(double bq) {

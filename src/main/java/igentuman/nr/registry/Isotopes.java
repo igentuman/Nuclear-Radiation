@@ -17,6 +17,10 @@ public final class Isotopes {
     public static final String Y_90    = "nr:y_90";
     public static final String CO_60   = "nr:co_60";
     public static final String CF_252  = "nr:cf_252";
+    public static final String H_3     = "nr:h_3";
+    public static final String PO_210  = "nr:po_210";
+    public static final String XE_133  = "nr:xe_133";
+    public static final String KR_85   = "nr:kr_85";
 
     public static void bootstrap() {
         if (IsotopeRegistry.contains(U_238)) return;
@@ -75,6 +79,30 @@ public final class Isotopes {
                 .alpha(0.65f).beta(0.0f).xray(0.05f).neutron(0.30f)
                 .halfLife(saturate(2.645 * TICKS_PER_YEAR))
                 .quality(1.0f, 1.0f, 20.0f, 20.0f)
+                .register();
+
+        IsotopeBuilder.create(H_3)
+                .alpha(0.0f).beta(1.0f).xray(0.0f).neutron(0.0f)
+                .halfLife(saturate(12.32 * TICKS_PER_YEAR))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .register();
+
+        IsotopeBuilder.create(PO_210)
+                .alpha(1.0f).beta(0.0f).xray(0.05f).neutron(0.0f)
+                .halfLife(saturate(138.376 * TICKS_PER_DAY))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .register();
+
+        IsotopeBuilder.create(XE_133)
+                .alpha(0.0f).beta(0.6f).xray(0.4f).neutron(0.0f)
+                .halfLife(saturate(5.2475 * TICKS_PER_DAY))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .register();
+
+        IsotopeBuilder.create(KR_85)
+                .alpha(0.0f).beta(0.9f).xray(0.1f).neutron(0.0f)
+                .halfLife(saturate(10.756 * TICKS_PER_YEAR))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
                 .register();
     }
 

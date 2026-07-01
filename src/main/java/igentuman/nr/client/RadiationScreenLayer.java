@@ -76,8 +76,7 @@ public final class RadiationScreenLayer implements LayeredDraw.Layer {
     }
 
     static float computeDose(double svTotal) {
-        final double LETHAL_TOTAL_SV = 5.0;
         if (svTotal <= 0.0) return 0f;
-        return (float) Math.clamp(svTotal / LETHAL_TOTAL_SV, 0.0, 1.0);
+        return (float) Math.clamp(svTotal / 1000, 0.0, 1.0);
     }
 }

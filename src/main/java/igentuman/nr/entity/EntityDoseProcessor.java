@@ -39,7 +39,7 @@ public final class EntityDoseProcessor {
     private EntityDoseProcessor() {}
 
     private static final RadiationQuality DEFAULT_Q = RadiationQuality.DEFAULT;
-    private static final double EMA_ALPHA = 0.1;
+    private static final double EMA_ALPHA = 0.2;
 
     public static void tick(ServerLevel level, LivingEntity entity, long now, int intervalTicks) {
         if (EntityIgnoreFilter.shouldSkip(entity)) return;
@@ -76,6 +76,7 @@ public final class EntityDoseProcessor {
         double recovery = RadiationConfig.BASE_DECAY_SV_PER_HOUR.get()
                 * data.decayMultiplier()
                 * GeneralConfig.ENTITY_DECAY_MULTIPLIER.get()
+                * 72D
                 * (intervalSeconds / Units.SECONDS_PER_HOUR);
         if (recovery > 0 && data.svTotalCareer() > 0) {
             data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() - recovery));
@@ -230,11 +231,34 @@ public final class EntityDoseProcessor {
         LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
         if (chunk == null) return 0.0;
         ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
-        if (data.air().isEmpty()) return 0.0;
-        double bqX = data.air().xRayActivityBq();
-        double bqN = data.air().neutronActivityBq();
+
+        double bqX = data.air().xRayActivityBq() + data.soil().xRayActivityBq();
+        double bqN = data.air().neutronActivityBq() + data.soil().neutronActivityBq();
+        double bA = data.air().alphaActivityBq();
+        double bB = data.air().betaActivityBq();
+        if(entity.isInWater()) {
+            bqX *= 0.5d;
+            bqN *= 0.5d;
+            bqX += data.water().xRayActivityBq();
+            bqN += data.water().neutronActivityBq();
+        }
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                if (dx == 0 && dz == 0) continue;
+                LevelChunk neighbor = level.getChunkSource().getChunkNow(cp.x + dx, cp.z + dz);
+                if (neighbor == null) continue;
+                ChunkRadiationData nd = neighbor.getData(NRAttachments.CHUNK_RADIATION.get());
+                if (nd.air().isEmpty()) continue;
+                bqX += (nd.air().xRayActivityBq() + nd.soil().xRayActivityBq()) * 0.5;
+                bqN += (nd.air().neutronActivityBq() + nd.soil().neutronActivityBq()) * 0.5;
+                bA += nd.air().alphaActivityBq() * 0.5;
+                bB += nd.air().betaActivityBq() * 0.5;
+            }
+        }
         double sv = bqX * gyPerBqSec * DEFAULT_Q.qXRay * intervalSeconds * (1.0 - armor.xray());
         sv += bqN * gyPerBqSec * DEFAULT_Q.qNeutron * intervalSeconds * (1.0 - armor.neutron());
+        sv += bA * gyPerBqSec * DEFAULT_Q.qAlpha * intervalSeconds* (1.0 - armor.alpha());
+        sv += bB * gyPerBqSec * DEFAULT_Q.qBeta * intervalSeconds* (1.0 - armor.beta());
         return sv;
     }
 

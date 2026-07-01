@@ -3,7 +3,8 @@
   "package": "igentuman.nr.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BlockEntitySetChangedMixin"
+    "BlockEntitySetChangedMixin",
+    "MekRadiationManager"
   ],
   "injectors": {
     "defaultRequire": 1

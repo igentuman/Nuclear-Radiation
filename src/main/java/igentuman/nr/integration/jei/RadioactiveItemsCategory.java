@@ -20,7 +20,7 @@ import static igentuman.nr.util.TextUtils.__;
 public class RadioactiveItemsCategory implements IRecipeCategory<RadioactiveItemEntry> {
 
     public static final int WIDTH = 162;
-    public static final int HEIGHT = 110;
+    public static final int HEIGHT = 128;
 
     private final IDrawable icon;
 
@@ -50,6 +50,7 @@ public class RadioactiveItemsCategory implements IRecipeCategory<RadioactiveItem
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RadioactiveItemEntry recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, 6, 6).addItemStack(recipe.stack());
+        builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addItemStack(recipe.stack());
     }
 
     @Override
@@ -64,19 +65,40 @@ public class RadioactiveItemsCategory implements IRecipeCategory<RadioactiveItem
         g.drawString(font, __("jei.nuclear_radiation.radioactive_items.total", JeiFormat.activity(recipe.profile().totalActivityBq())),
                 x, y, 0x0E5A1A, false);
 
-        y = 30;
+        y += line;
+        x = 6;
+        g.drawString(font, __("jei.nuclear_radiation.radioactive_items.radiation_mix"), x, y, 0x8B4500, false);
+        double total = recipe.profile().totalActivityBq();
+        y += line;
+        float scale = 0.75f;
+        g.pose().pushPose();
+        g.pose().scale(scale, scale, 1f);
+        g.drawString(font, __("jei.nuclear_radiation.radioactive_items.alpha", JeiFormat.percent((float) (recipe.profile().alphaActivityBq() / total))), (int) (x / scale), (int) (y / scale), 0x303030, false);
+        y += (int) (line * scale);
+        g.drawString(font, __("jei.nuclear_radiation.radioactive_items.beta", JeiFormat.percent((float) (recipe.profile().betaActivityBq() / total))), (int) (x / scale), (int) (y / scale), 0x303030, false);
+        y += (int) (line * scale);
+        g.drawString(font, __("jei.nuclear_radiation.radioactive_items.gamma", JeiFormat.percent((float) (recipe.profile().xRayActivityBq() / total))), (int) (x / scale), (int) (y / scale), 0x303030, false);
+        y += (int) (line * scale);
+        g.drawString(font, __("jei.nuclear_radiation.radioactive_items.neutron", JeiFormat.percent((float) (recipe.profile().neutronActivityBq() / total))), (int) (x / scale), (int) (y / scale), 0x303030, false);
+        y += (int) (line * scale);
+        g.pose().popPose();
+
+        y += 2;
         g.drawString(font, __("jei.nuclear_radiation.radioactive_items.isotopes"), 6, y, 0x8B4500, false);
         y += line;
 
         int max = Math.min(6, recipe.profile().stacks().size());
         int i = 0;
+        g.pose().pushPose();
+        g.pose().scale(scale, scale, 1f);
         for (IsotopeStack s : recipe.profile().stacks()) {
             if (i >= max) break;
-            String idShort = stripNs(s.isotope().id());
-            g.drawString(font, __("jei.nuclear_radiation.radioactive_items.isotope_entry", padRight(idShort, 8), JeiFormat.activity(s.currentActivityBq())), 6, y, 0x303030, false);
-            y += line;
+            String idShort = stripNs(s.isotope().id()).toUpperCase().replace("_", "-");
+            g.drawString(font, __("jei.nuclear_radiation.radioactive_items.isotope_entry", padRight(idShort, 8), JeiFormat.activity(s.currentActivityBq())), (int) (6 / scale), (int) (y / scale), 0x303030, false);
+            y += (int) (line * scale);
             i++;
         }
+        g.pose().popPose();
     }
 
     private static String stripNs(String id) {

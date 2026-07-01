@@ -1,0 +1,21 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:cs_137": {
+      "atoms": 1.0E15
+    },
+    "nr:h_3": {
+      "atoms": 2.0E15
+    },
+    "nr:i_131": {
+      "atoms": 6.1E16
+    },
+    "nr:u_235": {
+      "atoms": 1.11E17
+    },
+    "nr:u_238": {
+      "atoms": 1.72E17
+    }
+  },
+  "target": "minecraft:stick"
+}

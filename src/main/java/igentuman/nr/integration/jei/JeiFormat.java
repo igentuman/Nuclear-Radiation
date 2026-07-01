@@ -8,7 +8,7 @@ public final class JeiFormat {
     public static String halfLife(long halfLifeTicks) {
         if (halfLifeTicks <= 0) return "stable";
         if (halfLifeTicks == Long.MAX_VALUE) return "~stable";
-        double seconds = halfLifeTicks * Units.SECONDS_PER_TICK;
+        double seconds = halfLifeTicks * Units.SECONDS_PER_TICK * 72D;
         if (seconds < 60) return fmt(seconds) + " s";
         double minutes = seconds / 60.0;
         if (minutes < 60) return fmt(minutes) + " min";
@@ -33,6 +33,12 @@ public final class JeiFormat {
 
     public static String percent(float v) {
         return String.format("%.0f%%", v * 100.0f);
+    }
+
+    public static String doseShare(float frac) {
+        float pct = frac * 100.0f;
+        if (pct > 0f && pct < 0.1f) return "<0.1%";
+        return String.format("%.1f%%", pct);
     }
 
     public static String fmt(double v) {

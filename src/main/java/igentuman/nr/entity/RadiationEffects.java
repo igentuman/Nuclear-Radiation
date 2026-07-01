@@ -49,21 +49,23 @@ public final class RadiationEffects {
 
         int stage = 0;
         if (effectiveSvPerHour >= mild) {
-            addEffect(entity, MobEffects.CONFUSION, 100, 0);
+            addEffect(entity, MobEffects.CONFUSION, 10, 0);
+            addEffect(entity, MobEffects.DIG_SLOWDOWN, 200, 1);
             stage = 1;
         }
         if (effectiveSvPerHour >= mod) {
-            addEffect(entity, MobEffects.WEAKNESS, 100, 0);
-            entity.hurt(entity.damageSources().magic(), 0.1f);
+            addEffect(entity, MobEffects.WEAKNESS, 10, 0);
+            addEffect(entity, MobEffects.MOVEMENT_SLOWDOWN, 10, 0);
+            entity.hurt(entity.damageSources().magic(), 0.5f);
             stage = 2;
         }
         if (effectiveSvPerHour >= sev) {
-            addEffect(entity, MobEffects.BLINDNESS, 60, 0);
-            entity.hurt(entity.damageSources().magic(), 0.5f);
+            addEffect(entity, MobEffects.BLINDNESS, 10, 0);
+            entity.hurt(entity.damageSources().magic(), 1.5f);
             stage = 3;
         }
         if (effectiveSvPerHour >= leth) {
-            addEffect(entity, MobEffects.DIG_SLOWDOWN, 200, 1);
+            addEffect(entity, MobEffects.WITHER, 10, 0);
             entity.hurt(entity.damageSources().magic(), 20.0f);
             stage = 4;
         }

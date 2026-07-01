@@ -45,7 +45,7 @@ public class GeigerCounterItem extends Item {
         float randomVariance = (server.getRandom().nextFloat() - 0.5f) * 0.1f;
         randomVariance += (float) (t / 10f);
         server.playSound(null, living.blockPosition(), GEIGER_TICK.get(),
-                SoundSource.PLAYERS, 0.4f + randomVariance, clickPitch(t, server.getRandom()));
+                SoundSource.PLAYERS, 0.2f + randomVariance, clickPitch(t, server.getRandom()));
     }
 
     /** 0..1 geiger scale from dose rate (Sv/h), log-mapped between RESP_LOG_LO and RESP_LOG_HI. */

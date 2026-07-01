@@ -59,7 +59,7 @@ repositories {
 }
 
 base {
-    archivesName = mod_id
+    archivesName = "NuclearRadiation-${minecraft_version}"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
@@ -80,6 +80,7 @@ neoForge {
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            programArguments.addAll '--width', '1920', '--height', '1080'
         }
 
         server {
@@ -116,7 +117,8 @@ dependencies {
     runtimeOnly("cc.tweaked:cc-tweaked-1.21.1-forge:1.118.0")
 
     implementation "curse.maven:spark-361579:6225208"
-
+    runtimeOnly "curse.maven:sodium-394468:6382651"
+    runtimeOnly "curse.maven:irisshaders-455508:6661598"
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 

@@ -2,6 +2,7 @@ package igentuman.nr.util.tracking;
 
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.util.persistence.ChunkRadiationData;
+import igentuman.nr.util.persistence.LevelRadiationData;
 import igentuman.nr.util.persistence.NRAttachments;
 import igentuman.nr.simulation.RadiationSimulator;
 import net.minecraft.core.BlockPos;
@@ -13,8 +14,10 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,6 +37,7 @@ public class WorldSourceRegistry {
     private final Map<UUID, WorldRadSource> byId = new HashMap<>();
     private final Map<Long, WorldRadSource> byBlock = new HashMap<>();
     private final Map<UUID, ItemEntityRadSource> byItemEntity = new HashMap<>();
+    private final Set<ChunkPos> contaminatedChunks = new HashSet<>();
 
     private WorldSourceRegistry(ServerLevel level) {
         this.level = level;
@@ -92,6 +96,8 @@ public class WorldSourceRegistry {
     }
 
     public void tickDecay(long now) {
+        //would be nice to get list of loaded chunks and run decay only on loaded chunks
+
         List<UUID> dead = new ArrayList<>();
         double floor = Math.max(
                 RadiationConfig.ACTIVITY_FLOOR_BQ.get(),
@@ -110,8 +116,38 @@ public class WorldSourceRegistry {
         for (UUID id : dead) remove(id);
     }
 
+    public void tickChunkDecay(long now) {
+        if (contaminatedChunks.isEmpty()) return;
+        double floor = RadiationConfig.ACTIVITY_FLOOR_BQ.get();
+        List<ChunkPos> cleared = new ArrayList<>();
+        for (ChunkPos cp : contaminatedChunks) {
+            LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
+            if (chunk == null) continue;
+            ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
+            if (data.isEmpty()) {
+                cleared.add(cp);
+                continue;
+            }
+            if(level.isRainingAt(chunk.getPos().getWorldPosition())) {
+                data.air().reduceAtoms(1.2);
+            }
+            data.air().advanceDecay(now*50, floor);
+            data.water().advanceDecay(now*50, floor);
+            data.soil().advanceDecay(now*50, floor);
+            data.setLastDecayTick(now);
+            data.markExpiryDirty();
+            if (data.isEmpty()) cleared.add(cp);
+            chunk.setUnsaved(true);
+        }
+        contaminatedChunks.removeAll(cleared);
+    }
+
+    public void markChunkContaminated(ChunkPos cp) {
+        contaminatedChunks.add(cp);
+    }
+
     public void spreadContamination(long now, long intervalTicks) {
-        double base = RadiationConfig.CONTAMINATION_SPREAD_FACTOR.get();
+        double base = RadiationConfig.CONTAMINATION_SPREAD_FACTOR.get()*0.00000000001d;
         if (base <= 0.0) return;
         for (WorldRadSource s : all()) {
             if (!s.contaminatesArea() || !s.isActive()) continue;
@@ -135,7 +171,42 @@ public class WorldSourceRegistry {
             if (airShare > 0)   data.air().mergeAtoms(s.getProfile(), scale * airShare, now);
             data.setLastDecayTick(now);
             data.markExpiryDirty();
+            contaminatedChunks.add(cp);
             chunk.setUnsaved(true);
+        }
+    }
+
+    public synchronized void saveToLevel() {
+        LevelRadiationData data = level.getData(NRAttachments.LEVEL_SOURCES.get());
+        data.clear();
+        for (WorldRadSource s : byId.values()) {
+            if (s instanceof BlockRadSource || s instanceof FluidRadSource
+                    || s instanceof CreativeRadSource || s instanceof ItemEntityRadSource) {
+                continue;
+            }
+            String type;
+            if (s instanceof LeftOverRadSource) {
+                type = "leftover";
+            } else {
+                continue;
+            }
+            data.add(new LevelRadiationData.SourceEntry(
+                    type, s.getId(), s.getDimension(), s.getPosition(),
+                    s.getProfile(), s.spawnedTick(), s.contaminatesArea()));
+        }
+        level.setData(NRAttachments.LEVEL_SOURCES.get(), data);
+    }
+
+    public synchronized void loadFromLevel() {
+        LevelRadiationData data = level.getData(NRAttachments.LEVEL_SOURCES.get());
+        for (LevelRadiationData.SourceEntry e : data.sources()) {
+            if (byId.containsKey(e.id())) continue;
+            WorldRadSource src = switch (e.type()) {
+                case "leftover" -> new LeftOverRadSource(e.id(), e.dimension(), e.pos(),
+                        e.profile(), e.spawnedTick(), e.contaminatesArea());
+                default -> null;
+            };
+            if (src != null) register(src);
         }
     }
 

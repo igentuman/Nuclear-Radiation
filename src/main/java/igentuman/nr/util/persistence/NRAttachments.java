@@ -26,6 +26,12 @@ public final class NRAttachments {
                             .copyOnDeath()
                             .build());
 
+    public static final Supplier<AttachmentType<LevelRadiationData>> LEVEL_SOURCES =
+            ATTACHMENTS.register("level_sources",
+                    () -> AttachmentType.<LevelRadiationData>builder(() -> new LevelRadiationData())
+                            .serialize(LevelRadiationData.CODEC)
+                            .build());
+
     private NRAttachments() {}
 
     public static void register(IEventBus modBus) {

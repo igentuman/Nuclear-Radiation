@@ -21,11 +21,18 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 import java.util.UUID;
 
 public class RadSourceEvents {
+
+    @SubscribeEvent
+    public void onLevelLoad(LevelEvent.Load event) {
+        if (!(event.getLevel() instanceof ServerLevel server)) return;
+        WorldSourceRegistry.get(server).loadFromLevel();
+    }
 
     @SubscribeEvent
     public void onEntityJoin(EntityJoinLevelEvent event) {
@@ -45,7 +52,14 @@ public class RadSourceEvents {
         Entity entity = event.getEntity();
         if (entity instanceof ItemEntity item) {
             ItemEntityRadSource src = WorldSourceRegistry.get(server).forItemEntity(item.getUUID());
-            if (src != null) WorldSourceRegistry.get(server).remove(src.getId());
+            if (src != null) {
+                WorldSourceRegistry.get(server).remove(src.getId());
+                long now = server.getGameTime();
+                RadiationProfile leftOver = src.getProfile().copy(now);
+                leftOver.reduceAtoms(2.0);
+                WorldSourceRegistry.get(server).register(
+                        new LeftOverRadSource(server, item.blockPosition(), leftOver, now, true));
+            }
         }
     }
 
@@ -123,6 +137,8 @@ public class RadSourceEvents {
         if (data.isExpired(now)) {
             data.clearIfExpired(now);
             chunk.setUnsaved(true);
+        } else if (!data.isEmpty()) {
+            WorldSourceRegistry.get(server).markChunkContaminated(chunk.getPos());
         }
         scanChunkForSources(server, chunk);
     }
@@ -156,6 +172,8 @@ public class RadSourceEvents {
         if (now % interval != 0) return;
         WorldSourceRegistry reg = WorldSourceRegistry.get(server);
         reg.tickDecay(now);
+        reg.tickChunkDecay(now);
+        if (now % interval*2 != 0) return;
         reg.spreadContamination(now, interval);
     }
 

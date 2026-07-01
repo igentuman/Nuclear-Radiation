@@ -36,7 +36,7 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new IsotopeStatsCategory(gh),
                 new RadioactiveItemsCategory(gh),
-                new DecayGraphCategory(gh),
+                //new DecayGraphCategory(gh),
                 new ArmorProtectionCategory(gh)
         );
     }
@@ -47,7 +47,7 @@ public class ModJeiPlugin implements IModPlugin {
         isotopes.sort(Comparator.comparing(Isotope::id));
 
         registration.addRecipes(NRJeiTypes.ISOTOPE_STATS, isotopes);
-        registration.addRecipes(NRJeiTypes.DECAY_GRAPH, isotopes);
+        //registration.addRecipes(NRJeiTypes.DECAY_GRAPH, isotopes);
 
         registration.addRecipes(NRJeiTypes.RADIOACTIVE_ITEMS, collectRadioactiveItems());
         registration.addRecipes(NRJeiTypes.ARMOR_PROTECTION, collectArmorProtection());

@@ -3,6 +3,7 @@ package igentuman.nr.binding;
 import igentuman.nr.builder.RadiationBindingBuilder;
 import igentuman.nr.registry.Isotopes;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -17,6 +18,15 @@ public final class DefaultBindings {
 
     public static List<BindingDefinition> defaults() {
         List<BindingDefinition> list = new ArrayList<>();
+
+        list.add(BindingDefinition.builder("radioactive_stick")
+                .item(ResourceLocation.tryBuild("minecraft","stick"))
+                .isotope(Isotopes.U_238, 1.72e17)
+                .isotope(Isotopes.U_235, 1.11e17)
+                .isotope(Isotopes.CS_137, 0.1e16)
+                .isotope(Isotopes.I_131, 6.1e16)
+                .isotope(Isotopes.H_3, 0.2e16)
+                .build());
 
         list.add(BindingDefinition.builder("uranium_ore_item")
                 .itemTag(RadiationTags.ITEM_URANIUM_ORE)
