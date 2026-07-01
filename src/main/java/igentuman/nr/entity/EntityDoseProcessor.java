@@ -84,6 +84,8 @@ public final class EntityDoseProcessor {
 
         RadiationEffects.apply(entity, data.svPerHour(), data.svTotalCareer());
 
+        MutationProcessor.tryMutate(level, entity, data);
+
         if (entity instanceof ServerPlayer player) {
             NRNetwork.sendTo(player, new RadiationSyncPayload(
                     data.svTotalCareer(), data.svPerHour()));

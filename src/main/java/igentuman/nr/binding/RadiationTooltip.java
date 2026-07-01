@@ -3,8 +3,10 @@ package igentuman.nr.binding;
 import igentuman.nr.api.IsotopeStack;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.shielding.ArmorProtectionRegistry;
+import igentuman.nr.shielding.ShieldingRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
@@ -12,6 +14,7 @@ public class RadiationTooltip {
 
     @SubscribeEvent
     public void onTooltip(ItemTooltipEvent event) {
+        addShieldingTooltip(event);
         addArmorProtectionTooltip(event);
 
         RadiationProfile p = RadiationBindings.of(event.getItemStack());
@@ -21,6 +24,13 @@ public class RadiationTooltip {
         event.getToolTip().add(Component.literal("☢ ")
                 .append(Component.literal(formatActivity(bq)))
                 .withStyle(colorForBq(bq)));
+    }
+
+    private static void addShieldingTooltip(ItemTooltipEvent event) {
+        if (!(event.getItemStack().getItem() instanceof BlockItem bi)) return;
+        if (ShieldingRegistry.get(bi.getBlock().defaultBlockState()) == null) return;
+        event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.block_shielding")
+                .withStyle(ChatFormatting.AQUA));
     }
 
     private static void addArmorProtectionTooltip(ItemTooltipEvent event) {

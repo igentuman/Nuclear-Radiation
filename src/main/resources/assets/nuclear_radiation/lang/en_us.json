@@ -26,11 +26,22 @@
   "jei.nuclear_radiation.category.radioactive_items": "Radioactive Items",
   "jei.nuclear_radiation.category.decay_graph": "Decay Graph",
   "jei.nuclear_radiation.category.armor_protection": "Armor Radiation Protection",
+  "jei.nuclear_radiation.category.block_shielding": "Block Radiation Shielding",
+  "jei.nuclear_radiation.category.mutation": "Radioactive Mutation",
+
+  "jei.nuclear_radiation.mutation.dose": "Total dose: %s",
+  "jei.nuclear_radiation.mutation.rate": "Exposure:",
+  "jei.nuclear_radiation.mutation.min_rate": "Min: %s",
+  "jei.nuclear_radiation.mutation.max_rate": "Max: %s",
+  "jei.nuclear_radiation.mutation.chance": "Chance: %s",
 
   "jei.nuclear_radiation.armor_protection.xray": "Ɣ gamma: %s",
   "jei.nuclear_radiation.armor_protection.alpha": "ɑ alpha: %s",
   "jei.nuclear_radiation.armor_protection.beta": "ꞵ beta: %s",
   "jei.nuclear_radiation.armor_protection.neutron": "Neutron: %s",
+
+  "jei.nuclear_radiation.block_shielding.xray": "Ɣ gamma attenuation: %s cm⁻¹",
+  "jei.nuclear_radiation.block_shielding.neutron": "Neutron attenuation: %s cm⁻¹",
 
 
   "jei.nuclear_radiation.isotope_stats.id": "ID: %s",
@@ -54,6 +65,7 @@
   "tooltip.nuclear_radiation.isotope": "Isotope: %s",
   "tooltip.nuclear_radiation.half_life": "λ Half-life: %s",
 
+  "tooltip.nuclear_radiation.block_shielding": "Radiation Shielding",
   "tooltip.nuclear_radiation.armor_protection": "Radiation Protection",
   "tooltip.nuclear_radiation.armor.xray": " Ɣ gamma: %s",
   "tooltip.nuclear_radiation.armor.alpha": " ɑ alpha: %s",

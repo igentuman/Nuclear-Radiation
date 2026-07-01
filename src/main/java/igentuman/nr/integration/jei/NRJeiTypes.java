@@ -2,6 +2,7 @@ package igentuman.nr.integration.jei;
 
 import igentuman.nr.NuclearRadiation;
 import igentuman.nr.api.Isotope;
+import igentuman.nr.recipe.MutationRecipe;
 import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -22,4 +23,10 @@ public final class NRJeiTypes {
 
     public static final RecipeType<ArmorProtectionEntry> ARMOR_PROTECTION = RecipeType.create(
             NuclearRadiation.MODID, "armor_protection", ArmorProtectionEntry.class);
+
+    public static final RecipeType<BlockShieldingEntry> BLOCK_SHIELDING = RecipeType.create(
+            NuclearRadiation.MODID, "block_shielding", BlockShieldingEntry.class);
+
+    public static final RecipeType<MutationRecipe> MUTATION = RecipeType.create(
+            NuclearRadiation.MODID, "mutation", MutationRecipe.class);
 }

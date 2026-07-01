@@ -20,6 +20,7 @@ import igentuman.nr.containers.ContainerEvents;
 import igentuman.nr.entity.EntityExposureEvents;
 import igentuman.nr.medicine.NREffects;
 import igentuman.nr.medicine.NRMedicineItems;
+import igentuman.nr.recipe.NRRecipes;
 import igentuman.nr.shielding.ArmorProtectionReloadListener;
 import igentuman.nr.shielding.ShieldingBindingsReloadListener;
 import igentuman.nr.simulation.SimulationEvents;
@@ -89,6 +90,7 @@ public class NuclearRadiation {
         NRMedicineItems.register(modEventBus);
         NRTools.register(modEventBus);
         NRSounds.register(modEventBus);
+        NRRecipes.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(new SimulationEvents());
