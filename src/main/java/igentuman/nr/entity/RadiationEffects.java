@@ -31,11 +31,12 @@ public final class RadiationEffects {
 
     private RadiationEffects() {}
 
-    public static void apply(LivingEntity entity, double svPerHour, double svTotalCareer) {
-        if (EntityIgnoreFilter.shouldSkipHarm(entity)) return;
-        boolean isPlayer = entity instanceof Player;
-        if (isPlayer ? !GeneralConfig.RADIATION_HARM_EFFECTS_PLAYERS.get()
-                     : !GeneralConfig.RADIATION_HARM_EFFECTS_MOBS.get()) return;
+    /**
+     * Dose stage (radiation "phase") for the given rates, 0 = below the mild threshold up to
+     * 4 = lethal. Factors in accumulated career dose the same way {@link #apply} does, so callers
+     * (e.g. the KubeJS dose-phase event) see the exact stage that drives harm effects.
+     */
+    public static int computeStage(double svPerHour, double svTotalCareer) {
         double mild = RadiationConfig.THRESHOLD_MILD.get();
         double mod  = RadiationConfig.THRESHOLD_MODERATE.get();
         double sev  = RadiationConfig.THRESHOLD_SEVERE.get();
@@ -45,32 +46,41 @@ public final class RadiationEffects {
         double ratio = svTotalCareer / k;
         double effectiveSvPerHour = svPerHour * (1.0 + ratio * ratio);
 
-        if (effectiveSvPerHour < mild) return;
+        if (effectiveSvPerHour >= leth) return 4;
+        if (effectiveSvPerHour >= sev) return 3;
+        if (effectiveSvPerHour >= mod) return 2;
+        if (effectiveSvPerHour >= mild) return 1;
+        return 0;
+    }
 
-        int stage = 0;
-        if (effectiveSvPerHour >= mild) {
+    public static void apply(LivingEntity entity, double svPerHour, double svTotalCareer) {
+        if (EntityIgnoreFilter.shouldSkipHarm(entity)) return;
+        boolean isPlayer = entity instanceof Player;
+        if (isPlayer ? !GeneralConfig.RADIATION_HARM_EFFECTS_PLAYERS.get()
+                     : !GeneralConfig.RADIATION_HARM_EFFECTS_MOBS.get()) return;
+
+        int stage = computeStage(svPerHour, svTotalCareer);
+        if (stage <= 0) return;
+
+        if (stage >= 1) {
             addEffect(entity, MobEffects.CONFUSION, 10, 0);
             addEffect(entity, MobEffects.DIG_SLOWDOWN, 200, 1);
-            stage = 1;
         }
-        if (effectiveSvPerHour >= mod) {
+        if (stage >= 2) {
             addEffect(entity, MobEffects.WEAKNESS, 10, 0);
             addEffect(entity, MobEffects.MOVEMENT_SLOWDOWN, 10, 0);
             entity.hurt(entity.damageSources().magic(), 0.5f);
-            stage = 2;
         }
-        if (effectiveSvPerHour >= sev) {
+        if (stage >= 3) {
             addEffect(entity, MobEffects.BLINDNESS, 10, 0);
             entity.hurt(entity.damageSources().magic(), 1.5f);
-            stage = 3;
         }
-        if (effectiveSvPerHour >= leth) {
+        if (stage >= 4) {
             addEffect(entity, MobEffects.WITHER, 10, 0);
             entity.hurt(entity.damageSources().magic(), 20.0f);
-            stage = 4;
         }
 
-        if (stage >= 1) triggerVomit(entity, stage);
+        triggerVomit(entity, stage);
     }
 
     private static final String VOMIT_COOLDOWN_KEY = "nr_next_vomit_tick";

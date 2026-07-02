@@ -41,6 +41,13 @@ public final class Bindings {
         FLUID_TAGS.put(tag, profile);
     }
 
+    public static void removeItem(ResourceLocation id) { ITEMS.remove(id); }
+    public static void removeBlock(ResourceLocation id) { BLOCKS.remove(id); }
+    public static void removeFluid(ResourceLocation id) { FLUIDS.remove(id); }
+    public static void removeItemTag(TagKey<Item> tag) { ITEM_TAGS.remove(tag); }
+    public static void removeBlockTag(TagKey<Block> tag) { BLOCK_TAGS.remove(tag); }
+    public static void removeFluidTag(TagKey<Fluid> tag) { FLUID_TAGS.remove(tag); }
+
     public static Supplier<RadiationProfile> getItem(ResourceLocation id) { return ITEMS.get(id); }
     public static Supplier<RadiationProfile> getBlock(ResourceLocation id) { return BLOCKS.get(id); }
     public static Supplier<RadiationProfile> getFluid(ResourceLocation id) { return FLUIDS.get(id); }

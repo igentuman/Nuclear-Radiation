@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import igentuman.nr.NuclearRadiation;
 import igentuman.nr.api.DecayGraph;
+import igentuman.nr.api.NREvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -44,6 +45,8 @@ public class IsotopesReloadListener extends SimpleJsonResourceReloadListener {
         for (IsotopeDefinition def : merged.values()) {
             DefaultIsotopes.apply(def);
         }
+
+        NREvents.runAfterIsotopesReload();
     }
 
     private static IsotopeDefinition parse(String id, JsonObject obj) {

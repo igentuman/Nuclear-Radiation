@@ -20,9 +20,11 @@ Models radioactive isotopes, decay, contamination, dose, shielding, and medicine
 
 ### Radiation Sources
 - Block radiation sources (placed radioactive blocks) — `BlockRadSource`
-- Item entity sources (dropped radioactive stacks) — `ItemEntityRadSource`
+- Item entity sources (dropped radioactive stacks, with radioactive glow) — `ItemEntityRadSource`
 - Fluid sources (radioactive fluids in world) — `FluidRadSource`
 - Container sources (chests/barrels with radioactive contents — point source, no contamination spread) — `ContainerRadSource`
+- Creative radiation source block — fully tunable α/β/x-ray/neutron emitter in MBq, GUI-configurable (`CreativeRadSourceBlock`, `CreativeRadSource`)
+- Residual/leftover contamination source — `LeftOverRadSource`
 - Per-chunk soil/air/water contamination profiles (`ChunkRadiationData`)
 
 ### Decay
@@ -30,7 +32,8 @@ Models radioactive isotopes, decay, contamination, dose, shielding, and medicine
 - Lazy decay on sampled access (`atoms *= exp(-λ·Δt)`)
 - Optional branching decay chains via `DecayEdge` probabilities
 - Long-lived isotopes (effective half-life ≥ `static_half_life_years`) treated as static — Bq computed, no daughter ingrowth
-- Built-in isotopes: U-238, U-235, Pu-239, Cs-137, I-131, Sr-90, Y-90, Co-60, Cf-252
+- 40 built-in isotopes: U-233/234/235/238, Pu-238/239/241/242, Np-236/237, Am-241/242/243, Cm-243/245/246/247, Bk-247/248, Cf-249/250/251/252, Th-230/232, Ac-225, plus Cs-137, I-131, Sr-90, Y-90, Co-60, H-3, Po-210, Xe-133, Kr-85, Na-22, Ca-48, Be-7, Ir-192, Cn-291
+- Isotopes are data-driven: defaults in `DefaultIsotopes`, overridable via datapack JSON (`data/<ns>/nuclear_radiation/isotopes/*.json`, `IsotopesReloadListener`) or KubeJS
 
 ### Exposure Pipeline
 - External dose — sampled from per-subchunk `SubChunkRadVector` (6-direction cone field, not scalar)
@@ -44,6 +47,7 @@ Models radioactive isotopes, decay, contamination, dose, shielding, and medicine
 - Single-pass dual-attenuation voxel-DDA raycast (x-ray + neutron in one walk)
 - Cached per `(sourceChunk, targetChunk)`, invalidated on block change
 - Armor attenuation via `ArmorProtectionRegistry` — datapack-driven (`ArmorProtectionReloadListener`); defaults cover vanilla iron/gold/netherite sets with per-type (xray/alpha/beta/neutron) coefficients
+- Mod-added **Hazmat Suit** (helmet/chestplate/leggings/boots, `NRArmorItems`) — full-body set for working in hot zones
 
 ### Medicine
 - Iodine pill — blocks I-131 uptake (`iodine_protection` effect)
@@ -56,6 +60,23 @@ Models radioactive isotopes, decay, contamination, dose, shielding, and medicine
 ### Tools
 - **Geiger counter** — reads in-world Bq, audible clicks scale with activity
 - **Dosimeter** — reads Sv total + Sv/h + breakdown (external/inventory/internal), HUD overlay
+
+### Visual Feedback
+- Radioactive **glow silhouette** post-shader on hot item entities (`GlowSilhouette`)
+- **White-noise screen overlay** in intense fields — static scales with dose rate (`RadiationScreenLayer`)
+- Debug renderers for subchunk vectors, contamination, and shielding rays (client caches + network payloads)
+
+### Mutations & Block Irradiation
+- **Mob mutations** — prolonged dose transforms mobs into other entities. Recipe-driven (`nuclear_radiation:mutation`), one-shot per entity per recipe, gated on total Sv + Sv/h window with optional chance (`MutationProcessor`, `MutationRecipe`)
+- **Block irradiation** — sources transmute nearby blocks once local attenuated activity clears `min_bq`. Recipe-driven (`nuclear_radiation:block_irradiation`) with weighted outputs + chance (`BlockIrradiationRecipe`)
+- Both recipe types registered in `NRRecipes`; authorable via datapack JSON or KubeJS
+
+### Mod Integrations
+- **JEI** (`ModJeiPlugin`) — custom info categories: Isotope Stats, Radioactive Items, Decay Graph, Armor Protection, Block Shielding, Mutation, Block Irradiation
+- **KubeJS** — scriptable isotopes, bindings, shielding, armor, recipes, and dose events (see [KubeJS integration guide](docs/KubeJS.md))
+- **Mekanism** — Mekanism radiation events mapped to an isotope cocktail (`MekRadiationManagerMixin`, `MekanismHelper`)
+- **Nuclear Science / Voltaic** — Voltaic radiation sources mapped to isotope profiles (`NuclearScienceRadiationManagerMixin`, `NuclearScienceHelper`)
+- Integration bridge `api/NREvents` keeps optional-mod types out of core — integrations register plain-Java callbacks; safe when a mod is absent
 
 ### Data-Driven Bindings
 Three input paths for assigning `RadiationProfile` to items/blocks/fluids:
@@ -72,25 +93,28 @@ Three input paths for assigning `RadiationProfile` to items/blocks/fluids:
 
 Source layout (`src/main/java/igentuman/nr/`):
 ```
-api/          public interfaces, RadiationProfile, IsotopeStack, Units, DecayGraph
-binding/      datapack loader, tag presets, DataComponent, tooltip
-builder/      IsotopeBuilder, RadiationBindingBuilder, RadiationProfileBuilder
-config/       GeneralConfig, RadiationConfig (TOML)
-containers/   ContainerAttenuationRegistry, OpenContainerRegistry, ContainerRadiationTicker
-datagen/      data generators (bindings, tags, armor protections)
-entity/       EntityDoseProcessor, exposure events, ignore filter
-inventory/    slot factor providers, inventory radiation cache
-integration/  jei, kubejs
-medicine/     items, MobEffects (radiation_protection, radiation_purge, iodine_protection, cesium_purge)
-mixin/        mixins
-network/      payloads, client caches (radiation, vector, shielding rays, contamination)
-persistence/  SavedData, attachments (NRAttachments), codecs
-registry/     IsotopeRegistry, Isotopes bootstrap
-shielding/    ShieldingRaycast, ShieldingRegistry, ArmorProtectionRegistry
-simulation/   RadiationSimulator, SubChunkRadVector, SourceSpatialIndex, snapshot, worker
-tools/        geiger, dosimeter, client HUD layers, debug renderer
-tracking/     WorldSourceRegistry, BlockRadSource, FluidRadSource, ItemEntityRadSource, ContainerRadSource
-util/         TextUtils, WorldUtil
+api/               public interfaces, RadiationProfile, IsotopeStack, Units, DecayGraph, NREvents
+armor/             NRArmorItems (hazmat set)
+binding/           datapack loader, tag presets, DataComponent, tooltip
+block/             CreativeRadSourceBlock + block entity + config screen
+builder/           IsotopeBuilder, RadiationBindingBuilder, RadiationProfileBuilder
+client/            GlowSilhouette shader, RadiationScreenLayer (white-noise overlay)
+command/           NRCommands (/nr)
+config/            GeneralConfig, RadiationConfig (TOML)
+containers/        ContainerAttenuationRegistry, OpenContainerRegistry, ContainerRadiationTicker
+datagen/           data generators (bindings, tags, armor protections, recipes)
+entity/            EntityDoseProcessor, MutationProcessor, exposure events, ignore filter
+integration/       jei, kubejs, mekanism, nuclear_science
+inventory/         slot factor providers, inventory radiation cache
+medicine/          items, MobEffects (radiation_protection, radiation_purge, iodine_protection, cesium_purge)
+mixin/             core + Mekanism/Voltaic radiation mixins
+network/           payloads, client caches (radiation, vector, shielding rays, contamination, creative source)
+recipe/            MutationRecipe, BlockIrradiationRecipe, EntityIngredient/Result, NRRecipes
+registry/          IsotopeRegistry, Isotopes, DefaultIsotopes, IsotopesReloadListener
+shielding/         ShieldingRaycast, ShieldingRegistry, ArmorProtectionRegistry
+simulation/        RadiationSimulator, SubChunkRadVector, SourceSpatialIndex, snapshot, worker
+tools/             geiger, dosimeter, client HUD layers, debug renderer
+util/              TextUtils, WorldUtil; util/tracking (world sources), util/persistence (SavedData, NRAttachments, codecs)
 ```
 
 ## Configuration
@@ -125,6 +149,16 @@ Output: `build/libs/nuclear_radiation-1.0.0.jar`
 ./gradlew runData      # data generators
 ./gradlew test         # unit tests
 ```
+
+## Scripting (KubeJS)
+
+When KubeJS is installed the plugin loads automatically (no setup). Scripts can define isotopes, radioactivity bindings, shielding, and armor protection (startup), plus mutation / block-irradiation recipes and react to dose-phase events (server). Load order per `/reload`: **built-in defaults → datapack JSON → KubeJS additions → KubeJS removals**, so scripts always win.
+
+See the full guide: **[docs/KubeJS.md](docs/KubeJS.md)**.
+
+## Commands
+
+- `/nr clear <player>` — reset a player's accumulated dose (career Sv, Sv/h, protection, internal contamination). Requires permission level 2.
 
 ## How It Works
 

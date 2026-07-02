@@ -61,6 +61,14 @@ public final class ShieldingBindings {
         BLOCK_TAGS.put(tag, entry);
     }
 
+    public static void removeBlock(ResourceLocation id) {
+        BLOCKS.remove(id);
+    }
+
+    public static void removeBlockTag(TagKey<Block> tag) {
+        BLOCK_TAGS.remove(tag);
+    }
+
     public static void clear() {
         BLOCKS.clear();
         BLOCK_TAGS.clear();

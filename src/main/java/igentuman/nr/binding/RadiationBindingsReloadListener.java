@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import igentuman.nr.NuclearRadiation;
+import igentuman.nr.api.NREvents;
 import igentuman.nr.builder.RadiationBindingBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -70,6 +71,8 @@ public class RadiationBindingsReloadListener extends SimpleJsonResourceReloadLis
                 NuclearRadiation.LOGGER.error("Failed to load radiation binding {}", e.getKey(), ex);
             }
         }
+
+        NREvents.runAfterBindingsReload();
     }
 
     @SuppressWarnings("unused")

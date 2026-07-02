@@ -23,6 +23,10 @@ public final class ArmorProtectionRegistry {
         BY_ITEM.put(item, p);
     }
 
+    public static void remove(Item item) {
+        BY_ITEM.remove(item);
+    }
+
     public static void clear() {
         BY_ITEM.clear();
     }

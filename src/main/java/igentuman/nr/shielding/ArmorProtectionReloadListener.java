@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import igentuman.nr.NuclearRadiation;
+import igentuman.nr.api.NREvents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -47,6 +48,8 @@ public class ArmorProtectionReloadListener extends SimpleJsonResourceReloadListe
                 NuclearRadiation.LOGGER.error("Failed to load armor protection {}", e.getKey(), ex);
             }
         }
+
+        NREvents.runAfterArmorReload();
     }
 
     private static void applyDefinition(ArmorProtectionDefinition def) {

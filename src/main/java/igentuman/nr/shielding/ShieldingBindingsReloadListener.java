@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import igentuman.nr.NuclearRadiation;
+import igentuman.nr.api.NREvents;
 import igentuman.nr.shielding.ShieldingBindings.ShieldEntry;
 import igentuman.nr.shielding.ShieldingRegistry.Coeffs;
 import net.minecraft.core.registries.Registries;
@@ -81,6 +82,8 @@ public class ShieldingBindingsReloadListener extends SimpleJsonResourceReloadLis
                 NuclearRadiation.LOGGER.error("Failed to load shielding binding {}", e.getKey(), ex);
             }
         }
+
+        NREvents.runAfterShieldingReload();
     }
 
     private static double readDouble(JsonObject obj, String key, double fallback) {

@@ -27,6 +27,10 @@ public final class IsotopeRegistry {
         return ISOTOPES.containsKey(id);
     }
 
+    public static synchronized void remove(String id) {
+        ISOTOPES.remove(id);
+    }
+
     public static Collection<Isotope> all() {
         return Collections.unmodifiableCollection(ISOTOPES.values());
     }

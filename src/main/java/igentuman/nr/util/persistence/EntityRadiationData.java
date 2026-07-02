@@ -20,7 +20,9 @@ public class EntityRadiationData {
             Codec.unboundedMap(Codec.STRING, Codec.DOUBLE).optionalFieldOf("internal", new LinkedHashMap<>())
                     .forGetter(d -> d.internalContamination),
             Codec.STRING.listOf().optionalFieldOf("attempted_mutations", List.of())
-                    .forGetter(d -> new ArrayList<>(d.attemptedMutations))
+                    .forGetter(d -> new ArrayList<>(d.attemptedMutations)),
+            Codec.INT.optionalFieldOf("last_dose_stage", 0)
+                    .forGetter(d -> d.lastDoseStage)
     ).apply(inst, EntityRadiationData::new));
 
     private double svTotalCareer;
@@ -29,9 +31,10 @@ public class EntityRadiationData {
     private double decayMultiplier;
     private Map<String, Double> internalContamination;
     private Set<String> attemptedMutations;
+    private int lastDoseStage;
 
     public EntityRadiationData() {
-        this(0.0, 0.0, 0.0, 1.0, new LinkedHashMap<>(), List.of());
+        this(0.0, 0.0, 0.0, 1.0, new LinkedHashMap<>(), List.of(), 0);
     }
 
     public EntityRadiationData(double svTotalCareer,
@@ -39,13 +42,15 @@ public class EntityRadiationData {
                                double protectionFactor,
                                double decayMultiplier,
                                Map<String, Double> internalContamination,
-                               List<String> attemptedMutations) {
+                               List<String> attemptedMutations,
+                               int lastDoseStage) {
         this.svTotalCareer = svTotalCareer;
         this.svPerHour = svPerHour;
         this.protectionFactor = protectionFactor;
         this.decayMultiplier = decayMultiplier;
         this.internalContamination = new LinkedHashMap<>(internalContamination);
         this.attemptedMutations = new LinkedHashSet<>(attemptedMutations);
+        this.lastDoseStage = lastDoseStage;
     }
 
     public double svTotalCareer() { return svTotalCareer; }
@@ -53,7 +58,9 @@ public class EntityRadiationData {
     public double protectionFactor() { return protectionFactor; }
     public double decayMultiplier() { return decayMultiplier; }
     public Map<String, Double> internalContamination() { return internalContamination; }
+    public int lastDoseStage() { return lastDoseStage; }
 
+    public void setLastDoseStage(int v) { this.lastDoseStage = v; }
     public void setSvTotalCareer(double v) { this.svTotalCareer = v; }
     public void setSvPerHour(double v) { this.svPerHour = v; }
     public void setProtectionFactor(double v) { this.protectionFactor = v; }

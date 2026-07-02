@@ -1,6 +1,7 @@
 package igentuman.nr.entity;
 
 import igentuman.nr.api.Isotope;
+import igentuman.nr.api.NREvents;
 import igentuman.nr.api.RadiationQuality;
 import igentuman.nr.api.Units;
 import igentuman.nr.config.GeneralConfig;
@@ -82,7 +83,15 @@ public final class EntityDoseProcessor {
             data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() - recovery));
         }
 
-        RadiationEffects.apply(entity, data.svPerHour(), data.svTotalCareer());
+        int stage = RadiationEffects.computeStage(data.svPerHour(), data.svTotalCareer());
+        boolean cancelled = false;
+        if (stage > data.lastDoseStage()) {
+            cancelled = NREvents.fireDosePhaseRise(entity, stage, data.svPerHour(), data.svTotalCareer());
+        }
+        data.setLastDoseStage(stage);
+        if (!cancelled) {
+            RadiationEffects.apply(entity, data.svPerHour(), data.svTotalCareer());
+        }
 
         MutationProcessor.tryMutate(level, entity, data);
 

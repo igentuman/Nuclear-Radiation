@@ -20,5 +20,7 @@ public final class DecayGraph {
         return EDGES.getOrDefault(fromIsotopeId, Collections.emptyList());
     }
 
+    public static void remove(String fromIsotopeId) { EDGES.remove(fromIsotopeId); }
+
     public static void clear() { EDGES.clear(); }
 }
