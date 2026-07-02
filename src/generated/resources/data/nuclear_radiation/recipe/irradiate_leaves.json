@@ -1,0 +1,11 @@
+{
+  "type": "nuclear_radiation:block_irradiation",
+  "chance": 0.02,
+  "input": "#minecraft:leaves",
+  "min_bq": 5.0E9,
+  "outputs": [
+    {
+      "block": "minecraft:air"
+    }
+  ]
+}

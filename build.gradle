@@ -120,6 +120,10 @@ dependencies {
     implementation "curse.maven:electrodynamics-316867:8252476"
     implementation "curse.maven:voltaic-api-1237904:8241610"
 
+    implementation "curse.maven:nuclearcraft-neohaul-1523268:8341287"
+    implementation "curse.maven:terrablender-neoforge-940057:6054947"
+    implementation "curse.maven:zerocore-247921:7344742"
+
     implementation "curse.maven:spark-361579:6225208"
     runtimeOnly "curse.maven:sodium-394468:6382651"
     runtimeOnly "curse.maven:irisshaders-455508:6661598"

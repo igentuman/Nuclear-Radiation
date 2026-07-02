@@ -1,8 +1,0 @@
-{
-  "type": "item",
-  "target": "minecraft:raw_iron",
-  "isotopes": {
-    "nr:u_238": { "atoms": 1.0e17 },
-    "nr:u_235": { "atoms": 7.0e14 }
-  }
-}

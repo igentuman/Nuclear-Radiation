@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:th_230": {
+      "atoms": 1.19E18
+    }
+  },
+  "target": "#c:isotopes/thorium_230"
+}

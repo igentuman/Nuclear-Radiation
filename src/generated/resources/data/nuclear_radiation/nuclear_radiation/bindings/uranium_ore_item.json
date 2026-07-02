@@ -8,5 +8,5 @@
       "atoms": 9.72E21
     }
   },
-  "target": "#nuclear_radiation:radioactive/uranium_ore"
+  "target": "#c:ores/uranium"
 }

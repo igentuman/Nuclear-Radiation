@@ -8,5 +8,5 @@
       "atoms": 2.51E24
     }
   },
-  "target": "#nuclear_radiation:radioactive/uranium_raw"
+  "target": "#c:raw_ore/uranium"
 }

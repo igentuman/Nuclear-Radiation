@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:u_238": {
+      "atoms": 1.972E20
+    }
+  },
+  "target": "#c:pellets/uranium238"
+}

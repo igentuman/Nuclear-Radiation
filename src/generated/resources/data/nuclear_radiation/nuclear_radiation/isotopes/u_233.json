@@ -1,0 +1,13 @@
+{
+  "alpha": 0.93,
+  "beta": 0.0,
+  "half_life_ticks": 100475577600000,
+  "neutron": 0.0,
+  "quality": {
+    "alpha": 20.0,
+    "beta": 1.0,
+    "neutron": 10.0,
+    "xray": 1.0
+  },
+  "xray": 0.07
+}

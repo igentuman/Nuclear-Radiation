@@ -1,0 +1,15 @@
+{
+  "type": "nuclear_radiation:block_irradiation",
+  "chance": 0.02,
+  "input": "minecraft:grass_block",
+  "min_bq": 1.0E10,
+  "outputs": [
+    {
+      "block": "minecraft:coarse_dirt",
+      "weight": 3
+    },
+    {
+      "block": "minecraft:gravel"
+    }
+  ]
+}

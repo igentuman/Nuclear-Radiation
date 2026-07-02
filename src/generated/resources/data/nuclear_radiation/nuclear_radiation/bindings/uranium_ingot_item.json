@@ -8,5 +8,5 @@
       "atoms": 4.27E24
     }
   },
-  "target": "#nuclear_radiation:radioactive/uranium_ingot"
+  "target": "#c:ingots/uranium"
 }

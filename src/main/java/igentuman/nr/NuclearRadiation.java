@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import igentuman.nr.armor.NRArmorItems;
 import igentuman.nr.binding.DefaultBindings;
 import igentuman.nr.binding.RadiationBindingsReloadListener;
 import igentuman.nr.binding.RadiationComponent;
@@ -16,8 +17,10 @@ import igentuman.nr.config.NRClientConfig;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.util.persistence.NRAttachments;
 import igentuman.nr.registry.Isotopes;
+import igentuman.nr.registry.IsotopesReloadListener;
 import igentuman.nr.containers.ContainerEvents;
 import igentuman.nr.entity.EntityExposureEvents;
+import igentuman.nr.irradiation.BlockIrradiationEvents;
 import igentuman.nr.medicine.NREffects;
 import igentuman.nr.medicine.NRMedicineItems;
 import igentuman.nr.recipe.NRRecipes;
@@ -88,6 +91,7 @@ public class NuclearRadiation {
         NRAttachments.register(modEventBus);
         NREffects.register(modEventBus);
         NRMedicineItems.register(modEventBus);
+        NRArmorItems.register(modEventBus);
         NRTools.register(modEventBus);
         NRSounds.register(modEventBus);
         NRRecipes.register(modEventBus);
@@ -98,6 +102,7 @@ public class NuclearRadiation {
         NeoForge.EVENT_BUS.register(new ContainerEvents());
         NeoForge.EVENT_BUS.register(new EntityExposureEvents());
         NeoForge.EVENT_BUS.register(new RadiationTooltip());
+        NeoForge.EVENT_BUS.register(new BlockIrradiationEvents());
 
         modEventBus.addListener(this::addCreative);
 
@@ -118,6 +123,12 @@ public class NuclearRadiation {
             event.accept(NRTools.GEIGER_COUNTER);
             event.accept(NRTools.DOSIMETER);
             event.accept(CREATIVE_RAD_SOURCE_ITEM);
+        }
+        if (event.getTabKey() == CreativeModeTabs.COMBAT) {
+            event.accept(NRArmorItems.HAZMAT_HELMET);
+            event.accept(NRArmorItems.HAZMAT_CHESTPLATE);
+            event.accept(NRArmorItems.HAZMAT_LEGGINGS);
+            event.accept(NRArmorItems.HAZMAT_BOOTS);
         }
         if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
             event.accept(NRMedicineItems.IODINE_PILL);
@@ -141,6 +152,7 @@ public class NuclearRadiation {
 
     @SubscribeEvent
     public void onAddReloadListeners(AddReloadListenerEvent event) {
+        event.addListener(new IsotopesReloadListener());
         event.addListener(new RadiationBindingsReloadListener());
         event.addListener(new ShieldingBindingsReloadListener());
         event.addListener(new ArmorProtectionReloadListener());

@@ -23,17 +23,6 @@ public class NRItemTagsProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        tag(RadiationTags.ITEM_URANIUM_ORE)
-                .addOptionalTag(c("ores/uranium"));
-
-        tag(RadiationTags.ITEM_URANIUM_RAW)
-                .addOptionalTag(c("raw_materials/uranium"));
-
-        tag(RadiationTags.ITEM_URANIUM_INGOT)
-                .addOptionalTag(c("ingots/uranium"));
-
-        tag(RadiationTags.ITEM_URANIUM_DUST)
-                .addOptionalTag(c("dusts/uranium"));
 
         tag(RadiationTags.ITEM_HIGH)
                 .addOptionalTag(c("dusts/plutonium"))

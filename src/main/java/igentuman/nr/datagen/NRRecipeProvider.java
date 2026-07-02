@@ -1,7 +1,10 @@
 package igentuman.nr.datagen;
 
 import igentuman.nr.NuclearRadiation;
+import igentuman.nr.armor.NRArmorItems;
 import igentuman.nr.medicine.NRMedicineItems;
+import igentuman.nr.recipe.BlockIrradiationRecipe;
+import igentuman.nr.recipe.BlockIrradiationRecipe.BlockOutput;
 import igentuman.nr.recipe.EntityIngredient;
 import igentuman.nr.recipe.EntityResult;
 import igentuman.nr.recipe.MutationRecipe;
@@ -17,7 +20,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -93,7 +98,60 @@ public class NRRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_ghast_tear", has(Items.GHAST_TEAR))
                 .save(recipeOutput);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NRArmorItems.HAZMAT_HELMET)
+                .pattern("HXH")
+                .pattern("H H")
+                .pattern("   ")
+                .define('X', Items.LEATHER_HELMET)
+                .define('H', Items.PHANTOM_MEMBRANE)
+                .unlockedBy("has_phantom_membrane", has(Items.PHANTOM_MEMBRANE))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NRArmorItems.HAZMAT_CHESTPLATE)
+                .pattern("H H")
+                .pattern("HXH")
+                .pattern("HHH")
+                .define('X', Items.LEATHER_CHESTPLATE)
+                .define('H', Items.PHANTOM_MEMBRANE)
+                .unlockedBy("has_phantom_membrane", has(Items.PHANTOM_MEMBRANE))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NRArmorItems.HAZMAT_LEGGINGS)
+                .pattern("HXH")
+                .pattern("H H")
+                .pattern("H H")
+                .define('X', Items.LEATHER_LEGGINGS)
+                .define('H', Items.PHANTOM_MEMBRANE)
+                .unlockedBy("has_phantom_membrane", has(Items.PHANTOM_MEMBRANE))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NRArmorItems.HAZMAT_BOOTS)
+                .pattern("   ")
+                .pattern("   ")
+                .pattern("HXH")
+                .define('X', Items.LEATHER_BOOTS)
+                .define('H', Items.PHANTOM_MEMBRANE)
+                .unlockedBy("has_phantom_membrane", has(Items.PHANTOM_MEMBRANE))
+                .save(recipeOutput);
+
         buildMutations(recipeOutput);
+        buildBlockIrradiations(recipeOutput);
+    }
+
+    private void buildBlockIrradiations(RecipeOutput recipeOutput) {
+        blockIrradiation(recipeOutput, "irradiate_grass_block", "minecraft:grass_block", 1.0e10, 0.02f,
+                new BlockOutput(Blocks.COARSE_DIRT, 3),
+                new BlockOutput(Blocks.GRAVEL, 1));
+
+        blockIrradiation(recipeOutput, "irradiate_leaves", "#minecraft:leaves", 5.0e9, 0.02f,
+                new BlockOutput(Blocks.AIR, 1));
+    }
+
+    private void blockIrradiation(RecipeOutput out, String name, String input,
+                                  double minBq, float chance, BlockOutput... outputs) {
+        out.accept(ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, name),
+                new BlockIrradiationRecipe(input, minBq, List.of(outputs), chance),
+                null);
     }
 
     private void buildMutations(RecipeOutput recipeOutput) {

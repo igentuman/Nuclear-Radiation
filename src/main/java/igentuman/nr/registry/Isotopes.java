@@ -1,12 +1,7 @@
 package igentuman.nr.registry;
 
-import igentuman.nr.builder.IsotopeBuilder;
-
 public final class Isotopes {
     private Isotopes() {}
-
-    private static final long TICKS_PER_YEAR = 631128000L;
-    private static final long TICKS_PER_DAY = 24000L;
 
     public static final String U_238   = "nr:u_238";
     public static final String U_235   = "nr:u_235";
@@ -21,94 +16,36 @@ public final class Isotopes {
     public static final String PO_210  = "nr:po_210";
     public static final String XE_133  = "nr:xe_133";
     public static final String KR_85   = "nr:kr_85";
+    public static final String TH_230  = "nr:th_230";
+    public static final String TH_232  = "nr:th_232";
+    public static final String U_233   = "nr:u_233";
+    public static final String U_234   = "nr:u_234";
+    public static final String NP_236  = "nr:np_236";
+    public static final String NP_237  = "nr:np_237";
+    public static final String PU_238  = "nr:pu_238";
+    public static final String PU_241  = "nr:pu_241";
+    public static final String PU_242  = "nr:pu_242";
+    public static final String AM_241  = "nr:am_241";
+    public static final String AM_242  = "nr:am_242";
+    public static final String AM_243  = "nr:am_243";
+    public static final String CM_243  = "nr:cm_243";
+    public static final String CM_245  = "nr:cm_245";
+    public static final String CM_246  = "nr:cm_246";
+    public static final String CM_247  = "nr:cm_247";
+    public static final String BK_247  = "nr:bk_247";
+    public static final String BK_248  = "nr:bk_248";
+    public static final String CF_249  = "nr:cf_249";
+    public static final String CF_250  = "nr:cf_250";
+    public static final String CF_251  = "nr:cf_251";
+    public static final String NA_22   = "nr:na_22";
+    public static final String CA_48   = "nr:ca_48";
+    public static final String BE_7    = "nr:be_7";
+    public static final String IR_192  = "nr:ir_192";
+    public static final String CN_291  = "nr:cn_291";
+    public static final String AC_225  = "nr:ac_225";
 
     public static void bootstrap() {
         if (IsotopeRegistry.contains(U_238)) return;
-
-        IsotopeBuilder.create(U_238)
-                .alpha(0.95f).beta(0.0f).xray(0.05f).neutron(0.0f)
-                .halfLife(saturate(4.468e9 * TICKS_PER_YEAR))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .register();
-
-        IsotopeBuilder.create(U_235)
-                .alpha(0.85f).beta(0.0f).xray(0.15f).neutron(0.0f)
-                .halfLife(saturate(7.04e8 * TICKS_PER_YEAR))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .register();
-
-        IsotopeBuilder.create(PU_239)
-                .alpha(0.95f).beta(0.0f).xray(0.05f).neutron(0.0f)
-                .halfLife(saturate(24110.0 * TICKS_PER_YEAR))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .branch(U_235, 1.0)
-                .register();
-
-        IsotopeBuilder.create(CS_137)
-                .alpha(0.0f).beta(0.7f).xray(0.3f).neutron(0.0f)
-                .halfLife(saturate(30.17 * TICKS_PER_YEAR))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .register();
-
-        IsotopeBuilder.create(I_131)
-                .alpha(0.0f).beta(0.6f).xray(0.4f).neutron(0.0f)
-                .halfLife(saturate(8.02 * TICKS_PER_DAY))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .register();
-
-        IsotopeBuilder.create(SR_90)
-                .alpha(0.0f).beta(0.95f).xray(0.05f).neutron(0.0f)
-                .halfLife(saturate(28.79 * TICKS_PER_YEAR))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .branch(Y_90, 1.0)
-                .register();
-
-        IsotopeBuilder.create(Y_90)
-                .alpha(0.0f).beta(1.0f).xray(0.0f).neutron(0.0f)
-                .halfLife(saturate(2.667 * TICKS_PER_DAY))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .register();
-
-        IsotopeBuilder.create(CO_60)
-                .alpha(0.0f).beta(0.2f).xray(0.8f).neutron(0.0f)
-                .halfLife(saturate(5.27 * TICKS_PER_YEAR))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .register();
-
-        IsotopeBuilder.create(CF_252)
-                .alpha(0.65f).beta(0.0f).xray(0.05f).neutron(0.30f)
-                .halfLife(saturate(2.645 * TICKS_PER_YEAR))
-                .quality(1.0f, 1.0f, 20.0f, 20.0f)
-                .register();
-
-        IsotopeBuilder.create(H_3)
-                .alpha(0.0f).beta(1.0f).xray(0.0f).neutron(0.0f)
-                .halfLife(saturate(12.32 * TICKS_PER_YEAR))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .register();
-
-        IsotopeBuilder.create(PO_210)
-                .alpha(1.0f).beta(0.0f).xray(0.05f).neutron(0.0f)
-                .halfLife(saturate(138.376 * TICKS_PER_DAY))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .register();
-
-        IsotopeBuilder.create(XE_133)
-                .alpha(0.0f).beta(0.6f).xray(0.4f).neutron(0.0f)
-                .halfLife(saturate(5.2475 * TICKS_PER_DAY))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .register();
-
-        IsotopeBuilder.create(KR_85)
-                .alpha(0.0f).beta(0.9f).xray(0.1f).neutron(0.0f)
-                .halfLife(saturate(10.756 * TICKS_PER_YEAR))
-                .quality(1.0f, 1.0f, 20.0f, 10.0f)
-                .register();
-    }
-
-    private static long saturate(double v) {
-        if (v >= (double) Long.MAX_VALUE) return Long.MAX_VALUE;
-        if (v <= 1.0) return 1L;
-        return (long) v;
+        DefaultIsotopes.registerDefaults();
     }
 }

@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:th_232": {
+      "atoms": 6.31E12
+    }
+  },
+  "target": "#c:isotopes/thorium_232"
+}

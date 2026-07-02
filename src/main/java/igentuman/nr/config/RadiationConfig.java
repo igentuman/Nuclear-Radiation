@@ -37,6 +37,13 @@ public final class RadiationConfig {
     public static final ModConfigSpec.DoubleValue DEFAULT_BACKGROUND_USV_PER_HOUR;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> LEVEL_BACKGROUND_USV_PER_HOUR;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> BIOME_BACKGROUND_USV_PER_HOUR;
+    public static final ModConfigSpec.BooleanValue BLOCK_IRRADIATION_ENABLED;
+    public static final ModConfigSpec.IntValue BLOCK_IRRADIATION_INTERVAL_TICKS;
+    public static final ModConfigSpec.DoubleValue BLOCK_IRRADIATION_MIN_SOURCE_BQ;
+    public static final ModConfigSpec.IntValue BLOCK_IRRADIATION_RADIUS;
+    public static final ModConfigSpec.IntValue BLOCK_IRRADIATION_RAYS;
+    public static final ModConfigSpec.IntValue BLOCK_IRRADIATION_MAX_SOURCES;
+    public static final ModConfigSpec.IntValue BLOCK_IRRADIATION_MAX_TRANSFORMS;
 
     private static volatile Map<ResourceLocation, Double> levelBackgroundCache;
     private static volatile Map<ResourceLocation, Double> biomeBackgroundCache;
@@ -107,8 +114,8 @@ public final class RadiationConfig {
                 "Overrides default; biome entries override this.")
                 .defineList("level_usv_per_hour",
                         List.of(
-                                "minecraft:the_nether=0.5",
-                                "minecraft:the_end=0.3"
+                                "minecraft:the_nether=1.5",
+                                "minecraft:the_end=1.3"
                         ),
                         () -> "minecraft:overworld=0.1",
                         o -> o instanceof String && ((String) o).contains("="));
@@ -117,8 +124,8 @@ public final class RadiationConfig {
                 "Highest priority; overrides level and default.")
                 .defineList("biome_usv_per_hour",
                         List.of(
-                                "minecraft:nether_wastes=5.0",
-                                "minecraft:deep_dark=7.0"
+                                "minecraft:nether_wastes=50.0",
+                                "minecraft:deep_dark=70.0"
                         ),
                         () -> "minecraft:plains=0.1",
                         o -> o instanceof String && ((String) o).contains("="));
@@ -136,6 +143,23 @@ public final class RadiationConfig {
         CONTAMINATION_SPREAD_FACTOR = b.defineInRange("contamination_spread_factor", 0.001, 0.0, 1.0);
         STATIC_HALF_LIFE_YEARS = b.comment("Isotopes with effective half-life (after isotopeDecayMultiplier) above this many IRL years are treated as static: no decay math, no daughter ingrowth, no expiry. Activity Bq is still computed and shown. Default 1000 yr captures U-238/U-235/Pu-239.")
                 .defineInRange("static_half_life_years", 1000.0, 0.0, 1.0e15);
+        b.pop();
+
+        b.push("block_irradiation");
+        BLOCK_IRRADIATION_ENABLED = b.comment("Strong world sources transform nearby blocks over time (datapack recipe driven)")
+                .define("enabled", true);
+        BLOCK_IRRADIATION_INTERVAL_TICKS = b.comment("Ticks between irradiation sampling passes")
+                .defineInRange("interval_ticks", 200, 1, 24000);
+        BLOCK_IRRADIATION_MIN_SOURCE_BQ = b.comment("Source activity (Bq) floor to be considered for block irradiation (cheap pre-gate)")
+                .defineInRange("min_source_bq", 5.0e9, 0.0, 1.0e30);
+        BLOCK_IRRADIATION_RADIUS = b.comment("Max ray length (blocks) cast from each source")
+                .defineInRange("radius", 8, 1, 128);
+        BLOCK_IRRADIATION_RAYS = b.comment("Random rays cast per source per interval; each ray irradiates the first solid block it hits (occlusion-aware)")
+                .defineInRange("rays_per_source", 10, 1, 1000);
+        BLOCK_IRRADIATION_MAX_SOURCES = b.comment("Cap on sources sampled per interval to prevent oversized jobs")
+                .defineInRange("max_sources_per_job", 64, 1, 200);
+        BLOCK_IRRADIATION_MAX_TRANSFORMS = b.comment("Safety cap on setBlock calls per drain")
+                .defineInRange("max_transforms_per_drain", 10, 1, 1000);
         b.pop();
 
         SPEC = b.build();

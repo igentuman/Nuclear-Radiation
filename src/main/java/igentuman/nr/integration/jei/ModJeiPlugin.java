@@ -3,6 +3,7 @@ package igentuman.nr.integration.jei;
 import igentuman.nr.api.Isotope;
 import igentuman.nr.binding.RadiationBindings;
 import igentuman.nr.api.RadiationProfile;
+import igentuman.nr.recipe.BlockIrradiationRecipe;
 import igentuman.nr.recipe.MutationRecipe;
 import igentuman.nr.recipe.NRRecipes;
 import igentuman.nr.registry.IsotopeRegistry;
@@ -45,7 +46,8 @@ public class ModJeiPlugin implements IModPlugin {
                 //new DecayGraphCategory(gh),
                 new ArmorProtectionCategory(gh),
                 new BlockShieldingCategory(gh),
-                new MutationCategory(gh)
+                new MutationCategory(gh),
+                new BlockIrradiationCategory(gh)
         );
     }
 
@@ -61,6 +63,7 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipes(NRJeiTypes.ARMOR_PROTECTION, collectArmorProtection());
         registration.addRecipes(NRJeiTypes.BLOCK_SHIELDING, collectBlockShielding());
         registration.addRecipes(NRJeiTypes.MUTATION, collectMutations());
+        registration.addRecipes(NRJeiTypes.BLOCK_IRRADIATION, collectBlockIrradiations());
     }
 
     private static List<MutationRecipe> collectMutations() {
@@ -68,6 +71,16 @@ public class ModJeiPlugin implements IModPlugin {
         List<MutationRecipe> out = new ArrayList<>();
         if (mc.level == null) return out;
         for (RecipeHolder<MutationRecipe> holder : mc.level.getRecipeManager().getAllRecipesFor(NRRecipes.MUTATION_TYPE.get())) {
+            out.add(holder.value());
+        }
+        return out;
+    }
+
+    private static List<BlockIrradiationRecipe> collectBlockIrradiations() {
+        Minecraft mc = Minecraft.getInstance();
+        List<BlockIrradiationRecipe> out = new ArrayList<>();
+        if (mc.level == null) return out;
+        for (RecipeHolder<BlockIrradiationRecipe> holder : mc.level.getRecipeManager().getAllRecipesFor(NRRecipes.BLOCK_IRRADIATION_TYPE.get())) {
             out.add(holder.value());
         }
         return out;

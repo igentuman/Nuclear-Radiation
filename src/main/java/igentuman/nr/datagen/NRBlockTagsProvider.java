@@ -21,8 +21,6 @@ public class NRBlockTagsProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        tag(RadiationTags.BLOCK_URANIUM_ORE)
-                .addOptionalTag(c("ores/uranium"));
 
         tag(RadiationTags.BLOCK_HIGH)
                 .addOptionalTag(c("storage_blocks/plutonium"));

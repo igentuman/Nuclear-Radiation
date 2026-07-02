@@ -62,7 +62,7 @@ public final class IonizationGlowRenderer {
         for (Entity e : mc.level.entitiesForRendering()) {
             if (!(e instanceof ItemEntity item)) continue;
             if (frustum != null && !frustum.isVisible(item.getBoundingBoxForCulling())) continue;
-            if (RadiationBindings.of(item.getItem()).totalActivityBq() >= threshold) {
+            if (RadiationBindings.of(item.getItem()).totalActivityBq() * item.getItem().getCount() >= threshold) {
                 glowing.add(item);
             }
         }

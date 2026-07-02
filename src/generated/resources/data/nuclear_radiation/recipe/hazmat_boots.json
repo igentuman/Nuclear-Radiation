@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "H": {
+      "item": "minecraft:phantom_membrane"
+    },
+    "X": {
+      "item": "minecraft:leather_boots"
+    }
+  },
+  "pattern": [
+    "   ",
+    "   ",
+    "HXH"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclear_radiation:hazmat_boots"
+  }
+}

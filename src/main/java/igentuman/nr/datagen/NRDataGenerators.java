@@ -22,6 +22,7 @@ public final class NRDataGenerators {
         CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
         ExistingFileHelper existing = event.getExistingFileHelper();
 
+        gen.addProvider(event.includeServer(), new IsotopeProvider(output));
         gen.addProvider(event.includeServer(), new RadiationBindingProvider(output));
         gen.addProvider(event.includeServer(), new ShieldingBindingProvider(output));
         gen.addProvider(event.includeServer(), new ArmorProtectionProvider(output));

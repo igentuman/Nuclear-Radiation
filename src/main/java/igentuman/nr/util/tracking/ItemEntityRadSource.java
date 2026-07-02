@@ -3,6 +3,7 @@ package igentuman.nr.util.tracking;
 import igentuman.nr.api.RadiationProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.Vec3;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;
@@ -40,4 +41,10 @@ public final class ItemEntityRadSource extends AbstractWorldRadSource {
 
     @Override
     public boolean contaminatesArea() { return true; }
+
+    @Override public double activityBq() { return super.activityBq() * entity().getItem().getCount(); }
+    @Override public double xRayBq()    { return super.xRayBq() * entity().getItem().getCount(); }
+    @Override public double alphaBq()   { return super.alphaBq() * entity().getItem().getCount(); }
+    @Override public double betaBq()    { return super.betaBq() * entity().getItem().getCount(); }
+    @Override public double neutronBq() { return super.neutronBq() * entity().getItem().getCount(); }
 }

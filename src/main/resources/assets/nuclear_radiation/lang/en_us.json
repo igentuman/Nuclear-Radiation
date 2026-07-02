@@ -8,6 +8,11 @@
   "item.nuclear_radiation.geiger_counter": "Geiger Counter",
   "item.nuclear_radiation.dosimeter": "Dosimeter",
 
+  "item.nuclear_radiation.hazmat_helmet": "Hazmat Helmet",
+  "item.nuclear_radiation.hazmat_chestplate": "Hazmat Suit",
+  "item.nuclear_radiation.hazmat_leggings": "Hazmat Leggings",
+  "item.nuclear_radiation.hazmat_boots": "Hazmat Boots",
+
   "item.nuclear_radiation.iodine_pill": "Iodine Pill",
   "item.nuclear_radiation.prussian_blue": "Prussian Blue",
   "item.nuclear_radiation.rad_protection_potion": "Rad-Protection Potion",
@@ -28,6 +33,10 @@
   "jei.nuclear_radiation.category.armor_protection": "Armor Radiation Protection",
   "jei.nuclear_radiation.category.block_shielding": "Block Radiation Shielding",
   "jei.nuclear_radiation.category.mutation": "Radioactive Mutation",
+  "jei.nuclear_radiation.category.block_irradiation": "Block Irradiation",
+
+  "jei.nuclear_radiation.block_irradiation.min_bq": "Min activity: %s",
+  "jei.nuclear_radiation.block_irradiation.chance": "Chance: %s",
 
   "jei.nuclear_radiation.mutation.dose": "Total dose: %s",
   "jei.nuclear_radiation.mutation.rate": "Exposure:",

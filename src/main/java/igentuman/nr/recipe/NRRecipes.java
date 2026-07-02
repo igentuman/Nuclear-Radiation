@@ -24,6 +24,13 @@ public final class NRRecipes {
     public static final DeferredHolder<RecipeSerializer<?>, MutationRecipe.Serializer> MUTATION_SERIALIZER =
             SERIALIZERS.register("mutation", MutationRecipe.Serializer::new);
 
+    public static final DeferredHolder<RecipeType<?>, RecipeType<BlockIrradiationRecipe>> BLOCK_IRRADIATION_TYPE =
+            TYPES.register("block_irradiation", () -> RecipeType.simple(
+                    ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "block_irradiation")));
+
+    public static final DeferredHolder<RecipeSerializer<?>, BlockIrradiationRecipe.Serializer> BLOCK_IRRADIATION_SERIALIZER =
+            SERIALIZERS.register("block_irradiation", BlockIrradiationRecipe.Serializer::new);
+
     public static void register(IEventBus bus) {
         TYPES.register(bus);
         SERIALIZERS.register(bus);
