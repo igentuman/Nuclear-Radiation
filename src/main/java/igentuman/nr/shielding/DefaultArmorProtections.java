@@ -33,6 +33,10 @@ public final class DefaultArmorProtections {
         addCustom(list, "mekanism:mekasuit_bodyarmour", 0.95, 1, 1, 0.95);
         addCustom(list, "mekanism:mekasuit_pants", 0.95, 1, 1, 0.95);
         addCustom(list, "mekanism:mekasuit_boots", 0.95, 1, 1, 0.95);
+        addCustom(list, "nuclearcraftneohaul:hazmat_helmet", 0.9, 1, 1, 0.92);
+        addCustom(list, "nuclearcraftneohaul:hazmat_chestplate", 0.9, 1, 1, 0.92);
+        addCustom(list, "nuclearcraftneohaul:hazmat_leggings", 0.9, 1, 1, 0.92);
+        addCustom(list, "nuclearcraftneohaul:hazmat_boots", 0.9, 1, 1, 0.92);
         return list;
     }
 

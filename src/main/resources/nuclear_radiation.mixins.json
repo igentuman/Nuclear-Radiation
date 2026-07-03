@@ -8,7 +8,12 @@
     "CapabilityRadiationRecipientMixin",
     "ItemVoltaicMixin",
     "MekRadiationManagerMixin",
+    "NCMeltdownMixin",
+    "NCRadiationHandlerMixin",
     "NuclearScienceRadiationManagerMixin"
+  ],
+  "client": [
+    "client.NCTooltipHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

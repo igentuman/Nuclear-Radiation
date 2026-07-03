@@ -294,6 +294,94 @@ public final class DefaultBindings {
                 .isotope(Isotopes.CS_137, 4.4e18)
                 .build());
 
+        // NuclearCraft: Neohaul uses c:<prefix>/<material> tags. NR's existing c:ores/ingots/dusts
+        // uranium bindings already cover NCN uranium; below fills the raw + isotope/fuel gaps.
+        list.add(BindingDefinition.builder("ncn_raw_uranium")
+                .itemTag(cTag("raw_materials/uranium"))
+                .isotope(Isotopes.U_238, 2.51e24)
+                .isotope(Isotopes.U_235, 1.84e22)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_thorium")
+                .itemTag(cTag("ingots/thorium"))
+                .isotope(Isotopes.TH_232, 6.31e12)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_plutonium")
+                .itemTag(cTag("ingots/plutonium"))
+                .isotope(Isotopes.PU_239, 3.57e21)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_uranium_233")
+                .itemTag(cTag("ingots/uranium_233"))
+                .isotope(Isotopes.U_233, 5.54e17)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_uranium_235")
+                .itemTag(cTag("ingots/uranium_235"))
+                .isotope(Isotopes.U_235, 1.24e14)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_uranium_238")
+                .itemTag(cTag("ingots/uranium_238"))
+                .isotope(Isotopes.U_238, 1.93e13)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_neptunium_237")
+                .itemTag(cTag("ingots/neptunium_237"))
+                .isotope(Isotopes.NP_237, 4.05e16)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_plutonium_238")
+                .itemTag(cTag("ingots/plutonium_238"))
+                .isotope(Isotopes.PU_238, 9.85e20)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_plutonium_239")
+                .itemTag(cTag("ingots/plutonium_239"))
+                .isotope(Isotopes.PU_239, 3.57e21)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_plutonium_241")
+                .itemTag(cTag("ingots/plutonium_241"))
+                .isotope(Isotopes.PU_241, 5.95e21)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_plutonium_242")
+                .itemTag(cTag("ingots/plutonium_242"))
+                .isotope(Isotopes.PU_242, 2.27e17)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_americium_241")
+                .itemTag(cTag("ingots/americium_241"))
+                .isotope(Isotopes.AM_241, 19.72e19)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_americium_243")
+                .itemTag(cTag("ingots/americium_243"))
+                .isotope(Isotopes.AM_243, 1.15e19)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_curium_245")
+                .itemTag(cTag("ingots/curium_245"))
+                .isotope(Isotopes.CM_245, 1.02e19)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_californium_252")
+                .itemTag(cTag("ingots/californium_252"))
+                .isotope(Isotopes.CF_252, 3.08e22)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_cesium_137")
+                .itemTag(cTag("ingots/cesium_137"))
+                .isotope(Isotopes.CS_137, 4.4e20)
+                .build());
+
+        list.add(BindingDefinition.builder("ncn_ingot_strontium_90")
+                .itemTag(cTag("ingots/strontium_90"))
+                .isotope(Isotopes.SR_90, 3.0e20)
+                .build());
+
         return list;
     }
 
