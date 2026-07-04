@@ -1,0 +1,21 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:cs_137": {
+      "atoms": 4.8888888888888885E19
+    },
+    "nr:pu_238": {
+      "atoms": 1.0944444444444444E20
+    },
+    "nr:pu_241": {
+      "atoms": 6.611111111111112E20
+    },
+    "nr:pu_242": {
+      "atoms": 2.5222222222222224E16
+    },
+    "nr:u_238": {
+      "atoms": 8.577777777777777E12
+    }
+  },
+  "target": "#c:fission_fuel/depleted_neptunium/hen_236"
+}

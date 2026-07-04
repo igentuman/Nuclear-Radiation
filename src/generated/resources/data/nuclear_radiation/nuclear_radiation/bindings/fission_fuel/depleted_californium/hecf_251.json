@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:cf_252": {
+      "atoms": 2.3955555555555555E22
+    }
+  },
+  "target": "#c:fission_fuel/depleted_californium/hecf_251"
+}

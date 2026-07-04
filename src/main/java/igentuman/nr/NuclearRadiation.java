@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import igentuman.nr.armor.NRArmorItems;
-import igentuman.nr.binding.DefaultBindings;
 import igentuman.nr.binding.RadiationBindingsReloadListener;
 import igentuman.nr.binding.RadiationComponent;
 import igentuman.nr.binding.RadiationTooltip;
@@ -111,7 +110,6 @@ public class NuclearRadiation {
         modContainer.registerConfig(ModConfig.Type.CLIENT, NRClientConfig.SPEC, "nuclear_radiation-client.toml");
 
         Isotopes.bootstrap();
-        DefaultBindings.registerDefaults();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

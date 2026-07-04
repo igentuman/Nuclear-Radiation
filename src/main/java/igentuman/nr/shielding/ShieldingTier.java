@@ -5,7 +5,9 @@ import javax.annotation.Nullable;
 public enum ShieldingTier {
     LIGHT(0.10, 0.30),
     MID(0.30, 0.25),
-    HEAVY(1.00, 0.25);
+    HEAVY(0.60, 0.45),
+    EXTRA_HEAVY(0.95, 0.95)
+    ;
 
     public final double defaultXray;
     public final double defaultNeutron;

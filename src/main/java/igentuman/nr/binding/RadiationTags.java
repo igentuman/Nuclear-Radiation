@@ -23,6 +23,7 @@ public final class RadiationTags {
     public static final TagKey<Block> BLOCK_SHIELD_LIGHT = blockTag("shielding/light");
     public static final TagKey<Block> BLOCK_SHIELD_MID = blockTag("shielding/mid");
     public static final TagKey<Block> BLOCK_SHIELD_HEAVY = blockTag("shielding/heavy");
+    public static final TagKey<Block> BLOCK_SHIELD_EXTRA_HEAVY = blockTag("shielding/extra_heavy");
 
     public static final TagKey<Fluid> FLUID_RADIOACTIVE = fluidTag("radioactive");
 

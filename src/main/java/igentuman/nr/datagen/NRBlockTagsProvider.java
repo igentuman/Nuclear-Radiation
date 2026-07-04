@@ -38,6 +38,12 @@ public class NRBlockTagsProvider extends BlockTagsProvider {
 
         tag(RadiationTags.BLOCK_SHIELD_HEAVY)
                 .add(Blocks.IRON_BLOCK, Blocks.GOLD_BLOCK, Blocks.NETHERITE_BLOCK);
+
+        tag(RadiationTags.BLOCK_SHIELD_EXTRA_HEAVY)
+                .addOptionalTag(c("storage_blocks/lead"));
+
+        tag(RadiationTags.BLOCK_SHIELD_EXTRA_HEAVY)
+                .add(Blocks.GOLD_BLOCK, Blocks.NETHERITE_BLOCK);
     }
 
     private static ResourceLocation c(String path) {

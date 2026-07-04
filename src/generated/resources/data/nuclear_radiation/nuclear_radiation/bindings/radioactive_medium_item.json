@@ -2,7 +2,7 @@
   "type": "item",
   "isotopes": {
     "nr:cs_137": {
-      "atoms": 4.4E20
+      "atoms": 4.4E17
     }
   },
   "target": "#nuclear_radiation:radioactive/medium"

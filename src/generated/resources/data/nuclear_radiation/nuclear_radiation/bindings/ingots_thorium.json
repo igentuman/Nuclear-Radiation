@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:th_230": {
+      "atoms": 6.31E14
+    },
+    "nr:th_232": {
+      "atoms": 6.31E19
+    }
+  },
+  "target": "#c:ingots/thorium"
+}

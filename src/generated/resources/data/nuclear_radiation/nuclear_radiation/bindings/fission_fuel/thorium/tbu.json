@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:th_232": {
+      "atoms": 6.31E15
+    }
+  },
+  "target": "#c:fission_fuel/thorium/tbu"
+}

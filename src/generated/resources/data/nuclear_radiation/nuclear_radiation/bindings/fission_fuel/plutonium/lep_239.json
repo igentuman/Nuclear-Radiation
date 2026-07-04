@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:pu_239": {
+      "atoms": 3.966666666666667E20
+    },
+    "nr:pu_242": {
+      "atoms": 2.017777777777778E17
+    }
+  },
+  "target": "#c:fission_fuel/plutonium/lep_239"
+}

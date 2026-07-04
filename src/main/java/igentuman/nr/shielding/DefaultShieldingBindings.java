@@ -23,6 +23,8 @@ public final class DefaultShieldingBindings {
                 ShieldingTier.MID.defaultXray, ShieldingTier.MID.defaultNeutron));
         list.add(ShieldingBindingDefinition.preset("tier_heavy", ShieldingTier.HEAVY,
                 ShieldingTier.HEAVY.defaultXray, ShieldingTier.HEAVY.defaultNeutron));
+        list.add(ShieldingBindingDefinition.preset("tier_extra_heavy", ShieldingTier.EXTRA_HEAVY,
+                ShieldingTier.EXTRA_HEAVY.defaultXray, ShieldingTier.EXTRA_HEAVY.defaultNeutron));
 
         // Tier tag bindings: blocks in these tags inherit the tier preset.
         list.add(ShieldingBindingDefinition.tierBinding("shielding_light",
@@ -31,6 +33,8 @@ public final class DefaultShieldingBindings {
                 RadiationTags.BLOCK_SHIELD_MID.location(), true, ShieldingTier.MID));
         list.add(ShieldingBindingDefinition.tierBinding("shielding_heavy",
                 RadiationTags.BLOCK_SHIELD_HEAVY.location(), true, ShieldingTier.HEAVY));
+        list.add(ShieldingBindingDefinition.tierBinding("shielding_extra_heavy",
+                RadiationTags.BLOCK_SHIELD_EXTRA_HEAVY.location(), true, ShieldingTier.EXTRA_HEAVY));
 
         return list;
     }

@@ -24,14 +24,6 @@ public class NRItemTagsProvider extends ItemTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
 
-        tag(RadiationTags.ITEM_HIGH)
-                .addOptionalTag(c("dusts/plutonium"))
-                .addOptionalTag(c("ingots/plutonium"));
-
-        tag(RadiationTags.ITEM_MEDIUM)
-                .addOptionalTag(c("dusts/thorium"))
-                .addOptionalTag(c("ingots/thorium"));
-
         tag(RadiationTags.ITEM_SPENT_FUEL)
                 .addOptionalTag(c("spent_nuclear_fuel"));
     }

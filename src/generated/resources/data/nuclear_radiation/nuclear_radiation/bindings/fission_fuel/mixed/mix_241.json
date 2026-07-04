@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:pu_241": {
+      "atoms": 6.611111111111112E20
+    },
+    "nr:u_238": {
+      "atoms": 1.7155555555555555E13
+    }
+  },
+  "target": "#c:fission_fuel/mixed/mix_241"
+}

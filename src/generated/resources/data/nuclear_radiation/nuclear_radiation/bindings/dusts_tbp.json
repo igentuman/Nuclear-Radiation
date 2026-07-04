@@ -1,0 +1,15 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:th_230": {
+      "atoms": 6.31E19
+    },
+    "nr:th_232": {
+      "atoms": 6.31E16
+    },
+    "nr:u_233": {
+      "atoms": 6.31E18
+    }
+  },
+  "target": "#c:dusts/tbp"
+}

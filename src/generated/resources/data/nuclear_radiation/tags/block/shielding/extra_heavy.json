@@ -1,0 +1,10 @@
+{
+  "values": [
+    {
+      "id": "#c:storage_blocks/lead",
+      "required": false
+    },
+    "minecraft:gold_block",
+    "minecraft:netherite_block"
+  ]
+}

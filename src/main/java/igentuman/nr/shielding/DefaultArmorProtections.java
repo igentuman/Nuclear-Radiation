@@ -5,7 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-import static igentuman.nr.binding.DefaultBindings.rec;
+import static igentuman.nr.datagen.RadiationBindingProvider.rec;
+
 
 public final class DefaultArmorProtections {
     private DefaultArmorProtections() {}

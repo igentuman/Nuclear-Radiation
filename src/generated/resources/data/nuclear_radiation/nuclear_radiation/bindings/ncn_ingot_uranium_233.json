@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:u_233": {
+      "atoms": 5.54E17
+    }
+  },
+  "target": "#c:ingots/uranium_233"
+}

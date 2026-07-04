@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:u_238": {
+      "atoms": 1.93E13
+    }
+  },
+  "target": "#c:ingots/uranium_238"
+}

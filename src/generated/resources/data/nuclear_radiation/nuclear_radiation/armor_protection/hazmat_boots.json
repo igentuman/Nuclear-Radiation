@@ -2,6 +2,6 @@
   "alpha": 1.0,
   "beta": 1.0,
   "neutron": 0.92,
-  "target": "nuclear_radiation:hazmat_boots",
+  "target": "nuclearcraftneohaul:hazmat_boots",
   "xray": 0.9
 }

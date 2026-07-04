@@ -2,10 +2,10 @@
   "type": "item",
   "isotopes": {
     "nr:co_60": {
-      "atoms": 1.0E21
+      "atoms": 1.0E20
     },
     "nr:cs_137": {
-      "atoms": 4.4E21
+      "atoms": 4.4E20
     }
   },
   "target": "#nuclear_radiation:radioactive/high"
