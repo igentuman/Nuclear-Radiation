@@ -15,7 +15,7 @@ public abstract class NCTooltipHandlerMixin {
 
     @Inject(method = "addRadiationTooltip", at = @At("HEAD"), remap = false, cancellable = true)
     private static void nr$hideRadiationTooltip(List<Component> tooltip, ItemStack stack, CallbackInfo ci) {
-        ci.cancel();
+       // ci.cancel();
     }
 
     @Inject(method = "addArmorRadiationTooltip", at = @At("HEAD"), remap = false, cancellable = true)

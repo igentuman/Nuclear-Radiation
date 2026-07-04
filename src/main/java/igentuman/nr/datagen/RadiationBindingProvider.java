@@ -52,8 +52,8 @@ public class RadiationBindingProvider implements DataProvider {
         // Atoms mirror the flat c:isotopes/<element>_<mass> bindings in DefaultBindings.
         // boron/10, boron/11, lithium/6, lithium/7 are stable -> no radiation binding.
         list.add(isotopeBinding("americium/241", Isotopes.AM_241, 19.72e19));
-        list.add(isotopeBinding("americium/242", Isotopes.AM_242, 4.65e21));
-        list.add(isotopeBinding("americium/243", Isotopes.AM_243, 9.15e19));
+        list.add(isotopeBinding("americium/242", Isotopes.AM_242, 4.65e14));
+        list.add(isotopeBinding("americium/243", Isotopes.AM_243, 9.15e20));
 
         list.add(isotopeBinding("berkelium/247", Isotopes.BK_247, 6.03e19));
         list.add(isotopeBinding("berkelium/248", Isotopes.BK_248, 2.76e20));
@@ -115,12 +115,12 @@ public class RadiationBindingProvider implements DataProvider {
 
         list.add(BindingDefinition.builder("pellet_actinium225")
                 .itemTag(pelletTag("actinium225"))
-                .isotope(Isotopes.AC_225, 19.72e17)
+                .isotope(Isotopes.AC_225, 19.72e15)
                 .build());
 
         list.add(BindingDefinition.builder("pellet_polonium")
                 .itemTag(pelletTag("polonium"))
-                .isotope(Isotopes.PO_210, 16.72e19)
+                .isotope(Isotopes.PO_210, 16.72e17)
                 .build());
 
         list.add(BindingDefinition.builder("pellet_plutonium")
@@ -386,7 +386,7 @@ public class RadiationBindingProvider implements DataProvider {
                 .itemTag(dustTag("tbp"))
                 .isotope(Isotopes.TH_232, 6.31e16)
                 .isotope(Isotopes.TH_230, 6.31e19)
-                .isotope(Isotopes.U_233, 6.31e18)
+                .isotope(Isotopes.PA_91, 6.31e20)
                 .build());
 
         list.add(BindingDefinition.builder("dusts_thorium")
@@ -539,8 +539,8 @@ public class RadiationBindingProvider implements DataProvider {
     // Fresh fission fuel: fissile + fertile blend, parts out of 9 (LE = 1:8, HE = 3:6).
     // Compositions from NuclearCraft: Neohaul ModRecipeProvider.fuel(...).
     private static void addFissionFuels(List<BindingDefinition> list) {
-        fuel(list, "americium/hea_242", p(Isotopes.AM_242, A_AM242, 3), p(Isotopes.AM_243, A_AM243, 6));
-        fuel(list, "americium/lea_242", p(Isotopes.AM_242, A_AM242, 1), p(Isotopes.AM_243, A_AM243, 6));
+        fuel(list, "americium/hea_242", p(Isotopes.AM_242, A_AM242, 3), p(Isotopes.AM_243, A_AM243, 2));
+        fuel(list, "americium/lea_242", p(Isotopes.AM_242, A_AM242, 1), p(Isotopes.AM_243, A_AM243, 2));
 
         fuel(list, "berkelium/heb_248", p(Isotopes.BK_248, A_BK248, 3), p(Isotopes.BK_247, A_BK247, 6));
         fuel(list, "berkelium/leb_248", p(Isotopes.BK_248, A_BK248, 1), p(Isotopes.BK_247, A_BK247, 8));
@@ -591,9 +591,9 @@ public class RadiationBindingProvider implements DataProvider {
         fuel(list, "depleted_neptunium/hen_236", p(Isotopes.U_238, A_U238, 4), p(Isotopes.PU_238, A_PU238, 1), p(Isotopes.PU_241, A_PU241, 1), p(Isotopes.PU_242, A_PU242, 1), p(Isotopes.CS_137, A_CS137, 1));
 
         fuel(list, "depleted_plutonium/lep_239", p(Isotopes.PU_242, A_PU242, 5), p(Isotopes.AM_242, A_AM242, 1), p(Isotopes.AM_243, A_AM243, 1), p(Isotopes.CM_246, A_CM246, 1), p(Isotopes.SR_90, A_SR90, 1));
-        fuel(list, "depleted_plutonium/hep_239", p(Isotopes.PU_241, A_PU241, 1), p(Isotopes.AM_242, A_AM242, 1), p(Isotopes.AM_243, A_AM243, 4), p(Isotopes.CM_243, A_CM243, 1), p(Isotopes.SR_90, A_SR90, 1));
+        fuel(list, "depleted_plutonium/hep_239", p(Isotopes.PU_241, A_PU241, 1), p(Isotopes.AM_242, A_AM242, 1), p(Isotopes.AM_243, A_AM243, 1), p(Isotopes.CM_243, A_CM243, 1));
         fuel(list, "depleted_plutonium/lep_241", p(Isotopes.PU_242, A_PU242, 5), p(Isotopes.AM_243, A_AM243, 1), p(Isotopes.CM_246, A_CM246, 1), p(Isotopes.BK_247, A_BK247, 1), p(Isotopes.SR_90, A_SR90, 1));
-        fuel(list, "depleted_plutonium/hep_241", p(Isotopes.AM_241, A_AM241, 1), p(Isotopes.AM_242, A_AM242, 1), p(Isotopes.AM_243, A_AM243, 3), p(Isotopes.CM_246, A_CM246, 2), p(Isotopes.SR_90, A_SR90, 1));
+        fuel(list, "depleted_plutonium/hep_241", p(Isotopes.AM_241, A_AM241, 1), p(Isotopes.AM_242, A_AM242, 1), p(Isotopes.AM_243, A_AM243, 1), p(Isotopes.CM_246, A_CM246, 1));
 
         fuel(list, "depleted_mixed/mix_239", p(Isotopes.U_238, A_U238, 4), p(Isotopes.PU_241, A_PU241, 1), p(Isotopes.PU_242, A_PU242, 2), p(Isotopes.AM_243, A_AM243, 1), p(Isotopes.SR_90, A_SR90, 1));
         fuel(list, "depleted_mixed/mix_241", p(Isotopes.U_238, A_U238, 3), p(Isotopes.PU_241, A_PU241, 1), p(Isotopes.PU_242, A_PU242, 3), p(Isotopes.AM_243, A_AM243, 1), p(Isotopes.SR_90, A_SR90, 1));

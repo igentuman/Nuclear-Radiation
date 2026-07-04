@@ -18,6 +18,12 @@ public final class DefaultIsotopes {
     public static List<IsotopeDefinition> defaults() {
         List<IsotopeDefinition> list = new ArrayList<>();
 
+        list.add(IsotopeDefinition.create(PA_91)
+                .alpha(0.95f).beta(0.0f).xray(0.85f).neutron(0.8f)
+                .halfLife(saturate(32760.0 * TICKS_PER_YEAR))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .build());
+
         list.add(IsotopeDefinition.create(U_238)
                 .alpha(0.95f).beta(0.0f).xray(0.05f).neutron(0.0f)
                 .halfLife(saturate(4.468e9 * TICKS_PER_YEAR))

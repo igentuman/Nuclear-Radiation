@@ -43,6 +43,7 @@ public final class Isotopes {
     public static final String IR_192  = "nr:ir_192";
     public static final String CN_291  = "nr:cn_291";
     public static final String AC_225  = "nr:ac_225";
+    public static final String PA_91  = "nr:pa_91";
 
     public static void bootstrap() {
         if (IsotopeRegistry.contains(U_238)) return;
