@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "nuclearcraftneohaul"
+    }
+  ],
   "values": [
     "nuclearcraftneohaul:hecf_251",
     "nuclearcraftneohaul:hecf_251_c",

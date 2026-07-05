@@ -116,15 +116,17 @@ dependencies {
     compileOnly("cc.tweaked:cc-tweaked-1.21.1-common-api:1.118.0")
     runtimeOnly("cc.tweaked:cc-tweaked-1.21.1-forge:1.118.0")
 
+    implementation "curse.maven:hbms-nuclear-tech-ne-1449927:8062359"
+
     implementation "curse.maven:curios-309927:6529130"
     compileOnly "curse.maven:curios-309927:6529132"
-    implementation "curse.maven:nuclear-science-318646:8252492"
-    implementation "curse.maven:electrodynamics-316867:8252476"
-    implementation "curse.maven:voltaic-api-1237904:8241610"
+    compileOnly "curse.maven:nuclear-science-318646:8252492"
+    compileOnly "curse.maven:electrodynamics-316867:8252476"
+    compileOnly "curse.maven:voltaic-api-1237904:8241610"
 
-    implementation "curse.maven:nuclearcraft-neohaul-1523268:8341287"
-    implementation "curse.maven:terrablender-neoforge-940057:6054947"
-    implementation "curse.maven:zerocore-247921:7344742"
+    compileOnly "curse.maven:nuclearcraft-neohaul-1523268:8341287"
+    compileOnly "curse.maven:terrablender-neoforge-940057:6054947"
+    compileOnly "curse.maven:zerocore-247921:7344742"
 
     implementation "curse.maven:spark-361579:6225208"
     runtimeOnly "curse.maven:sodium-394468:6382651"

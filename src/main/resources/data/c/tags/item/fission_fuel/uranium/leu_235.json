@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "nuclearcraftneohaul"
+    }
+  ],
   "values": [
     "nuclearcraftneohaul:leu_235",
     "nuclearcraftneohaul:leu_235_c",

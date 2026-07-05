@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "nuclearcraftneohaul"
+    }
+  ],
   "values": [
     "nuclearcraftneohaul:depleted_lea_242_ni",
     "nuclearcraftneohaul:depleted_lea_242_ox",
