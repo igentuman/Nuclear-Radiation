@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.event.EventResult;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
+import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import igentuman.nr.api.NREvents;
 import igentuman.nr.integration.kubejs.event.ArmorKubeEvent;
@@ -38,6 +39,11 @@ public class NuclearRadiationKubePlugin implements KubeJSPlugin {
     public void registerEvents(EventGroupRegistry registry) {
         registry.register(NRStartupEvents.GROUP);
         registry.register(NRServerEvents.GROUP);
+    }
+
+    @Override
+    public void registerBindings(BindingRegistry bindings) {
+        bindings.add("NRServerUtils", NRServerUtils.class);
     }
 
     @Override

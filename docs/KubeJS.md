@@ -268,6 +268,42 @@ Accessors: `event.entity`, `event.phase`, `event.svPerHour`, `event.totalDoseSv`
 
 ---
 
+## Server: Meltdown particles
+
+`NRServerUtils.emitMeltdown` — registers a persistent radiation-plume particle source at a block
+position. The plume emits particles every server tick until the source expires. Sources survive
+server restarts (stored in `SavedData`).
+
+```js
+// kubejs/server_scripts/meltdown.js
+
+ServerEvents.tick(event => {
+    // Trigger a plume at a fixed position for the default duration (2400 ticks = 2 minutes).
+    if (event.server.tickCount === 1) {
+        const level = event.server.overworld()
+        NRServerUtils.emitMeltdown(level, 100, 64, 200)
+    }
+})
+
+// With a custom duration (6000 ticks = 5 minutes).
+NRServerEvents.dosePhase(event => {
+    if (event.phase >= 4) {
+        const level = event.entity.level
+        const pos = event.entity.blockPosition()
+        NRServerUtils.emitMeltdown(level, pos.x, pos.y, pos.z, 6000)
+    }
+})
+```
+
+Signatures:
+- `NRServerUtils.emitMeltdown(level, x, y, z)` — default duration (2400 ticks).
+- `NRServerUtils.emitMeltdown(level, x, y, z, durationTicks)` — custom duration in ticks.
+
+`level` must be a `ServerLevel` (available as `event.server.overworld()`,
+`event.entity.level`, etc.). The call is safe to make from any server-thread context.
+
+---
+
 ## Notes
 
 - Startup content is defined once at game load and re-applied automatically after every `/reload`.
