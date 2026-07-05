@@ -1,5 +1,6 @@
 package igentuman.nr.util.tracking;
 
+import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.util.persistence.ChunkRadiationData;
 import igentuman.nr.util.persistence.LevelRadiationData;
@@ -134,6 +135,7 @@ public class WorldSourceRegistry {
             }
             if(level.isRainingAt(chunk.getPos().getWorldPosition())) {
                 data.air().reduceAtoms(1.2);
+                data.soil().reduceAtoms(0.8);
             }
             data.air().advanceDecay(now, floor);
             data.water().advanceDecay(now, floor);
@@ -150,8 +152,24 @@ public class WorldSourceRegistry {
         contaminatedChunks.add(cp);
     }
 
+    public void setChunkRadiation(ChunkPos cp, RadiationProfile air, RadiationProfile water, RadiationProfile soil) {
+        LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
+        if (chunk == null) return;
+        ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
+        data.setAir(air);
+        data.setWater(water);
+        data.setSoil(soil);
+        data.setLastDecayTick(level.getGameTime());
+        if (!data.isEmpty()) contaminatedChunks.add(cp);
+        chunk.setUnsaved(true);
+    }
+
+    public void setChunkRadiation(BlockPos pos, RadiationProfile air, RadiationProfile water, RadiationProfile soil) {
+        setChunkRadiation(new ChunkPos(pos), air, water, soil);
+    }
+
     public void spreadContamination(long now, long intervalTicks) {
-        double base = RadiationConfig.CONTAMINATION_SPREAD_FACTOR.get()*0.00000000001d;
+        double base = RadiationConfig.CONTAMINATION_SPREAD_FACTOR.get()*0.0000000001d;
         if (base <= 0.0) return;
         for (WorldRadSource s : all()) {
             if (!s.contaminatesArea() || !s.isActive()) continue;

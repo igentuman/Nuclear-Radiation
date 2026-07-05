@@ -5,11 +5,27 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:americium_243",
-    "nuclearcraftneohaul:americium_243_c",
-    "nuclearcraftneohaul:americium_243_ni",
-    "nuclearcraftneohaul:americium_243_ox",
-    "nuclearcraftneohaul:americium_243_za"
+    {
+      "id": "nuclearcraftneohaul:americium_243",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:americium_243_c",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:americium_243_ni",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:americium_243_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:americium_243_za",
+      "required": false
+    }
   ]
 }

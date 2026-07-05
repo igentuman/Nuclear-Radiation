@@ -5,11 +5,27 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:berkelium_247",
-    "nuclearcraftneohaul:berkelium_247_c",
-    "nuclearcraftneohaul:berkelium_247_ni",
-    "nuclearcraftneohaul:berkelium_247_ox",
-    "nuclearcraftneohaul:berkelium_247_za"
+    {
+      "id": "nuclearcraftneohaul:berkelium_247",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:berkelium_247_c",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:berkelium_247_ni",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:berkelium_247_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:berkelium_247_za",
+      "required": false
+    }
   ]
 }

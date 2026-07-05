@@ -1,0 +1,15 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:cs_137": {
+      "atoms": 4.4E17
+    },
+    "nr:pu_239": {
+      "atoms": 3.57E17
+    },
+    "nr:sr_90": {
+      "atoms": 3.0E17
+    }
+  },
+  "target": "#c:storage_blocks/corium"
+}

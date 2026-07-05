@@ -4,6 +4,7 @@ import igentuman.nr.binding.RadiationBindings;
 import igentuman.nr.block.CreativeRadSourceBlockEntity;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.api.RadiationProfile;
+import igentuman.nr.particle.MeltdownParticles;
 import igentuman.nr.util.persistence.ChunkRadiationData;
 import igentuman.nr.util.persistence.NRAttachments;
 import net.minecraft.core.BlockPos;
@@ -168,6 +169,7 @@ public class RadSourceEvents {
     public void onLevelTick(LevelTickEvent.Post event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
         long now = server.getGameTime();
+        MeltdownParticles.getOrCreate(server).spawnTick(server);
         int interval = RadiationConfig.WORLD_SIM_INTERVAL_TICKS.get();
         if (now % interval != 0) return;
         WorldSourceRegistry reg = WorldSourceRegistry.get(server);

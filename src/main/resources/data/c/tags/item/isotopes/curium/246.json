@@ -5,11 +5,27 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:curium_246",
-    "nuclearcraftneohaul:curium_246_c",
-    "nuclearcraftneohaul:curium_246_ni",
-    "nuclearcraftneohaul:curium_246_ox",
-    "nuclearcraftneohaul:curium_246_za"
+    {
+      "id": "nuclearcraftneohaul:curium_246",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:curium_246_c",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:curium_246_ni",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:curium_246_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:curium_246_za",
+      "required": false
+    }
   ]
 }

@@ -5,11 +5,27 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:neptunium_236",
-    "nuclearcraftneohaul:neptunium_236_c",
-    "nuclearcraftneohaul:neptunium_236_ni",
-    "nuclearcraftneohaul:neptunium_236_ox",
-    "nuclearcraftneohaul:neptunium_236_za"
+    {
+      "id": "nuclearcraftneohaul:neptunium_236",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:neptunium_236_c",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:neptunium_236_ni",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:neptunium_236_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:neptunium_236_za",
+      "required": false
+    }
   ]
 }

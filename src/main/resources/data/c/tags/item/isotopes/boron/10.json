@@ -5,7 +5,11 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:boron_10"
+    {
+      "id": "nuclearcraftneohaul:boron_10",
+      "required": false
+    }
   ]
 }

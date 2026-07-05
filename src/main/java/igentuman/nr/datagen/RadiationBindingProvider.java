@@ -566,6 +566,20 @@ public class RadiationBindingProvider implements DataProvider {
                 .isotope(Isotopes.SR_90, 3.0e20)
                 .build());
 
+        list.add(BindingDefinition.builder("corium_fluid")
+                .fluidTag(TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "corium")))
+                .isotope(Isotopes.CS_137, 4.4e19)
+                .isotope(Isotopes.SR_90, 3.0e19)
+                .isotope(Isotopes.PU_239, 3.57e18)
+                .build());
+
+        list.add(BindingDefinition.builder("corium_block")
+                .itemTag(cTag("storage_blocks/corium"))
+                .isotope(Isotopes.CS_137, 4.4e17)
+                .isotope(Isotopes.SR_90, 3.0e17)
+                .isotope(Isotopes.PU_239, 3.57e17)
+                .build());
+
         return list;
     }
 

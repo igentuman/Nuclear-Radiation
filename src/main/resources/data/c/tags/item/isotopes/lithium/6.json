@@ -5,7 +5,11 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:lithium_6"
+    {
+      "id": "nuclearcraftneohaul:lithium_6",
+      "required": false
+    }
   ]
 }

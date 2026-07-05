@@ -29,6 +29,8 @@ import igentuman.nr.simulation.SimulationEvents;
 import igentuman.nr.tools.NRTools;
 import igentuman.nr.util.tracking.RadSourceEvents;
 
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -62,6 +64,10 @@ public class NuclearRadiation {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(Registries.PARTICLE_TYPE, MODID);
+
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> RADIATION_PARTICLE =
+            PARTICLE_TYPES.register("radiation", () -> new SimpleParticleType(false));
 
     public static final DeferredBlock<Block> CREATIVE_RAD_SOURCE_BLOCK = BLOCKS.register(
             "creative_rad_source",
@@ -86,6 +92,7 @@ public class NuclearRadiation {
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         BLOCK_ENTITIES.register(modEventBus);
+        PARTICLE_TYPES.register(modEventBus);
         RadiationComponent.register(modEventBus);
         NRAttachments.register(modEventBus);
         NREffects.register(modEventBus);

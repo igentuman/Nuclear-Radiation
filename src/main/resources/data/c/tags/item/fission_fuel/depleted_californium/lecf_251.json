@@ -5,10 +5,23 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:depleted_lecf_251_ni",
-    "nuclearcraftneohaul:depleted_lecf_251_ox",
-    "nuclearcraftneohaul:depleted_lecf_251_tr",
-    "nuclearcraftneohaul:depleted_lecf_251_za"
+    {
+      "id": "nuclearcraftneohaul:depleted_lecf_251_ni",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:depleted_lecf_251_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:depleted_lecf_251_tr",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:depleted_lecf_251_za",
+      "required": false
+    }
   ]
 }

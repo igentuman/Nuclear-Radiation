@@ -5,12 +5,31 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:hen_236",
-    "nuclearcraftneohaul:hen_236_c",
-    "nuclearcraftneohaul:hen_236_ox",
-    "nuclearcraftneohaul:hen_236_ni",
-    "nuclearcraftneohaul:hen_236_tr",
-    "nuclearcraftneohaul:hen_236_za"
+    {
+      "id": "nuclearcraftneohaul:hen_236",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:hen_236_c",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:hen_236_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:hen_236_ni",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:hen_236_tr",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:hen_236_za",
+      "required": false
+    }
   ]
 }

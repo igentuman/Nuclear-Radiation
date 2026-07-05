@@ -5,12 +5,31 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:leu_233",
-    "nuclearcraftneohaul:leu_233_c",
-    "nuclearcraftneohaul:leu_233_ni",
-    "nuclearcraftneohaul:leu_233_ox",
-    "nuclearcraftneohaul:leu_233_tr",
-    "nuclearcraftneohaul:leu_233_za"
+    {
+      "id": "nuclearcraftneohaul:leu_233",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:leu_233_c",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:leu_233_ni",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:leu_233_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:leu_233_tr",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:leu_233_za",
+      "required": false
+    }
   ]
 }

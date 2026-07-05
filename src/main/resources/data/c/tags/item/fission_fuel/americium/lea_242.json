@@ -6,11 +6,29 @@
     }
   ],
   "values": [
-    "nuclearcraftneohaul:lea_242",
-    "nuclearcraftneohaul:lea_242_c",
-    "nuclearcraftneohaul:lea_242_ox",
-    "nuclearcraftneohaul:lea_242_tr",
-    "nuclearcraftneohaul:lea_242_za",
-    "nuclearcraftneohaul:lea_242_ni"
+    {
+      "id": "nuclearcraftneohaul:lea_242",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:lea_242_c",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:lea_242_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:lea_242_tr",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:lea_242_za",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:lea_242_ni",
+      "required": false
+    }
   ]
 }

@@ -5,11 +5,27 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:plutonium_241",
-    "nuclearcraftneohaul:plutonium_241_c",
-    "nuclearcraftneohaul:plutonium_241_ni",
-    "nuclearcraftneohaul:plutonium_241_ox",
-    "nuclearcraftneohaul:plutonium_241_za"
+    {
+      "id": "nuclearcraftneohaul:plutonium_241",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:plutonium_241_c",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:plutonium_241_ni",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:plutonium_241_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:plutonium_241_za",
+      "required": false
+    }
   ]
 }

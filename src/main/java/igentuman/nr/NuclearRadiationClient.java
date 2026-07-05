@@ -2,6 +2,7 @@ package igentuman.nr;
 
 import igentuman.nr.block.client.CreativeRadSourceScreen;
 import igentuman.nr.client.GlowSilhouette;
+import igentuman.nr.client.particle.RadiationParticle;
 import igentuman.nr.client.IonizationGlowRenderer;
 import igentuman.nr.client.RadiationScreenLayer;
 import igentuman.nr.network.ClientRadiationCache;
@@ -21,6 +22,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -54,6 +56,11 @@ public class NuclearRadiationClient {
                     }
                     return 5f;
                 }));
+    }
+
+    @SubscribeEvent
+    static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(NuclearRadiation.RADIATION_PARTICLE.get(), RadiationParticle.Provider::new);
     }
 
     @SubscribeEvent

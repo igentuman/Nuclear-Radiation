@@ -5,11 +5,27 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:uranium_238",
-    "nuclearcraftneohaul:uranium_238_c",
-    "nuclearcraftneohaul:uranium_238_ni",
-    "nuclearcraftneohaul:uranium_238_ox",
-    "nuclearcraftneohaul:uranium_238_za"
+    {
+      "id": "nuclearcraftneohaul:uranium_238",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:uranium_238_c",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:uranium_238_ni",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:uranium_238_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:uranium_238_za",
+      "required": false
+    }
   ]
 }

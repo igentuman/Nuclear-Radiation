@@ -5,11 +5,27 @@
       "modid": "nuclearcraftneohaul"
     }
   ],
+  "required": false,
   "values": [
-    "nuclearcraftneohaul:californium_252",
-    "nuclearcraftneohaul:californium_252_c",
-    "nuclearcraftneohaul:californium_252_ni",
-    "nuclearcraftneohaul:californium_252_ox",
-    "nuclearcraftneohaul:californium_252_za"
+    {
+      "id": "nuclearcraftneohaul:californium_252",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:californium_252_c",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:californium_252_ni",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:californium_252_ox",
+      "required": false
+    },
+    {
+      "id": "nuclearcraftneohaul:californium_252_za",
+      "required": false
+    }
   ]
 }
