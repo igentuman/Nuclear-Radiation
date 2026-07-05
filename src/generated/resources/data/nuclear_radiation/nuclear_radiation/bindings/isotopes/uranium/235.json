@@ -2,7 +2,7 @@
   "type": "item",
   "isotopes": {
     "nr:u_235": {
-      "atoms": 1.24E21
+      "atoms": 3.24E22
     }
   },
   "target": "#c:isotopes/uranium/235"

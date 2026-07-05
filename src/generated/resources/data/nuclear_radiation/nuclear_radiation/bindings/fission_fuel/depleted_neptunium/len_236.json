@@ -5,7 +5,7 @@
       "atoms": 4.8888888888888885E19
     },
     "nr:np_237": {
-      "atoms": 4.5E17
+      "atoms": 4.5E18
     },
     "nr:pu_241": {
       "atoms": 6.611111111111112E20
@@ -14,7 +14,7 @@
       "atoms": 5.044444444444445E16
     },
     "nr:u_238": {
-      "atoms": 8.577777777777777E12
+      "atoms": 8.577777777777778E13
     }
   },
   "target": "#c:fission_fuel/depleted_neptunium/len_236"

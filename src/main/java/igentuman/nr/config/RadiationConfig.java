@@ -81,12 +81,12 @@ public final class RadiationConfig {
         b.pop();
 
         b.push("thresholds_sv_per_hour");
-        THRESHOLD_MILD     = b.comment("MEDIUM band: 1 mSv/h").defineInRange("mild", 1, 0.0, 1.0e6);
-        THRESHOLD_MODERATE = b.comment("ELEVATED band: 5 mSv/h").defineInRange("moderate", 5, 0.0, 1.0e6);
+        THRESHOLD_MILD     = b.comment("MEDIUM band: 1 mSv/h").defineInRange("mild", 0.001, 0.0, 1.0e6);
+        THRESHOLD_MODERATE = b.comment("ELEVATED band: 500 mSv/h").defineInRange("moderate", 0.5, 0.0, 1.0e6);
         THRESHOLD_SEVERE   = b.comment("HIGH band: 10 Sv/h").defineInRange("severe", 10.0, 0.0, 1.0e6);
         THRESHOLD_LETHAL   = b.comment("EXTREME band: 100 Sv/h").defineInRange("lethal", 100.0, 0.0, 1.0e6);
-        TOTAL_SV_SCALE_K   = b.comment("Cumulative Sv scaling constant K. Effective Sv/h for effect thresholds = svPerHour * (1 + (svTotalCareer/K)^2). Lower K = harsher chronic penalty.")
-                .defineInRange("total_sv_scale_k", 2.0, 1.0e-6, 1.0e6);
+        TOTAL_SV_SCALE_K   = b.comment("Cumulative Sv scaling constant K. Effective Sv/h = svPerHour * 0.001 + (svTotalCareer/K) * moderate_threshold. Lower K = harsher chronic penalty.")
+                .defineInRange("total_sv_scale_k", 1.0, 1.0e-6, 1.0e6);
         b.pop();
 
         b.push("recovery");

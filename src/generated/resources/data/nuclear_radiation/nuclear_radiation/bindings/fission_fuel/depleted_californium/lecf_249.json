@@ -2,7 +2,10 @@
   "type": "item",
   "isotopes": {
     "nr:cf_252": {
-      "atoms": 2.7377777777777777E22
+      "atoms": 9.924444444444443E22
+    },
+    "nr:eu_155": {
+      "atoms": 6.988888888888888E20
     }
   },
   "target": "#c:fission_fuel/depleted_californium/lecf_249"

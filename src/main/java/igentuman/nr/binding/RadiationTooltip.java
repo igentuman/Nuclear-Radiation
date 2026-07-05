@@ -10,6 +10,11 @@ import net.minecraft.world.item.BlockItem;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
+import static igentuman.nr.util.TextUtils.__;
+import static igentuman.nr.util.TextUtils.numberFormat;
+import static net.minecraft.ChatFormatting.DARK_GRAY;
+import static net.minecraft.ChatFormatting.GRAY;
+
 public class RadiationTooltip {
 
     @SubscribeEvent
@@ -21,9 +26,31 @@ public class RadiationTooltip {
         if (p.isEmpty()) return;
 
         double bq = p.totalActivityBq();
+        double alpha = p.alphaActivityBq();
+        double beta = p.betaActivityBq();
+        double neutron = p.neutronActivityBq();
+        double gamma = p.xRayActivityBq();
+
         event.getToolTip().add(Component.literal("☢ ")
                 .append(Component.literal(formatActivity(bq)))
                 .withStyle(colorForBq(bq)));
+        if (event.getItemStack().getCount() > 1) {
+            event.getToolTip().add(Component.literal("☢ Stack ")
+                    .append(Component.literal(formatActivity(bq*event.getItemStack().getCount())))
+                    .withStyle(colorForBq(bq*event.getItemStack().getCount())));
+        }
+        if (alpha > 0) {
+            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.alpha", numberFormat(alpha/bq) + "%").withStyle(DARK_GRAY));
+        }
+        if (beta > 0) {
+            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.beta", numberFormat(beta/bq) + "%").withStyle(DARK_GRAY));
+        }
+        if (gamma > 0) {
+            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.gamma", numberFormat(gamma/bq) + "%").withStyle(DARK_GRAY));
+        }
+        if (neutron > 0) {
+            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.neutron", numberFormat(neutron/bq) + "%").withStyle(DARK_GRAY));
+        }
     }
 
     private static void addShieldingTooltip(ItemTooltipEvent event) {
@@ -40,13 +67,13 @@ public class RadiationTooltip {
         event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.armor_protection")
                 .withStyle(ChatFormatting.AQUA));
         event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.armor.xray", formatPercent(prot.xray()))
-                .withStyle(ChatFormatting.GRAY));
+                .withStyle(GRAY));
         event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.armor.alpha", formatPercent(prot.alpha()))
-                .withStyle(ChatFormatting.GRAY));
+                .withStyle(GRAY));
         event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.armor.beta", formatPercent(prot.beta()))
-                .withStyle(ChatFormatting.GRAY));
+                .withStyle(GRAY));
         event.getToolTip().add(Component.translatable("tooltip.nuclear_radiation.armor.neutron", formatPercent(prot.neutron()))
-                .withStyle(ChatFormatting.GRAY));
+                .withStyle(GRAY));
     }
 
     private static String formatPercent(double v) {
@@ -66,7 +93,8 @@ public class RadiationTooltip {
         if (bq < 1.0e6) return String.format("%.2f kBq", bq / 1.0e3);
         if (bq < 1.0e9) return String.format("%.2f MBq", bq / 1.0e6);
         if (bq < 1.0e12) return String.format("%.2f GBq", bq / 1.0e9);
-        return String.format("%.2f TBq", bq / 1.0e12);
+        if (bq < 1.0e15) return String.format("%.2f TBq", bq / 1.0e12);
+        return String.format("%.2f PBq", bq / 1.0e15);
     }
 
     private String formatTime(double seconds) {

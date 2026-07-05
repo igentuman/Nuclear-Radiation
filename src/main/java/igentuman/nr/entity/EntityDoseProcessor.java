@@ -26,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
@@ -65,22 +66,24 @@ public final class EntityDoseProcessor {
 
         double svThisTick = svExternal + svInternal + svInventory + svNearbyEntities + svContamination + svBackground;
         double protection = clamp01(data.protectionFactor());
-        svThisTick *= (1.0 - protection);
+        svThisTick *= (1.0 - protection)*72;
 
-        data.addSv(svThisTick*72);
+        data.addSv(svThisTick);
 
         double svPerHourInstant = (svThisTick / intervalSeconds) * Units.SECONDS_PER_HOUR;
         double prev = data.svPerHour();
         double rolling = prev + EMA_ALPHA * (svPerHourInstant - prev);
         data.setSvPerHour(rolling);
-
+        double mult = entity instanceof Player ? 0.01 : 0.001;
         double recovery = RadiationConfig.BASE_DECAY_SV_PER_HOUR.get()
                 * data.decayMultiplier()
                 * GeneralConfig.ENTITY_DECAY_MULTIPLIER.get()
                 * 72D
+                * mult
                 * (intervalSeconds / Units.SECONDS_PER_HOUR);
         if (recovery > 0 && data.svTotalCareer() > 0) {
-            data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() - recovery));
+            double recoveryFactor = recovery / (recovery + svThisTick * 100000D);
+            data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() - recovery * recoveryFactor));
         }
 
         int stage = RadiationEffects.computeStage(data.svPerHour(), data.svTotalCareer());
@@ -270,7 +273,7 @@ public final class EntityDoseProcessor {
         sv += bqN * gyPerBqSec * DEFAULT_Q.qNeutron * intervalSeconds * (1.0 - armor.neutron());
         sv += bA * gyPerBqSec * DEFAULT_Q.qAlpha * intervalSeconds* (1.0 - armor.alpha());
         sv += bB * gyPerBqSec * DEFAULT_Q.qBeta * intervalSeconds* (1.0 - armor.beta());
-        return sv;
+        return sv*10;
     }
 
     private static double computeInternal(EntityRadiationData data, double gyPerBqSec,

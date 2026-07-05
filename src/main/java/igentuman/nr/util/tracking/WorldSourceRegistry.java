@@ -135,9 +135,9 @@ public class WorldSourceRegistry {
             if(level.isRainingAt(chunk.getPos().getWorldPosition())) {
                 data.air().reduceAtoms(1.2);
             }
-            data.air().advanceDecay(now*50, floor);
-            data.water().advanceDecay(now*50, floor);
-            data.soil().advanceDecay(now*50, floor);
+            data.air().advanceDecay(now, floor);
+            data.water().advanceDecay(now, floor);
+            data.soil().advanceDecay(now, floor);
             data.setLastDecayTick(now);
             data.markExpiryDirty();
             if (data.isEmpty()) cleared.add(cp);

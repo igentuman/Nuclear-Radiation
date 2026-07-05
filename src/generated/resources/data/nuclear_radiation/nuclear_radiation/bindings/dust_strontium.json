@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:sr_90": {
+      "atoms": 3.72E19
+    }
+  },
+  "target": "#c:dusts/strontium_90"
+}

@@ -2,10 +2,10 @@
   "type": "item",
   "isotopes": {
     "nr:pu_239": {
-      "atoms": 3.966666666666667E20
+      "atoms": 7.933333333333334E20
     },
     "nr:u_238": {
-      "atoms": 1.7155555555555555E13
+      "atoms": 1.7155555555555556E14
     }
   },
   "target": "#c:fission_fuel/mixed/mix_239"

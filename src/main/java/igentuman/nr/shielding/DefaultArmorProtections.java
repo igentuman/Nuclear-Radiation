@@ -44,7 +44,7 @@ public final class DefaultArmorProtections {
     private static void addCustom(List<ArmorProtectionDefinition> list, String material,
                                double xray, double alpha, double beta, double neutron) {
                 ResourceLocation loc = rec(material);
-                list.add(new ArmorProtectionDefinition(loc.getPath(), loc, xray, alpha, beta, neutron));
+                list.add(new ArmorProtectionDefinition(loc.getNamespace()+"_"+loc.getPath(), loc, xray, alpha, beta, neutron));
     }
 
     private static void addSet(List<ArmorProtectionDefinition> list, String material,
@@ -52,7 +52,7 @@ public final class DefaultArmorProtections {
         for (String piece : new String[]{"helmet", "chestplate", "leggings", "boots"}) {
             String id = material + "_" + piece;
             ResourceLocation loc = rec(id);
-            list.add(new ArmorProtectionDefinition(loc.getPath(), loc, xray, alpha, beta, neutron));
+            list.add(new ArmorProtectionDefinition(loc.getNamespace()+"_"+loc.getPath(), loc, xray, alpha, beta, neutron));
         }
     }
 }

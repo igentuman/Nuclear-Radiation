@@ -10,7 +10,7 @@ public class MekanismHelper {
 
     public static RadiationProfile buildProfile(double magnitude, long gameTime) {
         RadiationProfile profile = new RadiationProfile();
-        double scale = Math.max(magnitude, 1.0);
+        double scale = Math.max(magnitude*0.5D, 1.0);
         //This cocktail gives pretty much same numbers for mekanism radiation events
         addStack(profile, Isotopes.XE_133, 4.5e16 * scale, gameTime);
         addStack(profile, Isotopes.CS_137, 4.2e16 * scale, gameTime);

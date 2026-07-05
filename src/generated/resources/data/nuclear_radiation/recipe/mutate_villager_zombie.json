@@ -5,9 +5,9 @@
     "entity": "minecraft:villager"
   },
   "max_sv_per_hour": 5.0,
-  "min_sv_per_hour": 1.0,
+  "min_sv_per_hour": 0.5,
   "result": {
     "entity": "minecraft:zombie_villager"
   },
-  "total_dose_sv": 6.0
+  "total_dose_sv": 0.5
 }

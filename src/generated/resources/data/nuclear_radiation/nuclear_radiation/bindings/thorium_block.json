@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:th_230": {
+      "atoms": 9.31E14
+    },
+    "nr:th_232": {
+      "atoms": 5.631E20
+    }
+  },
+  "target": "#c:storage_blocks/thorium"
+}

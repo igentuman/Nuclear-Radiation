@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:u_235": {
+      "atoms": 9.84E22
+    },
+    "nr:u_238": {
+      "atoms": 1.851E25
+    }
+  },
+  "target": "#c:storage_blocks/raw_uranium"
+}

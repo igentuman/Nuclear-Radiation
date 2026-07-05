@@ -5,11 +5,11 @@
     "entity": "minecraft:sheep",
     "nbt": "{Color:0b}"
   },
-  "max_sv_per_hour": 2.0,
-  "min_sv_per_hour": 0.02,
+  "max_sv_per_hour": 1.0,
+  "min_sv_per_hour": 0.01,
   "result": {
     "entity": "minecraft:sheep",
     "nbt": "{Color:14b}"
   },
-  "total_dose_sv": 1.5
+  "total_dose_sv": 0.1
 }

@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:bk_247": {
+      "atoms": 3.76E20
+    },
+    "nr:bk_248": {
+      "atoms": 2.76E20
+    }
+  },
+  "target": "#c:storage_blocks/berkelium"
+}

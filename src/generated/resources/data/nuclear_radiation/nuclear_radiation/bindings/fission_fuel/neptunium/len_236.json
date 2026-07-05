@@ -2,10 +2,10 @@
   "type": "item",
   "isotopes": {
     "nr:np_236": {
-      "atoms": 6.288888888888888E17
+      "atoms": 6.288888888888889E18
     },
     "nr:np_237": {
-      "atoms": 3.6E18
+      "atoms": 3.6E19
     }
   },
   "target": "#c:fission_fuel/neptunium/len_236"

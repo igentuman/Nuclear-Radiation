@@ -4,8 +4,13 @@ public final class Isotopes {
     private Isotopes() {}
 
     public static final String U_238   = "nr:u_238";
+    public static final String EU_155   = "nr:eu_155";
+    public static final String PM_147 = "nr:pm_147";
+    public static final String PA_233 = "nr:pa_233";
+    public static final String RU_106 = "nr:ru_106";
     public static final String U_235   = "nr:u_235";
     public static final String PU_239  = "nr:pu_239";
+    public static final String CS_55  = "nr:cs_55";
     public static final String CS_137  = "nr:cs_137";
     public static final String I_131   = "nr:i_131";
     public static final String SR_90   = "nr:sr_90";

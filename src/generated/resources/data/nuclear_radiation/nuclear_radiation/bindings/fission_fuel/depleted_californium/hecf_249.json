@@ -6,6 +6,9 @@
     },
     "nr:cf_252": {
       "atoms": 2.0533333333333336E22
+    },
+    "nr:eu_155": {
+      "atoms": 6.988888888888888E20
     }
   },
   "target": "#c:fission_fuel/depleted_californium/hecf_249"

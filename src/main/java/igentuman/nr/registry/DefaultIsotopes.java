@@ -43,9 +43,41 @@ public final class DefaultIsotopes {
                 .branch(U_235, 1.0)
                 .build());
 
+
+        list.add(IsotopeDefinition.create(PA_233)
+                .alpha(0.01f).beta(0.9f).xray(0.4f).neutron(0.01f)
+                .halfLife(saturate(26.975 * TICKS_PER_DAY))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .branch(U_233, 1)
+                .build());
+
+        list.add(IsotopeDefinition.create(RU_106)
+                .alpha(0.01f).beta(0.9f).xray(0.4f).neutron(0.01f)
+                .halfLife(saturate(371.8 * TICKS_PER_DAY))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .build());
+
+        list.add(IsotopeDefinition.create(PM_147)
+                .alpha(0.01f).beta(0.9f).xray(0.4f).neutron(0.01f)
+                .halfLife(saturate(2.62 * TICKS_PER_YEAR))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .build());
+
+        list.add(IsotopeDefinition.create(EU_155)
+                .alpha(0.01f).beta(0.9f).xray(0.4f).neutron(0.01f)
+                .halfLife(saturate(4.76 * TICKS_PER_YEAR))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .build());
+
         list.add(IsotopeDefinition.create(CS_137)
                 .alpha(0.0f).beta(0.7f).xray(0.3f).neutron(0.0f)
                 .halfLife(saturate(30.17 * TICKS_PER_YEAR))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .build());
+
+        list.add(IsotopeDefinition.create(CS_55)
+                .alpha(0.0f).beta(0.7f).xray(0.3f).neutron(0.01f)
+                .halfLife(saturate(30.04 * TICKS_PER_YEAR))
                 .quality(1.0f, 1.0f, 20.0f, 10.0f)
                 .build());
 

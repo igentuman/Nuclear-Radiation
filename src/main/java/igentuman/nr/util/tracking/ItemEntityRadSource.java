@@ -42,9 +42,9 @@ public final class ItemEntityRadSource extends AbstractWorldRadSource {
     @Override
     public boolean contaminatesArea() { return true; }
 
-    @Override public double activityBq() { return super.activityBq() * entity().getItem().getCount(); }
-    @Override public double xRayBq()    { return super.xRayBq() * entity().getItem().getCount(); }
-    @Override public double alphaBq()   { return super.alphaBq() * entity().getItem().getCount(); }
-    @Override public double betaBq()    { return super.betaBq() * entity().getItem().getCount(); }
-    @Override public double neutronBq() { return super.neutronBq() * entity().getItem().getCount(); }
+    @Override public double activityBq() { return super.activityBq() * entity().getItem().getCount() * 10; }
+    @Override public double xRayBq()    { return super.xRayBq() * entity().getItem().getCount() * 10; }
+    @Override public double alphaBq()   { return super.alphaBq() * entity().getItem().getCount() * 10; }
+    @Override public double betaBq()    { return super.betaBq() * entity().getItem().getCount() * 10; }
+    @Override public double neutronBq() { return super.neutronBq() * entity().getItem().getCount() * 10; }
 }

@@ -157,23 +157,23 @@ public class NRRecipeProvider extends RecipeProvider {
     private void buildMutations(RecipeOutput recipeOutput) {
         mutation(recipeOutput, "mutate_cow_mooshroom",
                 ing(EntityType.COW), res(EntityType.MOOSHROOM),
-                3.0, 0.05, 10, 0.3f);
+                0.1, 0.05, 2, 0.3f);
 
         mutation(recipeOutput, "mutate_villager_zombie",
                 ing(EntityType.VILLAGER), res(EntityType.ZOMBIE_VILLAGER),
-                6.0, 1, 5, 0.5f);
+                0.5, 0.5, 5, 0.5f);
 
         mutation(recipeOutput, "mutate_sheep_red",
                 ing(EntityType.SHEEP, sheepColor(0)), res(EntityType.SHEEP, sheepColor(14)),
-                1.5, 0.02, 2.0, 0.5f);
+                0.1, 0.01, 1.0, 0.5f);
 
         mutation(recipeOutput, "mutate_zombie_skeleton",
                 ing(EntityType.ZOMBIE), res(EntityType.SKELETON),
-                10.0, 5, 20, 0.7f);
+                0.5, 0.5, 2, 0.7f);
 
         mutation(recipeOutput, "mutate_skeleton_wither_skeleton",
                 ing(EntityType.SKELETON), res(EntityType.WITHER_SKELETON),
-                10.0, 5, 30, 0.5f);
+                1.0, 1, 10, 0.75f);
     }
 
     private static EntityIngredient ing(EntityType<?> type) {

@@ -61,24 +61,24 @@ public class RadiationBindingProvider implements DataProvider {
         list.add(isotopeBinding("californium/249", Isotopes.CF_249, 2.35e21));
         list.add(isotopeBinding("californium/250", Isotopes.CF_250, 6.29e21));
         list.add(isotopeBinding("californium/251", Isotopes.CF_251, 9.12e20));
-        list.add(isotopeBinding("californium/252", Isotopes.CF_252, 3.08e22));
+        list.add(isotopeBinding("californium/252", Isotopes.CF_252, 3.08e21));
 
         list.add(isotopeBinding("curium/243", Isotopes.CM_243, 2.91e20));
         list.add(isotopeBinding("curium/245", Isotopes.CM_245, 1.02e20));
         list.add(isotopeBinding("curium/246", Isotopes.CM_246, 1.77e21));
         list.add(isotopeBinding("curium/247", Isotopes.CM_247, 5.34e24));
 
-        list.add(isotopeBinding("neptunium/236", Isotopes.NP_236, 5.66e21));
-        list.add(isotopeBinding("neptunium/237", Isotopes.NP_237, 4.05e22));
+        list.add(isotopeBinding("neptunium/236", Isotopes.NP_236, 5.66e20));
+        list.add(isotopeBinding("neptunium/237", Isotopes.NP_237, 4.05e21));
 
-        list.add(isotopeBinding("plutonium/238", Isotopes.PU_238, 9.85e18));
+        list.add(isotopeBinding("plutonium/238", Isotopes.PU_238, 1.85e18));
         list.add(isotopeBinding("plutonium/239", Isotopes.PU_239, 3.57e20));
         list.add(isotopeBinding("plutonium/241", Isotopes.PU_241, 5.95e18));
         list.add(isotopeBinding("plutonium/242", Isotopes.PU_242, 2.27e19));
 
         list.add(isotopeBinding("uranium/233", Isotopes.U_233, 5.54e21));
-        list.add(isotopeBinding("uranium/235", Isotopes.U_235, 1.24e21));
-        list.add(isotopeBinding("uranium/238", Isotopes.U_238, 1.93e21));
+        list.add(isotopeBinding("uranium/235", Isotopes.U_235, 3.24e22));
+        list.add(isotopeBinding("uranium/238", Isotopes.U_238, 1.93e22));
 
         addFissionFuels(list);
         addDepletedFissionFuels(list);
@@ -121,6 +121,27 @@ public class RadiationBindingProvider implements DataProvider {
         list.add(BindingDefinition.builder("pellet_polonium")
                 .itemTag(pelletTag("polonium"))
                 .isotope(Isotopes.PO_210, 16.72e17)
+                .build());
+
+        list.add(BindingDefinition.builder("dust_promethium")
+                .itemTag(dustTag("promethium_147"))
+                .isotope(Isotopes.PM_147, 3.72e19)
+                .build());
+
+        list.add(BindingDefinition.builder("dust_ruthenium")
+                .itemTag(dustTag("ruthenium_106"))
+                .isotope(Isotopes.RU_106, 1.72e19)
+                .build());
+
+        list.add(BindingDefinition.builder("dust_strontium")
+                .itemTag(dustTag("strontium_90"))
+                .isotope(Isotopes.SR_90, 3.72e19)
+                .build());
+
+        list.add(BindingDefinition.builder("dust_protactinium")
+                .itemTag(dustTag("protactinium_233"))
+                .isotope(Isotopes.PA_233, 3.72e19)
+                .isotope(Isotopes.PA_91, 1.72e13)
                 .build());
 
         list.add(BindingDefinition.builder("pellet_plutonium")
@@ -307,6 +328,16 @@ public class RadiationBindingProvider implements DataProvider {
                 .isotope(Isotopes.U_235, 7.11e19)
                 .build());
 
+        list.add(BindingDefinition.builder("europium_155_dust")
+                .itemTag(dustTag("europium_155"))
+                .isotope(Isotopes.EU_155, 1.89e19)
+                .build());
+
+        list.add(BindingDefinition.builder("caesium_137_dust")
+                .itemTag(dustTag("caesium_137"))
+                .isotope(Isotopes.CS_137, 1.84e19)
+                .build());
+
         list.add(BindingDefinition.builder("uranium_raw_item")
                 .itemTag(rawTag("uranium"))
                 .isotope(Isotopes.U_238, 2.51e24)
@@ -315,7 +346,7 @@ public class RadiationBindingProvider implements DataProvider {
 
         list.add(BindingDefinition.builder("uranium_ingot_item")
                 .itemTag(ingotTag("uranium"))
-                .isotope(Isotopes.U_238, 4.27e24)
+                .isotope(Isotopes.U_238, 4.27e25)
                 .isotope(Isotopes.U_235, 3.14e22)
                 .build());
 
@@ -362,12 +393,71 @@ public class RadiationBindingProvider implements DataProvider {
                 .isotope(Isotopes.CS_137, 4.4e18)
                 .build());
 
-        // NuclearCraft: Neohaul uses c:<prefix>/<material> tags. NR's existing c:ores/ingots/dusts
-        // uranium bindings already cover NCN uranium; below fills the raw + isotope/fuel gaps.
-        list.add(BindingDefinition.builder("ncn_raw_uranium")
+        list.add(BindingDefinition.builder("berkelium_block")
+                .itemTag(blockTag("berkelium"))
+                .isotope(Isotopes.BK_248, 2.76e20)
+                .isotope(Isotopes.BK_247, 3.76e20)
+                .build());
+
+        list.add(BindingDefinition.builder("curium_block")
+                .itemTag(blockTag("curium"))
+                .isotope(Isotopes.CM_247, 5.34e17)
+                .isotope(Isotopes.CM_246, 2.35e21)
+                .build());
+
+        list.add(BindingDefinition.builder("californium_block")
+                .itemTag(blockTag("californium"))
+                .isotope(Isotopes.CF_249, 2.35e20)
+                .isotope(Isotopes.CF_250, 2.35e19)
+                .isotope(Isotopes.CF_251, 2.35e19)
+                .build());
+
+        list.add(BindingDefinition.builder("neptunium_block")
+                .itemTag(blockTag("neptunium"))
+                .isotope(Isotopes.NP_236, 5.66e17)
+                .isotope(Isotopes.NP_237, 5.66e18)
+                .build());
+
+        list.add(BindingDefinition.builder("plutonium_block")
+                .itemTag(blockTag("plutonium"))
+                .isotope(Isotopes.PU_242, 2.27e18)
+                .isotope(Isotopes.PU_241, 2.27e17)
+                .build());
+
+        list.add(BindingDefinition.builder("americium_block ")
+                .itemTag(blockTag("americium"))
+                .isotope(Isotopes.AM_241, 19.72e19)
+                .isotope(Isotopes.AM_242, 19.72e19)
+                .build());
+
+        list.add(BindingDefinition.builder("raw_uranium")
                 .itemTag(cTag("raw_materials/uranium"))
                 .isotope(Isotopes.U_238, 2.51e24)
                 .isotope(Isotopes.U_235, 1.84e22)
+                .build());
+
+        list.add(BindingDefinition.builder("raw_uranium_block")
+                .itemTag(blockTag("raw_uranium"))
+                .isotope(Isotopes.U_238, 18.51e24)
+                .isotope(Isotopes.U_235, 9.84e22)
+                .build());
+
+        list.add(BindingDefinition.builder("raw_thorium_block")
+                .itemTag(blockTag("raw_thorium"))
+                .isotope(Isotopes.TH_232, 56.31e19)
+                .isotope(Isotopes.TH_230, 9.31e14)
+                .build());
+
+        list.add(BindingDefinition.builder("uranium_block")
+                .itemTag(blockTag("uranium"))
+                .isotope(Isotopes.U_238, 18.51e24)
+                .isotope(Isotopes.U_235, 9.84e22)
+                .build());
+
+        list.add(BindingDefinition.builder("thorium_block")
+                .itemTag(blockTag("thorium"))
+                .isotope(Isotopes.TH_232, 56.31e19)
+                .isotope(Isotopes.TH_230, 9.31e14)
                 .build());
 
         list.add(BindingDefinition.builder("ingots_thorium")
@@ -483,12 +573,6 @@ public class RadiationBindingProvider implements DataProvider {
         return  ResourceLocation.tryParse(s);
     }
 
-    public static void registerDefaults() {
-        for (BindingDefinition def : defaults()) {
-            apply(def);
-        }
-    }
-
     @SuppressWarnings("unchecked")
     private static void apply(BindingDefinition def) {
         RadiationBindingBuilder b = RadiationBindingBuilder.create();
@@ -521,10 +605,10 @@ public class RadiationBindingProvider implements DataProvider {
     }
 
     // Per-isotope atom counts reused from the isotope bindings above so activity balance matches.
-    private static final double A_U233 = 5.54e18, A_U235 = 1.24e17, A_U238 = 1.93e13;
-    private static final double A_NP236 = 5.66e18, A_NP237 = 4.05e18;
+    private static final double A_U233 = 5.54e20, A_U235 = 1.24e18, A_U238 = 1.93e14;
+    private static final double A_NP236 = 5.66e19, A_NP237 = 4.05e19;
     private static final double A_PU238 = 9.85e20, A_PU239 = 3.57e21, A_PU241 = 5.95e21, A_PU242 = 2.27e17;
-    private static final double A_AM241 = 19.72e19, A_AM242 = 4.65e20, A_AM243 = 1.15e19;
+    private static final double A_AM241 = 19.72e19, A_AM242 = 4.65e17, A_AM243 = 1.15e19;
     private static final double A_CM243 = 2.91e21, A_CM245 = 1.02e19, A_CM246 = 1.77e19, A_CM247 = 5.34e15;
     private static final double A_BK247 = 6.03e19, A_BK248 = 2.76e20;
     private static final double A_CF249 = 2.35e20, A_CF250 = 6.29e21, A_CF251 = 9.12e19, A_CF252 = 3.08e22;
@@ -540,7 +624,7 @@ public class RadiationBindingProvider implements DataProvider {
     // Compositions from NuclearCraft: Neohaul ModRecipeProvider.fuel(...).
     private static void addFissionFuels(List<BindingDefinition> list) {
         fuel(list, "americium/hea_242", p(Isotopes.AM_242, A_AM242, 3), p(Isotopes.AM_243, A_AM243, 2));
-        fuel(list, "americium/lea_242", p(Isotopes.AM_242, A_AM242, 1), p(Isotopes.AM_243, A_AM243, 2));
+        fuel(list, "americium/lea_242", p(Isotopes.AM_242, A_AM242, 1), p(Isotopes.AM_243, A_AM243, 1));
 
         fuel(list, "berkelium/heb_248", p(Isotopes.BK_248, A_BK248, 3), p(Isotopes.BK_247, A_BK247, 6));
         fuel(list, "berkelium/leb_248", p(Isotopes.BK_248, A_BK248, 1), p(Isotopes.BK_247, A_BK247, 8));
@@ -548,10 +632,11 @@ public class RadiationBindingProvider implements DataProvider {
         fuel(list, "californium/hecf_249", p(Isotopes.CF_249, A_CF249, 3), p(Isotopes.CF_252, A_CF252, 6));
         fuel(list, "californium/lecf_249", p(Isotopes.CF_249, A_CF249, 1), p(Isotopes.CF_252, A_CF252, 8));
         fuel(list, "californium/hecf_251", p(Isotopes.CF_251, A_CF251, 3), p(Isotopes.CF_252, A_CF252, 6));
-        fuel(list, "californium/lecf_251", p(Isotopes.CF_251, A_CF251, 1), p(Isotopes.CF_252, A_CF252, 8));
+        fuel(list, "californium/hecm_243", p(Isotopes.CM_243, A_CM243, 3), p(Isotopes.CM_246, A_CM246, 6));
+        fuel(list, "californium/lecm_243", p(Isotopes.CM_243, A_CM243, 1), p(Isotopes.CM_246, A_CM246, 8));
 
-        fuel(list, "curium/hecm_243", p(Isotopes.CM_243, A_CM243, 3), p(Isotopes.CM_246, A_CM246, 6));
-        fuel(list, "curium/lecm_243", p(Isotopes.CM_243, A_CM243, 1), p(Isotopes.CM_246, A_CM246, 8));
+        fuel(list, "curium/lecm_243", p(Isotopes.CM_243, A_CM243, 3), p(Isotopes.CM_246, A_CM246, 1));
+        fuel(list, "curium/hecm_245", p(Isotopes.CM_245, A_CM245, 3), p(Isotopes.CM_246, A_CM246, 6));
         fuel(list, "curium/hecm_245", p(Isotopes.CM_245, A_CM245, 3), p(Isotopes.CM_246, A_CM246, 6));
         fuel(list, "curium/lecm_245", p(Isotopes.CM_245, A_CM245, 1), p(Isotopes.CM_246, A_CM246, 8));
         fuel(list, "curium/hecm_247", p(Isotopes.CM_247, A_CM247, 3), p(Isotopes.CM_246, A_CM246, 6));
@@ -561,19 +646,19 @@ public class RadiationBindingProvider implements DataProvider {
         fuel(list, "neptunium/len_236", p(Isotopes.NP_236, A_NP236, 1), p(Isotopes.NP_237, A_NP237, 8));
 
         fuel(list, "plutonium/hep_239", p(Isotopes.PU_239, A_PU239, 3), p(Isotopes.PU_242, A_PU242, 6));
-        fuel(list, "plutonium/lep_239", p(Isotopes.PU_239, A_PU239, 1), p(Isotopes.PU_242, A_PU242, 8));
+        fuel(list, "neptunium/lep_239", p(Isotopes.PU_239, A_PU239, 1), p(Isotopes.PU_242, A_PU242, 8));
         fuel(list, "plutonium/hep_241", p(Isotopes.PU_241, A_PU241, 3), p(Isotopes.PU_242, A_PU242, 4));
         fuel(list, "plutonium/lep_241", p(Isotopes.PU_241, A_PU241, 1), p(Isotopes.PU_242, A_PU242, 8));
 
-        fuel(list, "thorium/tbu", p(Isotopes.TH_232, A_TH232, 9));
+        fuel(list, "thorium/tbu", p(Isotopes.TH_232, A_TH232, 9), p(Isotopes.TH_230, A_TH232, 1));
 
-        fuel(list, "uranium/heu_233", p(Isotopes.U_233, A_U233, 3), p(Isotopes.U_238, A_U238, 6));
-        fuel(list, "uranium/leu_233", p(Isotopes.U_233, A_U233, 1), p(Isotopes.U_238, A_U238, 8));
-        fuel(list, "uranium/heu_235", p(Isotopes.U_235, A_U235, 3), p(Isotopes.U_238, A_U238, 6));
-        fuel(list, "uranium/leu_235", p(Isotopes.U_235, A_U235, 1), p(Isotopes.U_238, A_U238, 8));
+        fuel(list, "uranium/heu_233", p(Isotopes.U_233, A_U233, 9), p(Isotopes.U_238, A_U238, 6));
+        fuel(list, "uranium/leu_233", p(Isotopes.U_233, A_U233, 3), p(Isotopes.U_238, A_U238, 8));
+        fuel(list, "uranium/heu_235", p(Isotopes.U_235, A_U235, 9), p(Isotopes.U_238, A_U238, 6));
+        fuel(list, "uranium/leu_235", p(Isotopes.U_235, A_U235, 3), p(Isotopes.U_238, A_U238, 8));
 
-        fuel(list, "mixed/mix_239", p(Isotopes.PU_239, A_PU239, 1), p(Isotopes.U_238, A_U238, 8));
-        fuel(list, "mixed/mix_241", p(Isotopes.PU_241, A_PU241, 1), p(Isotopes.U_238, A_U238, 8));
+        fuel(list, "mixed/mix_239", p(Isotopes.PU_239, A_PU239, 2), p(Isotopes.U_238, A_U238, 8));
+        fuel(list, "mixed/mix_241", p(Isotopes.PU_241, A_PU241, 2), p(Isotopes.U_238, A_U238, 8));
     }
 
     // Depleted (spent) fission fuel: reprocessor output actinides + Sr-90/Cs-137 waste.
@@ -611,10 +696,10 @@ public class RadiationBindingProvider implements DataProvider {
         fuel(list, "depleted_berkelium/leb_248", p(Isotopes.BK_247, A_BK247, 5), p(Isotopes.BK_248, A_BK248, 1), p(Isotopes.CF_249, A_CF249, 1), p(Isotopes.CF_251, A_CF251, 1));
         fuel(list, "depleted_berkelium/heb_248", p(Isotopes.BK_248, A_BK248, 1), p(Isotopes.CF_249, A_CF249, 1), p(Isotopes.CF_251, A_CF251, 2), p(Isotopes.CF_252, A_CF252, 3));
 
-        fuel(list, "depleted_californium/lecf_249", p(Isotopes.CF_252, A_CF252, 8));
-        fuel(list, "depleted_californium/hecf_249", p(Isotopes.CF_250, A_CF250, 1), p(Isotopes.CF_252, A_CF252, 6));
-        fuel(list, "depleted_californium/lecf_251", p(Isotopes.CF_252, A_CF252, 8));
-        fuel(list, "depleted_californium/hecf_251", p(Isotopes.CF_252, A_CF252, 7));
+        fuel(list, "depleted_californium/lecf_249", p(Isotopes.CF_252, A_CF252, 29), p(Isotopes.EU_155, A_CF250, 1));
+        fuel(list, "depleted_californium/hecf_249", p(Isotopes.CF_250, A_CF250, 1), p(Isotopes.CF_252, A_CF252, 6), p(Isotopes.EU_155, A_CF250, 1));
+        fuel(list, "depleted_californium/lecf_251", p(Isotopes.CF_252, A_CF252, 19), p(Isotopes.EU_155, A_CF250, 1));
+        fuel(list, "depleted_californium/hecf_251", p(Isotopes.CF_252, A_CF252, 7), p(Isotopes.EU_155, A_CF250, 1));
     }
 
     private static void fuel(List<BindingDefinition> list, String path, Part... parts) {

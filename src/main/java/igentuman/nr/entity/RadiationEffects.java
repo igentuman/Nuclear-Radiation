@@ -44,7 +44,7 @@ public final class RadiationEffects {
         double k = RadiationConfig.TOTAL_SV_SCALE_K.get();
 
         double ratio = svTotalCareer / k;
-        double effectiveSvPerHour = svPerHour * (1.0 + ratio * ratio);
+        double effectiveSvPerHour = svPerHour * 0.001D + ratio * mod;
 
         if (effectiveSvPerHour >= leth) return 4;
         if (effectiveSvPerHour >= sev) return 3;
@@ -62,17 +62,19 @@ public final class RadiationEffects {
         int stage = computeStage(svPerHour, svTotalCareer);
         if (stage <= 0) return;
 
-        if (stage >= 1) {
-            addEffect(entity, MobEffects.CONFUSION, 10, 0);
-            addEffect(entity, MobEffects.DIG_SLOWDOWN, 200, 1);
-        }
+        addEffect(entity, MobEffects.WEAKNESS, 2000, 0);
+        addEffect(entity, MobEffects.UNLUCK, 2000, 0);
+        addEffect(entity, MobEffects.DIG_SLOWDOWN, 2000, 0);
+
         if (stage >= 2) {
-            addEffect(entity, MobEffects.WEAKNESS, 10, 0);
-            addEffect(entity, MobEffects.MOVEMENT_SLOWDOWN, 10, 0);
+            addEffect(entity, MobEffects.WEAKNESS, 2000, 1);
+            addEffect(entity, MobEffects.CONFUSION, 2000, 0);
+            addEffect(entity, MobEffects.DIG_SLOWDOWN, 2000, 1);
+            addEffect(entity, MobEffects.MOVEMENT_SLOWDOWN, 2000, 1);
             entity.hurt(entity.damageSources().magic(), 0.5f);
         }
         if (stage >= 3) {
-            addEffect(entity, MobEffects.BLINDNESS, 10, 0);
+            addEffect(entity, MobEffects.BLINDNESS, 2000, 0);
             entity.hurt(entity.damageSources().magic(), 1.5f);
         }
         if (stage >= 4) {
