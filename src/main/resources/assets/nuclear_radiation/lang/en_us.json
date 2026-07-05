@@ -91,6 +91,9 @@
   "isotope.nuclear_radiation.cf_252": "Californium-252",
 
   "block.nuclear_radiation.creative_rad_source": "Creative Radiation Source",
+  "block.nuclear_radiation.corium_block": "Corium Block",
+  "fluid_type.nuclear_radiation.molten_corium": "Molten Corium",
+  "item.nuclear_radiation.molten_corium_bucket": "Molten Corium Bucket",
 
   "gui.nuclear_radiation.creative_rad_source.apply": "Apply",
   "gui.nuclear_radiation.creative_rad_source.alpha": "Alpha MBq:",

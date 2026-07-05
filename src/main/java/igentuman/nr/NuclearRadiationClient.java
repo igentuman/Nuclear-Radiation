@@ -1,6 +1,8 @@
 package igentuman.nr;
 
 import igentuman.nr.block.client.CreativeRadSourceScreen;
+import igentuman.nr.corium.Corium;
+import igentuman.nr.corium.CoriumFluidType;
 import igentuman.nr.client.GlowSilhouette;
 import igentuman.nr.client.particle.RadiationParticle;
 import igentuman.nr.client.IonizationGlowRenderer;
@@ -21,11 +23,15 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
 
 import java.io.IOException;
 
@@ -61,6 +67,33 @@ public class NuclearRadiationClient {
     @SubscribeEvent
     static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(NuclearRadiation.RADIATION_PARTICLE.get(), RadiationParticle.Provider::new);
+    }
+
+    @SubscribeEvent
+    static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        if (Corium.MOLTEN_CORIUM_TYPE.get() instanceof CoriumFluidType type) {
+            event.registerFluidType(new IClientFluidTypeExtensions() {
+                @Override
+                public ResourceLocation getStillTexture() {
+                    return type.getStillTexture();
+                }
+
+                @Override
+                public ResourceLocation getFlowingTexture() {
+                    return type.getFlowingTexture();
+                }
+
+                @Override
+                public int getTintColor() {
+                    return type.getTintColor();
+                }
+            }, type);
+        }
+    }
+
+    @SubscribeEvent
+    static void registerItemColors(RegisterColorHandlersEvent.Item event) {
+        event.register(new DynamicFluidContainerModel.Colors(), Corium.MOLTEN_CORIUM_BUCKET.get());
     }
 
     @SubscribeEvent

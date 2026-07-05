@@ -3,6 +3,8 @@ package igentuman.nr;
 import igentuman.nr.block.CreativeRadSourceBlock;
 import igentuman.nr.block.CreativeRadSourceBlockEntity;
 import igentuman.nr.config.GeneralConfig;
+import igentuman.nr.corium.Corium;
+import igentuman.nr.corium.CoriumConfig;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -101,6 +103,7 @@ public class NuclearRadiation {
         NRTools.register(modEventBus);
         NRSounds.register(modEventBus);
         NRRecipes.register(modEventBus);
+        Corium.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(new SimulationEvents());
@@ -114,6 +117,7 @@ public class NuclearRadiation {
 
         modContainer.registerConfig(ModConfig.Type.COMMON, GeneralConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.COMMON, RadiationConfig.SPEC, "nuclear_radiation-radiation.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, CoriumConfig.SPEC, "nuclear_radiation-corium.toml");
         modContainer.registerConfig(ModConfig.Type.CLIENT, NRClientConfig.SPEC, "nuclear_radiation-client.toml");
 
         Isotopes.bootstrap();
@@ -128,6 +132,12 @@ public class NuclearRadiation {
             event.accept(NRTools.GEIGER_COUNTER);
             event.accept(NRTools.DOSIMETER);
             event.accept(CREATIVE_RAD_SOURCE_ITEM);
+        }
+        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+            event.accept(Corium.CORIUM_BLOCK_ITEM);
+        }
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(Corium.MOLTEN_CORIUM_BUCKET);
         }
         if (event.getTabKey() == CreativeModeTabs.COMBAT) {
             event.accept(NRArmorItems.HAZMAT_HELMET);
