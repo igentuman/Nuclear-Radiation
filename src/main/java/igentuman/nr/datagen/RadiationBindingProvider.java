@@ -580,6 +580,27 @@ public class RadiationBindingProvider implements DataProvider {
                 .isotope(Isotopes.PU_239, 3.57e17)
                 .build());
 
+        list.add(BindingDefinition.builder("fallout_dust")
+                .item(rec("nuclear_radiation:fallout_dust"))
+                .isotope(Isotopes.CS_137, 11.0e15)
+                .isotope(Isotopes.SR_90, 2.0e15)
+                .isotope(Isotopes.I_131, 10.0e13)
+                .build());
+
+        list.add(BindingDefinition.builder("fallout_dust_block_item")
+                .item(rec("nuclear_radiation:fallout_dust_block"))
+                .isotope(Isotopes.CS_137, 12.0e15)
+                .isotope(Isotopes.SR_90, 2.0e15)
+                .isotope(Isotopes.I_131, 20.0e13)
+                .build());
+
+        list.add(BindingDefinition.builder("fallout_dust_block")
+                .block(rec("nuclear_radiation:fallout_dust_block"))
+                .isotope(Isotopes.CS_137, 12.0e15)
+                .isotope(Isotopes.SR_90, 2.0e15)
+                .isotope(Isotopes.I_131, 20.0e13)
+                .build());
+
         return list;
     }
 

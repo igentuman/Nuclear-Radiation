@@ -1,6 +1,6 @@
 {
-    "parent": "minecraft:item/generated",
-    "textures": { 
-        "layer0": "nuclear_radiation:item/geiger_counter_1"
+    "parent": "nuclear_radiation:item/geiger_counter",
+    "textures": {
+        "1": "nuclear_radiation:item/geiger_counter_screen_1"
     }
 }

@@ -1,6 +1,7 @@
 package igentuman.nr;
 
 import igentuman.nr.block.CreativeRadSourceBlock;
+import igentuman.nr.block.FalloutDustBlock;
 import igentuman.nr.block.CreativeRadSourceBlockEntity;
 import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.corium.Corium;
@@ -82,6 +83,20 @@ public class NuclearRadiation {
             "creative_rad_source",
             () -> new BlockItem(CREATIVE_RAD_SOURCE_BLOCK.get(), new Item.Properties()));
 
+    public static final DeferredBlock<FalloutDustBlock> FALLOUT_DUST_BLOCK = BLOCKS.register(
+            "fallout_dust_block",
+            () -> new FalloutDustBlock(BlockBehaviour.Properties.of()
+                    .strength(0.5f)
+                    .sound(SoundType.SAND)));
+
+    public static final DeferredItem<Item> FALLOUT_DUST_BLOCK_ITEM = ITEMS.register(
+            "fallout_dust_block",
+            () -> new BlockItem(FALLOUT_DUST_BLOCK.get(), new Item.Properties()));
+
+    public static final DeferredItem<Item> FALLOUT_DUST = ITEMS.register(
+            "fallout_dust",
+            () -> new Item(new Item.Properties()));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CreativeRadSourceBlockEntity>> CREATIVE_RAD_SOURCE_BE =
             BLOCK_ENTITIES.register("creative_rad_source",
                     () -> BlockEntityType.Builder
@@ -135,6 +150,10 @@ public class NuclearRadiation {
         }
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(Corium.CORIUM_BLOCK_ITEM);
+            event.accept(FALLOUT_DUST_BLOCK_ITEM);
+        }
+        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
+            event.accept(FALLOUT_DUST);
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(Corium.MOLTEN_CORIUM_BUCKET);

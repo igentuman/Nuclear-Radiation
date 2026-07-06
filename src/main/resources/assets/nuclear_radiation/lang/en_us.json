@@ -92,6 +92,8 @@
 
   "block.nuclear_radiation.creative_rad_source": "Creative Radiation Source",
   "block.nuclear_radiation.corium_block": "Corium Block",
+  "block.nuclear_radiation.fallout_dust_block": "Fallout Dust Block",
+  "item.nuclear_radiation.fallout_dust": "Fallout Dust",
   "fluid_type.nuclear_radiation.molten_corium": "Molten Corium",
   "item.nuclear_radiation.molten_corium_bucket": "Molten Corium Bucket",
 
