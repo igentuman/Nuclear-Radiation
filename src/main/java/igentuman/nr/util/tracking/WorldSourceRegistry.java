@@ -1,5 +1,6 @@
 package igentuman.nr.util.tracking;
 
+import igentuman.nr.NuclearRadiation;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.util.persistence.ChunkRadiationData;
@@ -7,7 +8,9 @@ import igentuman.nr.util.persistence.LevelRadiationData;
 import igentuman.nr.util.persistence.NRAttachments;
 import igentuman.nr.simulation.RadiationSimulator;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
@@ -100,17 +103,19 @@ public class WorldSourceRegistry {
         return out;
     }
 
-    public void tickDecay(long now) {
-        //would be nice to get list of loaded chunks and run decay only on loaded chunks
-
+    public void tickDecay(long now, ServerLevel server) {
         List<UUID> dead = new ArrayList<>();
         double floor = Math.max(
                 RadiationConfig.ACTIVITY_FLOOR_BQ.get(),
                 RadiationConfig.WORLD_SOURCE_MIN_BQ.get());
+        int interval = RadiationConfig.WORLD_SIM_INTERVAL_TICKS.get();
         for (WorldRadSource s : all()) {
             if (now >= s.expiryGameTime()) {
                 dead.add(s.getId());
                 continue;
+            }
+            if (now % (interval * 80L) == 0 && server.getRandom().nextFloat() > 0.85) {
+                decayFalloutDust(s);
             }
             if (s instanceof AbstractWorldRadSource a) a.advanceDecay(now);
             if (!s.isActive() || s.activityBq() < floor) {
@@ -119,6 +124,41 @@ public class WorldSourceRegistry {
         }
         if (dead.isEmpty()) return;
         for (UUID id : dead) remove(id);
+    }
+
+    private void decayFalloutDust(WorldRadSource s) {
+        ChunkPos cp = new ChunkPos(s.getPosition());
+        LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
+        if (chunk == null) return;
+        ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
+        if (data.air().isEmpty()) return;
+        BlockPos target = findFalloutDustPos(s.getPosition());
+        if (target == null) return;
+        level.setBlockAndUpdate(target, NuclearRadiation.FALLOUT_DUST_BLOCK.get().defaultBlockState());
+        data.air().reduceAtoms(1.2);
+        data.markExpiryDirty();
+        chunk.setUnsaved(true);
+    }
+
+    private BlockPos findFalloutDustPos(BlockPos origin) {
+        RandomSource rand = level.random;
+        for (int attempt = 0; attempt < 8; attempt++) {
+            int dx = rand.nextInt(41) - 20;
+            int dz = rand.nextInt(41) - 20;
+            if (dx * dx + dz * dz > 100) continue;
+            int x = origin.getX() + dx;
+            int z = origin.getZ() + dz;
+            if (!level.isLoaded(new BlockPos(x, origin.getY(), z))) continue;
+            for (int y = origin.getY() + 20; y >= origin.getY() - 20; y--) {
+                BlockPos target = new BlockPos(x, y, z);
+                BlockPos below = target.below();
+                if (level.getBlockState(target).isAir()
+                        && level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)) {
+                    return target;
+                }
+            }
+        }
+        return null;
     }
 
     public void tickChunkDecay(long now) {

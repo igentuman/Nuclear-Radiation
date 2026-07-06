@@ -173,7 +173,7 @@ public class RadSourceEvents {
         int interval = RadiationConfig.WORLD_SIM_INTERVAL_TICKS.get();
         if (now % interval != 0) return;
         WorldSourceRegistry reg = WorldSourceRegistry.get(server);
-        reg.tickDecay(now);
+        reg.tickDecay(now, server);
         reg.tickChunkDecay(now);
         if (now % interval*2 != 0) return;
         reg.spreadContamination(now, interval);
