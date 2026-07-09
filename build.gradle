@@ -116,7 +116,7 @@ dependencies {
     compileOnly("cc.tweaked:cc-tweaked-1.21.1-common-api:1.118.0")
     runtimeOnly("cc.tweaked:cc-tweaked-1.21.1-forge:1.118.0")
 
-    implementation "curse.maven:hbms-nuclear-tech-ne-1449927:8062359"
+    compileOnly "curse.maven:hbms-nuclear-tech-ne-1449927:8062359"
 
     implementation "curse.maven:curios-309927:6529130"
     compileOnly "curse.maven:curios-309927:6529132"
@@ -139,11 +139,12 @@ dependencies {
     compileOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE:api")
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
 
+    runtimeOnly "curse.maven:multi-builder-tool-827020:8084902"
     implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
     implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:additions")// Mekanism: Additions
-    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
+    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:tools")// Mekanism: Tools
 
     implementation "curse.maven:applied-energistics-2-223794:7027323"

@@ -6,6 +6,7 @@
     "BlockEntitySetChangedMixin",
     "BlockItemVoltaicMixin",
     "CapabilityRadiationRecipientMixin",
+    "FissionReactorMultiblockDataMixin",
     "ItemVoltaicMixin",
     "MekRadiationManagerMixin",
     "NCMeltdownMixin",
