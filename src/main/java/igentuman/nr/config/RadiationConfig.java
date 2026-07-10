@@ -44,6 +44,18 @@ public final class RadiationConfig {
     public static final ModConfigSpec.IntValue BLOCK_IRRADIATION_RAYS;
     public static final ModConfigSpec.IntValue BLOCK_IRRADIATION_MAX_SOURCES;
     public static final ModConfigSpec.IntValue BLOCK_IRRADIATION_MAX_TRANSFORMS;
+    public static final ModConfigSpec.DoubleValue GAS_SOURCE_THRESHOLD_BQ;
+    public static final ModConfigSpec.IntValue GAS_BASE_RADIUS;
+    public static final ModConfigSpec.DoubleValue GAS_RADIUS_STEP_BQ;
+    public static final ModConfigSpec.IntValue GAS_MAX_RADIUS;
+    public static final ModConfigSpec.DoubleValue GAS_INHALE_CHANCE;
+    public static final ModConfigSpec.DoubleValue GAS_POLLUTION_PER_INHALE;
+    public static final ModConfigSpec.DoubleValue LUNG_DUST_POLLUTION_PER_INTERVAL;
+    public static final ModConfigSpec.DoubleValue LUNG_RECOVERY_PER_INTERVAL;
+    public static final ModConfigSpec.DoubleValue LUNG_MID_THRESHOLD;
+    public static final ModConfigSpec.DoubleValue LUNG_HIGH_THRESHOLD;
+    public static final ModConfigSpec.DoubleValue LUNG_CANCER_DAMAGE;
+    public static final ModConfigSpec.IntValue LUNG_CANCER_DAMAGE_INTERVAL_TICKS;
 
     private static volatile Map<ResourceLocation, Double> levelBackgroundCache;
     private static volatile Map<ResourceLocation, Double> biomeBackgroundCache;
@@ -99,7 +111,7 @@ public final class RadiationConfig {
         b.pop();
 
         b.push("inventory");
-        ARMOR_BLOCKS_INVENTORY = b.defineInRange("armor_blocks_inventory", 0.5, 0.0, 1.0);
+        ARMOR_BLOCKS_INVENTORY = b.defineInRange("armor_blocks_inventory", 0.75, 0.0, 1.0);
         INVENTORY_ALPHA_PASS = b.comment("Fraction of alpha radiation that escapes inventory containers/clothing to reach the body. Alpha particles are stopped by ~1 cm of any material, so default is 0 (fully blocked). Raise to simulate exposed/handheld items.")
                 .defineInRange("inventory_alpha_pass", 0.0, 0.0, 1.0);
         INVENTORY_BETA_PASS = b.comment("Fraction of beta radiation that escapes inventory containers/clothing to reach the body. Beta particles are stopped by a few mm of plastic or cm of cloth, default 0.2 (most blocked).")
@@ -115,6 +127,14 @@ public final class RadiationConfig {
                 .defineList("level_usv_per_hour",
                         List.of(
                                 "minecraft:the_nether=1.5",
+                                "nuclearcraft:wasteland=1500.5",
+                                "nuclearcraftneohaul:wasteland=1500.5",
+                                "creatingspace:earth_orbit=2500.0",
+                                "creatingspace:mars=13000.0",
+                                "creatingspace:the_moon=15000.0",
+                                "creatingspace:moon_orbit=16000.0",
+                                "creatingspace:mars_orbit=13500.0",
+                                "creatingspace:venus=14000.0",
                                 "minecraft:the_end=1.3"
                         ),
                         () -> "minecraft:overworld=0.1",
@@ -125,6 +145,8 @@ public final class RadiationConfig {
                 .defineList("biome_usv_per_hour",
                         List.of(
                                 "minecraft:nether_wastes=50.0",
+                                "nuclearcraftneohaul:wasteland=1500.0",
+                                "nuclearcraft:wasteland=1500.0",
                                 "minecraft:deep_dark=70.0"
                         ),
                         () -> "minecraft:plains=0.1",
@@ -160,6 +182,33 @@ public final class RadiationConfig {
                 .defineInRange("max_sources_per_job", 64, 1, 200);
         BLOCK_IRRADIATION_MAX_TRANSFORMS = b.comment("Safety cap on setBlock calls per drain")
                 .defineInRange("max_transforms_per_drain", 10, 1, 1000);
+        b.pop();
+
+        b.push("gas");
+        GAS_SOURCE_THRESHOLD_BQ = b.comment("Minimum source activity (Bq) to emit a radioactive gas cloud (radon/xenon). Default 2.0e11 = 200 GBq.")
+                .defineInRange("gas_source_threshold_bq", 2.0e11, 0.0, 1.0e30);
+        GAS_BASE_RADIUS = b.comment("Base gas cloud radius in blocks at the threshold activity.")
+                .defineInRange("gas_base_radius_blocks", 8, 1, 256);
+        GAS_RADIUS_STEP_BQ = b.comment("Extra activity (Bq) above threshold that grows the cloud by 1 block. Default 2.0e11 = +1 block per 200 GBq.")
+                .defineInRange("gas_radius_step_bq", 2.0e11, 1.0, 1.0e30);
+        GAS_MAX_RADIUS = b.comment("Hard cap on gas cloud radius (blocks).")
+                .defineInRange("gas_max_radius_blocks", 48, 1, 256);
+        GAS_INHALE_CHANCE = b.comment("Per entity-sim-interval chance a player inside a gas cloud inhales (no head gas protection).")
+                .defineInRange("gas_inhale_chance", 0.15, 0.0, 1.0);
+        GAS_POLLUTION_PER_INHALE = b.comment("Lung pollution (0..1) added per inhale.")
+                .defineInRange("gas_pollution_per_inhale", 0.03, 0.0, 1.0);
+        LUNG_DUST_POLLUTION_PER_INTERVAL = b.comment("Lung pollution (0..1) added per entity-sim-interval when airborne-contaminant items (tag nr:airborne_contaminant) are carried without head gas protection.")
+                .defineInRange("lung_dust_pollution_per_interval", 0.01, 0.0, 1.0);
+        LUNG_RECOVERY_PER_INTERVAL = b.comment("Passive lung pollution (0..1) cleared per entity-sim-interval. Scaled up by an active radiation_purge effect.")
+                .defineInRange("lung_recovery_per_interval", 0.004, 0.0, 1.0);
+        LUNG_MID_THRESHOLD = b.comment("Pollution (0..1) at/above which lungs reach MID stage (applies Weakness).")
+                .defineInRange("lung_mid_threshold", 0.34, 0.0, 1.0);
+        LUNG_HIGH_THRESHOLD = b.comment("Pollution (0..1) at/above which lungs reach HIGH stage (lung cancer: Weakness II + damage).")
+                .defineInRange("lung_high_threshold", 0.75, 0.0, 1.0);
+        LUNG_CANCER_DAMAGE = b.comment("Damage dealt per damage interval at HIGH lung stage.")
+                .defineInRange("lung_cancer_damage", 1.0, 0.0, 1000.0);
+        LUNG_CANCER_DAMAGE_INTERVAL_TICKS = b.comment("Ticks between lung cancer damage applications at HIGH stage.")
+                .defineInRange("lung_cancer_damage_interval_ticks", 40, 1, 24000);
         b.pop();
 
         SPEC = b.build();

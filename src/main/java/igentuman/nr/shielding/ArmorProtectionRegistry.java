@@ -11,8 +11,8 @@ import java.util.Map;
 
 public final class ArmorProtectionRegistry {
 
-    public record Protection(double xray, double alpha, double beta, double neutron) {
-        public static final Protection NONE = new Protection(0, 0, 0, 0);
+    public record Protection(double xray, double alpha, double beta, double neutron, boolean protectsFromGas) {
+        public static final Protection NONE = new Protection(0, 0, 0, 0, false);
     }
 
     private static final Map<Item, Protection> BY_ITEM = new HashMap<>();
@@ -39,7 +39,7 @@ public final class ArmorProtectionRegistry {
         if (stack.isEmpty()) return Protection.NONE;
         if (stack.getItem() instanceof IRadiationArmor a) {
             return new Protection(a.xrayProtection(), a.alphaProtection(),
-                    a.betaProtection(), a.neutronProtection());
+                    a.betaProtection(), a.neutronProtection(), a.gasProtection());
         }
         Protection p = BY_ITEM.get(stack.getItem());
         return p != null ? p : Protection.NONE;
@@ -47,6 +47,7 @@ public final class ArmorProtectionRegistry {
 
     public static Protection summed(LivingEntity entity) {
         double mxX = 0, mxA = 0, mxB = 0, mxN = 0;
+        boolean gasProtection = false;
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (!slot.isArmor()) continue;
             ItemStack stack = entity.getItemBySlot(slot);
@@ -55,7 +56,8 @@ public final class ArmorProtectionRegistry {
             mxA = Math.min(1.0, 1.0 - (1.0 - mxA) * (1.0 - p.alpha()));
             mxB = Math.min(1.0, 1.0 - (1.0 - mxB) * (1.0 - p.beta()));
             mxN = Math.min(1.0, 1.0 - (1.0 - mxN) * (1.0 - p.neutron()));
+            if (slot == EquipmentSlot.HEAD) gasProtection = p.protectsFromGas();
         }
-        return new Protection(mxX, mxA, mxB, mxN);
+        return new Protection(mxX, mxA, mxB, mxN, gasProtection);
     }
 }

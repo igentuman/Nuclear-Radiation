@@ -30,19 +30,20 @@ public class RadiationHudLayer implements LayeredDraw.Layer {
         if (!geigerHeld && !dosiPresent) return;
 
         Font font = mc.font;
-        double svh = ClientRadiationCache.svPerHour();
-        int rateColor = colorForRate(svh);
 
         if (geigerHeld) {
-            double cpm = GeigerCounterItem.svhToCpm(svh);
+            double ambientSvh = ClientRadiationCache.svPerHourAmbient();
+            double cpm = GeigerCounterItem.svhToCpm(ambientSvh);
             int x = 4;
             int y = 4;
-            graphics.drawString(font, "Rate: " + TextUtils.formatSvPerHour(svh), x, y, rateColor, true);
+            graphics.drawString(font, "Rate: " + TextUtils.formatSvPerHour(ambientSvh), x, y, colorForRate(ambientSvh), true);
             y += 10;
             graphics.drawString(font, "CPM: " + TextUtils.formatSi(cpm, "cpm"), x, y, 0x55FF55, true);
         }
 
         if (dosiPresent) {
+            double svh = ClientRadiationCache.svPerHour();
+            int rateColor = colorForRate(svh);
             double total = ClientRadiationCache.svTotal();
             String totalStr = "Total: " + TextUtils.formatSv(total);
             String rateStr = "Rate: " + TextUtils.formatSvPerHour(svh);

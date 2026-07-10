@@ -40,16 +40,16 @@ public class RadiationTooltip {
                     .withStyle(colorForBq(bq*event.getItemStack().getCount())));
         }
         if (alpha > 0) {
-            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.alpha", numberFormat(alpha/bq) + "%").withStyle(DARK_GRAY));
+            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.alpha", numberFormat(alpha/bq * 100) + "%").withStyle(DARK_GRAY));
         }
         if (beta > 0) {
-            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.beta", numberFormat(beta/bq) + "%").withStyle(DARK_GRAY));
+            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.beta", numberFormat(beta/bq * 100) + "%").withStyle(DARK_GRAY));
         }
         if (gamma > 0) {
-            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.gamma", numberFormat(gamma/bq) + "%").withStyle(DARK_GRAY));
+            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.gamma", numberFormat(gamma/bq * 100) + "%").withStyle(DARK_GRAY));
         }
         if (neutron > 0) {
-            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.neutron", numberFormat(neutron/bq) + "%").withStyle(DARK_GRAY));
+            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.neutron", numberFormat(neutron/bq * 100) + "%").withStyle(DARK_GRAY));
         }
     }
 

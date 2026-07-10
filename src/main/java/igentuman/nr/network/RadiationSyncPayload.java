@@ -7,7 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
-public record RadiationSyncPayload(double svTotal, double svPerHour)
+public record RadiationSyncPayload(double svTotal, double svPerHour, double svPerHourAmbient)
         implements CustomPacketPayload {
 
     public static final Type<RadiationSyncPayload> TYPE = new Type<>(
@@ -17,6 +17,7 @@ public record RadiationSyncPayload(double svTotal, double svPerHour)
             StreamCodec.composite(
                     ByteBufCodecs.DOUBLE, RadiationSyncPayload::svTotal,
                     ByteBufCodecs.DOUBLE, RadiationSyncPayload::svPerHour,
+                    ByteBufCodecs.DOUBLE, RadiationSyncPayload::svPerHourAmbient,
                     RadiationSyncPayload::new
             );
 

@@ -42,6 +42,7 @@ public class ArmorProtectionProvider implements DataProvider {
             obj.addProperty("alpha", def.alpha);
             obj.addProperty("beta", def.beta);
             obj.addProperty("neutron", def.neutron);
+            obj.addProperty("gas_protection", def.protectsFromGas);
 
             Path p = base.resolve(def.fileId + ".json");
             futures.add(DataProvider.saveStable(cachedOutput, obj, p));

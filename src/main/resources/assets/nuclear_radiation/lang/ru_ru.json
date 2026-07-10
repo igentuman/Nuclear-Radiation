@@ -1,0 +1,107 @@
+{
+  "itemGroup.nuclear_radiation": "Ядерная радиация",
+  "death.attack.nuclear_radiation.lung_cancer": "%1$s умер от рака лёгких",
+  "death.attack.nuclear_radiation.lung_cancer.player": "%1$s умер от рака лёгких в бою с %2$s",
+  "death.attack.nuclear_radiation.radiation": "%1$s погиб от лучевой болезни",
+  "death.attack.nuclear_radiation.radiation.player": "%1$s погиб от лучевой болезни в бою с %2$s",
+  "subtitles.nuclear_radiation.vomit": "Рвота",
+  "subtitles.nuclear_radiation.inject": "Инъекция",
+
+  "item.nuclear_radiation.geiger_counter": "Счётчик Гейгера",
+  "item.nuclear_radiation.dosimeter": "Дозиметр",
+
+  "item.nuclear_radiation.hazmat_helmet": "Шлем химзащиты",
+  "item.nuclear_radiation.hazmat_chestplate": "Костюм химзащиты",
+  "item.nuclear_radiation.hazmat_leggings": "Штаны химзащиты",
+  "item.nuclear_radiation.hazmat_boots": "Ботинки химзащиты",
+
+  "item.nuclear_radiation.iodine_pill": "Таблетка йода",
+  "item.nuclear_radiation.prussian_blue": "Берлинская лазурь",
+  "item.nuclear_radiation.rad_protection_potion": "Зелье радиозащиты",
+  "item.nuclear_radiation.rad_protection_potion_2": "Зелье радиозащиты II",
+  "item.nuclear_radiation.anti_rad_injection": "Противорадиационная инъекция",
+  "item.nuclear_radiation.radaway": "Антирадин",
+
+  "effect.nuclear_radiation.radiation_protection": "Радиозащита",
+  "effect.nuclear_radiation.radiation_purge": "Выведение радиации",
+  "effect.nuclear_radiation.iodine_protection": "Йодная блокада",
+  "effect.nuclear_radiation.cesium_purge": "Выведение цезия",
+
+  "nuclear_radiation.configuration.title": "Настройки Nuclear Radiation",
+
+  "jei.nuclear_radiation.category.isotope_stats": "Характеристики изотопа",
+  "jei.nuclear_radiation.category.radioactive_items": "Радиоактивные предметы",
+  "jei.nuclear_radiation.category.decay_graph": "Схема распада",
+  "jei.nuclear_radiation.category.armor_protection": "Радиозащита брони",
+  "jei.nuclear_radiation.category.block_shielding": "Радиационное экранирование блоков",
+  "jei.nuclear_radiation.category.mutation": "Радиоактивная мутация",
+  "jei.nuclear_radiation.category.block_irradiation": "Облучение блоков",
+
+  "jei.nuclear_radiation.block_irradiation.min_bq": "Мин. активность: %s",
+  "jei.nuclear_radiation.block_irradiation.chance": "Шанс: %s",
+
+  "jei.nuclear_radiation.mutation.dose": "Суммарная доза: %s",
+  "jei.nuclear_radiation.mutation.rate": "Облучение:",
+  "jei.nuclear_radiation.mutation.min_rate": "Мин.: %s",
+  "jei.nuclear_radiation.mutation.max_rate": "Макс.: %s",
+  "jei.nuclear_radiation.mutation.chance": "Шанс: %s",
+
+  "jei.nuclear_radiation.armor_protection.xray": "Ɣ гамма: %s",
+  "jei.nuclear_radiation.armor_protection.alpha": "ɑ альфа: %s",
+  "jei.nuclear_radiation.armor_protection.beta": "ꞵ бета: %s",
+  "jei.nuclear_radiation.armor_protection.neutron": "Нейтроны: %s",
+
+  "jei.nuclear_radiation.block_shielding.xray": "Ɣ ослабление гамма: %s см⁻¹",
+  "jei.nuclear_radiation.block_shielding.neutron": "Ослабление нейтронов: %s см⁻¹",
+
+
+  "jei.nuclear_radiation.isotope_stats.id": "ID: %s",
+  "jei.nuclear_radiation.isotope_stats.half_life": "λ Период полураспада: %s",
+  "jei.nuclear_radiation.isotope_stats.dose_mix": "Состав дозы:",
+  "jei.nuclear_radiation.isotope_stats.alpha": " ɑ альфа:      %s",
+  "jei.nuclear_radiation.isotope_stats.beta": " ꞵ бета:       %s",
+  "jei.nuclear_radiation.isotope_stats.x_gamma": " Ɣ гамма:    %s",
+  "jei.nuclear_radiation.isotope_stats.neutron": " нейтроны:    %s",
+  "jei.nuclear_radiation.isotope_stats.decays_to": "Распадается в: %s",
+
+  "jei.nuclear_radiation.radioactive_items.total": "Всего: %s",
+  "jei.nuclear_radiation.radioactive_items.radiation_mix": "Состав излучения:",
+  "jei.nuclear_radiation.radioactive_items.alpha": " ɑ альфа: %s",
+  "jei.nuclear_radiation.radioactive_items.beta": " ꞵ бета: %s",
+  "jei.nuclear_radiation.radioactive_items.gamma": " Ɣ гамма: %s",
+  "jei.nuclear_radiation.radioactive_items.neutron": " нейтроны: %s",
+  "jei.nuclear_radiation.radioactive_items.isotopes": "Изотопы:",
+  "jei.nuclear_radiation.radioactive_items.isotope_entry": " %s  %s",
+
+  "tooltip.nuclear_radiation.isotope": "Изотоп: %s",
+  "tooltip.nuclear_radiation.half_life": "λ Период полураспада: %s",
+
+  "tooltip.nuclear_radiation.block_shielding": "Радиационное экранирование",
+  "tooltip.nuclear_radiation.armor_protection": "Радиозащита",
+  "tooltip.nuclear_radiation.armor.xray": " Ɣ гамма: %s",
+  "tooltip.nuclear_radiation.armor.alpha": " ɑ альфа: %s",
+  "tooltip.nuclear_radiation.armor.beta": " ꞵ бета: %s",
+  "tooltip.nuclear_radiation.armor.neutron": " Нейтроны: %s",
+
+  "isotope.nuclear_radiation.u_238": "Уран-238",
+  "isotope.nuclear_radiation.u_235": "Уран-235",
+  "isotope.nuclear_radiation.pu_239": "Плутоний-239",
+  "isotope.nuclear_radiation.cs_137": "Цезий-137",
+  "isotope.nuclear_radiation.i_131": "Йод-131",
+  "isotope.nuclear_radiation.sr_90": "Стронций-90",
+  "isotope.nuclear_radiation.co_60": "Кобальт-60",
+  "isotope.nuclear_radiation.cf_252": "Калифорний-252",
+
+  "block.nuclear_radiation.creative_rad_source": "Творческий источник радиации",
+  "block.nuclear_radiation.corium_block": "Блок кориума",
+  "block.nuclear_radiation.fallout_dust_block": "Блок радиоактивной пыли",
+  "item.nuclear_radiation.fallout_dust": "Радиоактивная пыль",
+  "fluid_type.nuclear_radiation.molten_corium": "Расплавленный кориум",
+  "item.nuclear_radiation.molten_corium_bucket": "Ведро расплавленного кориума",
+
+  "gui.nuclear_radiation.creative_rad_source.apply": "Применить",
+  "gui.nuclear_radiation.creative_rad_source.alpha": "Альфа МБк:",
+  "gui.nuclear_radiation.creative_rad_source.beta": "Бета МБк:",
+  "gui.nuclear_radiation.creative_rad_source.xray": "Рентген МБк:",
+  "gui.nuclear_radiation.creative_rad_source.neutron": "Нейтроны МБк:"
+}

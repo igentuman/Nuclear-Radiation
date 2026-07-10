@@ -14,45 +14,56 @@ public final class DefaultArmorProtections {
     public static List<ArmorProtectionDefinition> defaults() {
         List<ArmorProtectionDefinition> list = new ArrayList<>();
 
-        addSet(list, "minecraft:iron",      0.04, 0.20, 0.10, 0.01);
-        addSet(list, "minecraft:golden",    0.08, 0.22, 0.12, 0.02);
-        addSet(list, "minecraft:netherite", 0.10, 0.25, 0.15, 0.04);
-        addSet(list, "nuclear_radiation:hazmat", 0.90, 1, 1, 0.92);
-        addCustom(list, "nuclearscience:hazmathelmet", 0.9, 1, 1, 0.92);
-        addCustom(list, "nuclearscience:hazmatplate", 0.9, 1, 1, 0.92);
-        addCustom(list, "nuclearscience:hazmatlegs", 0.9, 1, 1, 0.92);
-        addCustom(list, "nuclearscience:hazmatboots", 0.9, 1, 1, 0.92);
-        addCustom(list, "nuclearscience:reinforcedhazmathelmet", 0.95, 1, 20, 0.95);
-        addCustom(list, "nuclearscience:reinforcedhazmatplate", 0.95, 1, 20, 0.95);
-        addCustom(list, "nuclearscience:reinforcedhazmatlegs", 0.95, 1, 20, 0.95);
-        addCustom(list, "nuclearscience:reinforcedhazmatboots", 0.95, 1, 20, 0.95);
-        addCustom(list, "mekanism:hazmat_mask", 0.9, 1, 1, 0.92);
-        addCustom(list, "mekanism:hazmat_gown", 0.9, 1, 1, 0.92);
-        addCustom(list, "mekanism:hazmat_pants", 0.9, 1, 1, 0.92);
-        addCustom(list, "mekanism:hazmat_boots", 0.9, 1, 1, 0.92);
-        addCustom(list, "mekanism:mekasuit_helmet", 0.95, 1, 1, 0.95);
-        addCustom(list, "mekanism:mekasuit_bodyarmour", 0.95, 1, 1, 0.95);
-        addCustom(list, "mekanism:mekasuit_pants", 0.95, 1, 1, 0.95);
-        addCustom(list, "mekanism:mekasuit_boots", 0.95, 1, 1, 0.95);
-        addCustom(list, "nuclearcraftneohaul:hazmat_helmet", 0.9, 1, 1, 0.92);
-        addCustom(list, "nuclearcraftneohaul:hazmat_chestplate", 0.9, 1, 1, 0.92);
-        addCustom(list, "nuclearcraftneohaul:hazmat_leggings", 0.9, 1, 1, 0.92);
-        addCustom(list, "nuclearcraftneohaul:hazmat_boots", 0.9, 1, 1, 0.92);
+        addSet(list, "minecraft:iron",      0.04, 0.20, 0.10, 0.01, false);
+        addSet(list, "minecraft:golden",    0.08, 0.22, 0.12, 0.02, false);
+        addSet(list, "minecraft:netherite", 0.10, 0.25, 0.15, 0.04, false);
+        addSet(list, "nuclear_radiation:hazmat", 0.90, 1, 1, 0.92, false);
+        addCustom(list, "creatingspace:basic_spacesuit_helmet", 0.72, 1, 1, 0.72, true);
+        addCustom(list, "creatingspace:copper_oxygen_backtank", 0.42, 1, 1, 0.42, false);
+        addCustom(list, "creatingspace:basic_spacesuit_leggings", 0.72, 1, 1, 0.72, false);
+        addCustom(list, "creatingspace:basic_spacesuit_boots", 0.72, 1, 1, 0.72, false);
+        addCustom(list, "creatingspace:advanced_spacesuit_helmet", 0.85, 1, 1, 0.85, true);
+        addCustom(list, "creatingspace:netherite_oxygen_backtank", 0.55, 1, 1, 0.55, false);
+        addCustom(list, "creatingspace:advanced_spacesuit_leggings", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "creatingspace:advanced_spacesuit_boots", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "nuclearscience:hazmathelmet", 0.9, 1, 1, 0.92, true);
+        addCustom(list, "nuclearscience:hazmatplate", 0.9, 1, 1, 0.92, false);
+        addCustom(list, "nuclearscience:hazmatlegs", 0.9, 1, 1, 0.92, false);
+        addCustom(list, "nuclearscience:hazmatboots", 0.9, 1, 1, 0.92, false);
+        addCustom(list, "nuclearscience:reinforcedhazmathelmet", 0.95, 1, 20, 0.95, true);
+        addCustom(list, "nuclearscience:reinforcedhazmatplate", 0.95, 1, 20, 0.95, false);
+        addCustom(list, "nuclearscience:reinforcedhazmatlegs", 0.95, 1, 20, 0.95, false);
+        addCustom(list, "nuclearscience:reinforcedhazmatboots", 0.95, 1, 20, 0.95, false);
+        addCustom(list, "mekanism:hazmat_mask", 0.9, 1, 1, 0.92, true);
+        addCustom(list, "mekanism:hazmat_gown", 0.9, 1, 1, 0.92, false);
+        addCustom(list, "mekanism:hazmat_pants", 0.9, 1, 1, 0.92, false);
+        addCustom(list, "mekanism:hazmat_boots", 0.9, 1, 1, 0.92, false);
+        addCustom(list, "mekanism:mekasuit_helmet", 0.95, 1, 1, 0.95, true);
+        addCustom(list, "mekanism:mekasuit_bodyarmour", 0.95, 1, 1, 0.95, false);
+        addCustom(list, "mekanism:mekasuit_pants", 0.95, 1, 1, 0.95, false);
+        addCustom(list, "mekanism:mekasuit_boots", 0.95, 1, 1, 0.95, false);
+        addCustom(list, "nuclearcraftneohaul:hazmat_helmet", 0.9, 1, 1, 0.92, true);
+        addCustom(list, "nuclearcraftneohaul:hazmat_chestplate", 0.9, 1, 1, 0.92, false);
+        addCustom(list, "nuclearcraftneohaul:hazmat_leggings", 0.9, 1, 1, 0.92, false);
+        addCustom(list, "nuclearcraftneohaul:hazmat_boots", 0.9, 1, 1, 0.92, false);
         return list;
     }
 
     private static void addCustom(List<ArmorProtectionDefinition> list, String material,
-                               double xray, double alpha, double beta, double neutron) {
+                               double xray, double alpha, double beta, double neutron, boolean protectsFromGas) {
                 ResourceLocation loc = rec(material);
-                list.add(new ArmorProtectionDefinition(loc.getNamespace()+"_"+loc.getPath(), loc, xray, alpha, beta, neutron));
+                list.add(new ArmorProtectionDefinition(loc.getNamespace()+"_"+loc.getPath(), loc, xray, alpha, beta, neutron, protectsFromGas));
     }
 
     private static void addSet(List<ArmorProtectionDefinition> list, String material,
-                               double xray, double alpha, double beta, double neutron) {
+                               double xray, double alpha, double beta, double neutron, boolean protectsFromGas) {
         for (String piece : new String[]{"helmet", "chestplate", "leggings", "boots"}) {
             String id = material + "_" + piece;
+            if(id.equals("hazmat_helmet")) {
+                protectsFromGas = true;
+            }
             ResourceLocation loc = rec(id);
-            list.add(new ArmorProtectionDefinition(loc.getNamespace()+"_"+loc.getPath(), loc, xray, alpha, beta, neutron));
+            list.add(new ArmorProtectionDefinition(loc.getNamespace()+"_"+loc.getPath(), loc, xray, alpha, beta, neutron, protectsFromGas));
         }
     }
 }

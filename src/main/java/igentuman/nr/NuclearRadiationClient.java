@@ -1,6 +1,7 @@
 package igentuman.nr;
 
 import igentuman.nr.block.client.CreativeRadSourceScreen;
+import igentuman.nr.client.particle.GasCloudParticle;
 import igentuman.nr.corium.Corium;
 import igentuman.nr.corium.CoriumFluidType;
 import igentuman.nr.client.GlowSilhouette;
@@ -67,6 +68,7 @@ public class NuclearRadiationClient {
     @SubscribeEvent
     static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(NuclearRadiation.RADIATION_PARTICLE.get(), RadiationParticle.Provider::new);
+        event.registerSpriteSet(NuclearRadiation.GAS_CLOUD_PARTICLE.get(), GasCloudParticle.Provider::new);
     }
 
     @SubscribeEvent

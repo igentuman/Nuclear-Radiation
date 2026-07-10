@@ -31,6 +31,12 @@ public class NRItemTagsProvider extends ItemTagsProvider {
         tag(RadiationTags.ITEM_SPENT_FUEL)
                 .addOptionalTag(c("spent_nuclear_fuel"));
 
+        tag(RadiationTags.ITEM_AIRBORNE_CONTAMINANT)
+                .add(NuclearRadiation.FALLOUT_DUST.get())
+                .add(NuclearRadiation.FALLOUT_DUST_BLOCK_ITEM.get())
+                .addOptionalTag(c("dusts/uranium"))
+                .addOptionalTag(c("dusts/plutonium"));
+
         tag(cItem("storage_blocks")).add(Corium.CORIUM_BLOCK_ITEM.get());
         tag(cItem("storage_blocks/corium")).add(Corium.CORIUM_BLOCK_ITEM.get());
     }

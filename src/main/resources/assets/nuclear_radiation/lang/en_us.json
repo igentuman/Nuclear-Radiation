@@ -1,9 +1,11 @@
 {
   "itemGroup.nuclear_radiation": "Nuclear Radiation",
+  "death.attack.nuclear_radiation.lung_cancer": "%1$s died of lung cancer",
+  "death.attack.nuclear_radiation.lung_cancer.player": "%1$s died of lung cancer while fighting %2$s",
+  "death.attack.nuclear_radiation.radiation": "%1$s succumbed to radiation poisoning",
+  "death.attack.nuclear_radiation.radiation.player": "%1$s succumbed to radiation poisoning while fighting %2$s",
   "subtitles.nuclear_radiation.vomit": "Vomiting",
   "subtitles.nuclear_radiation.inject": "Injection",
-  "block.nuclear_radiation.example_block": "Example Block",
-  "item.nuclear_radiation.example_item": "Example Item",
 
   "item.nuclear_radiation.geiger_counter": "Geiger Counter",
   "item.nuclear_radiation.dosimeter": "Dosimeter",

@@ -1,6 +1,7 @@
 {
   "alpha": 0.25,
   "beta": 0.15,
+  "gas_protection": false,
   "neutron": 0.04,
   "target": "minecraft:netherite_chestplate",
   "xray": 0.1

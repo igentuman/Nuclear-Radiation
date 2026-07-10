@@ -16,11 +16,16 @@ public class ArmorKubeEvent implements KubeStartupEvent {
 
     /** Registers protection for an armor item: x-ray, alpha, beta, neutron (each 0..1). */
     public void add(String itemId, double xray, double alpha, double beta, double neutron) {
+        add(itemId, xray, alpha, beta, neutron, false);
+    }
+
+    /** As above, plus gasProtection: when true and worn on the head, fully blocks radioactive gas inhalation. */
+    public void add(String itemId, double xray, double alpha, double beta, double neutron, boolean gasProtection) {
         NuclearRadiationKubeData.ARMOR_OPS.add(() -> {
             Item item = resolve(itemId);
             if (item == null) return;
             ArmorProtectionRegistry.register(item,
-                    new ArmorProtectionRegistry.Protection(xray, alpha, beta, neutron));
+                    new ArmorProtectionRegistry.Protection(xray, alpha, beta, neutron, gasProtection));
         });
     }
 

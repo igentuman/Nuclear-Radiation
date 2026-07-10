@@ -72,6 +72,9 @@ public class NuclearRadiation {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> RADIATION_PARTICLE =
             PARTICLE_TYPES.register("radiation", () -> new SimpleParticleType(false));
 
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> GAS_CLOUD_PARTICLE =
+            PARTICLE_TYPES.register("gas_cloud", () -> new SimpleParticleType(false));
+
     public static final DeferredBlock<Block> CREATIVE_RAD_SOURCE_BLOCK = BLOCKS.register(
             "creative_rad_source",
             () -> new CreativeRadSourceBlock(BlockBehaviour.Properties.of()

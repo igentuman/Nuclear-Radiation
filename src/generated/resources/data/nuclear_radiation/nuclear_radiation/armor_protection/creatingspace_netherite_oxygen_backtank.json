@@ -1,0 +1,8 @@
+{
+  "alpha": 1.0,
+  "beta": 1.0,
+  "gas_protection": false,
+  "neutron": 0.55,
+  "target": "creatingspace:netherite_oxygen_backtank",
+  "xray": 0.55
+}

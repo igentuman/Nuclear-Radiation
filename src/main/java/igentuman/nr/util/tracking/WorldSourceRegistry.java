@@ -3,6 +3,7 @@ package igentuman.nr.util.tracking;
 import igentuman.nr.NuclearRadiation;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.config.RadiationConfig;
+import igentuman.nr.gas.GasClouds;
 import igentuman.nr.util.persistence.ChunkRadiationData;
 import igentuman.nr.util.persistence.LevelRadiationData;
 import igentuman.nr.util.persistence.NRAttachments;
@@ -101,6 +102,39 @@ public class WorldSourceRegistry {
             if (dx * dx + dy * dy + dz * dz <= r2) out.add(s);
         }
         return out;
+    }
+
+    public synchronized boolean inGasCloud(Vec3 pos) {
+        if (byId.isEmpty()) return false;
+        for (WorldRadSource s : byId.values()) {
+            if (!GasClouds.isGasEmitting(s)) continue;
+            double r = GasClouds.radius(s);
+            if (r <= 0) continue;
+            Vec3 c = s.emissionCenter();
+            double dx = c.x - pos.x, dy = c.y - pos.y, dz = c.z - pos.z;
+            if (dx * dx + dy * dy + dz * dz <= r * r) return true;
+        }
+        return false;
+    }
+
+    private static final int MAX_GAS_EMITTERS = 12;
+
+    public synchronized void emitGasParticles() {
+        if (byId.isEmpty()) return;
+        int emitted = 0;
+        for (WorldRadSource s : byId.values()) {
+            if (emitted >= MAX_GAS_EMITTERS) break;
+            if (!GasClouds.isGasEmitting(s)) continue;
+            double r = GasClouds.radius(s);
+            if (r <= 0) continue;
+            Vec3 c = s.emissionCenter();
+            int count = Math.min(4, 1 + (int) (r / 12.0));
+            double spreadXZ = Math.min(r * 0.4, 8.0);
+            double spreadY = Math.min(Math.max(1.0, r * 0.25), 4.0);
+            level.sendParticles(NuclearRadiation.GAS_CLOUD_PARTICLE.get(),
+                    c.x, c.y, c.z, count, spreadXZ, spreadY, spreadXZ, 0.01);
+            emitted++;
+        }
     }
 
     public void tickDecay(long now, ServerLevel server) {

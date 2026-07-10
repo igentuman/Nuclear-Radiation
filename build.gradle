@@ -126,25 +126,32 @@ dependencies {
 
     compileOnly "curse.maven:nuclearcraft-neohaul-1523268:8341287"
     compileOnly "curse.maven:terrablender-neoforge-940057:6054947"
-    compileOnly "curse.maven:zerocore-247921:7344742"
+    implementation "curse.maven:zerocore-247921:7344742"
 
     implementation "curse.maven:spark-361579:6225208"
     runtimeOnly "curse.maven:sodium-394468:6382651"
     runtimeOnly "curse.maven:irisshaders-455508:6661598"
+
+    implementation "curse.maven:create-328085:7963363"
+    implementation "curse.maven:create-creating-space-858897:8348413"
+
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+
+    compileOnly "curse.maven:emi-580555:8081408"
 
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE:api")
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
 
+    implementation "curse.maven:extreme-reactors-250277:7344744"
     runtimeOnly "curse.maven:multi-builder-tool-827020:8084902"
-    implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
+    compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
-    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
+    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:additions")// Mekanism: Additions
-    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
+    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:tools")// Mekanism: Tools
 
     implementation "curse.maven:applied-energistics-2-223794:7027323"

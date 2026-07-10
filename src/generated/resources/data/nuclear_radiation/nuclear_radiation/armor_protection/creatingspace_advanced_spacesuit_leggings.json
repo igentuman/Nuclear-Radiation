@@ -1,0 +1,8 @@
+{
+  "alpha": 1.0,
+  "beta": 1.0,
+  "gas_protection": false,
+  "neutron": 0.85,
+  "target": "creatingspace:advanced_spacesuit_leggings",
+  "xray": 0.85
+}

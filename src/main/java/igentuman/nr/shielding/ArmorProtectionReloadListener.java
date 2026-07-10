@@ -36,6 +36,7 @@ public class ArmorProtectionReloadListener extends SimpleJsonResourceReloadListe
                 double alpha = readDouble(obj, "alpha");
                 double beta = readDouble(obj, "beta");
                 double neutron = readDouble(obj, "neutron");
+                boolean gas = obj.has("gas_protection") && obj.get("gas_protection").getAsBoolean();
 
                 Item item = BuiltInRegistries.ITEM.get(target);
                 if (item == null) {
@@ -43,7 +44,7 @@ public class ArmorProtectionReloadListener extends SimpleJsonResourceReloadListe
                     continue;
                 }
                 ArmorProtectionRegistry.register(item,
-                        new ArmorProtectionRegistry.Protection(xray, alpha, beta, neutron));
+                        new ArmorProtectionRegistry.Protection(xray, alpha, beta, neutron, gas));
             } catch (Exception ex) {
                 NuclearRadiation.LOGGER.error("Failed to load armor protection {}", e.getKey(), ex);
             }
@@ -59,7 +60,7 @@ public class ArmorProtectionReloadListener extends SimpleJsonResourceReloadListe
             return;
         }
         ArmorProtectionRegistry.register(item,
-                new ArmorProtectionRegistry.Protection(def.xray, def.alpha, def.beta, def.neutron));
+                new ArmorProtectionRegistry.Protection(def.xray, def.alpha, def.beta, def.neutron, def.protectsFromGas));
     }
 
     private static double readDouble(JsonObject obj, String key) {

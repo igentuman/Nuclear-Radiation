@@ -37,7 +37,7 @@ public class GeigerCounterItem extends Item {
         if (!(entity instanceof LivingEntity living)) return;
         if (!selected && !(entity instanceof Player p && p.getOffhandItem() == stack)) return;
 
-        double svh = living.getData(NRAttachments.ENTITY_RADIATION.get()).svPerHour();
+        double svh = living.getData(NRAttachments.ENTITY_RADIATION.get()).svPerHourAmbient();
         if (svh <= SILENT_SVH) return;
 
         double t = responseT(svh);

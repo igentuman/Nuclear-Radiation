@@ -22,11 +22,14 @@ public class EntityRadiationData {
             Codec.STRING.listOf().optionalFieldOf("attempted_mutations", List.of())
                     .forGetter(d -> new ArrayList<>(d.attemptedMutations)),
             Codec.INT.optionalFieldOf("last_dose_stage", 0)
-                    .forGetter(d -> d.lastDoseStage)
+                    .forGetter(d -> d.lastDoseStage),
+            Codec.DOUBLE.optionalFieldOf("sv_per_hour_ambient", 0.0)
+                    .forGetter(d -> d.svPerHourAmbient)
     ).apply(inst, EntityRadiationData::new));
 
     private double svTotalCareer;
     private double svPerHour;
+    private double svPerHourAmbient;
     private double protectionFactor;
     private double decayMultiplier;
     private Map<String, Double> internalContamination;
@@ -34,7 +37,7 @@ public class EntityRadiationData {
     private int lastDoseStage;
 
     public EntityRadiationData() {
-        this(0.0, 0.0, 0.0, 1.0, new LinkedHashMap<>(), List.of(), 0);
+        this(0.0, 0.0, 0.0, 1.0, new LinkedHashMap<>(), List.of(), 0, 0.0);
     }
 
     public EntityRadiationData(double svTotalCareer,
@@ -43,9 +46,11 @@ public class EntityRadiationData {
                                double decayMultiplier,
                                Map<String, Double> internalContamination,
                                List<String> attemptedMutations,
-                               int lastDoseStage) {
+                               int lastDoseStage,
+                               double svPerHourAmbient) {
         this.svTotalCareer = svTotalCareer;
         this.svPerHour = svPerHour;
+        this.svPerHourAmbient = svPerHourAmbient;
         this.protectionFactor = protectionFactor;
         this.decayMultiplier = decayMultiplier;
         this.internalContamination = new LinkedHashMap<>(internalContamination);
@@ -55,6 +60,7 @@ public class EntityRadiationData {
 
     public double svTotalCareer() { return svTotalCareer; }
     public double svPerHour() { return svPerHour; }
+    public double svPerHourAmbient() { return svPerHourAmbient; }
     public double protectionFactor() { return protectionFactor; }
     public double decayMultiplier() { return decayMultiplier; }
     public Map<String, Double> internalContamination() { return internalContamination; }
@@ -63,6 +69,7 @@ public class EntityRadiationData {
     public void setLastDoseStage(int v) { this.lastDoseStage = v; }
     public void setSvTotalCareer(double v) { this.svTotalCareer = v; }
     public void setSvPerHour(double v) { this.svPerHour = v; }
+    public void setSvPerHourAmbient(double v) { this.svPerHourAmbient = v; }
     public void setProtectionFactor(double v) { this.protectionFactor = v; }
     public void setDecayMultiplier(double v) { this.decayMultiplier = v; }
 

@@ -1,0 +1,107 @@
+{
+  "itemGroup.nuclear_radiation": "Promieniowanie jądrowe",
+  "death.attack.nuclear_radiation.lung_cancer": "%1$s zmarł na raka płuc",
+  "death.attack.nuclear_radiation.lung_cancer.player": "%1$s zmarł na raka płuc podczas walki z %2$s",
+  "death.attack.nuclear_radiation.radiation": "%1$s zmarł na chorobę popromienną",
+  "death.attack.nuclear_radiation.radiation.player": "%1$s zmarł na chorobę popromienną podczas walki z %2$s",
+  "subtitles.nuclear_radiation.vomit": "Wymioty",
+  "subtitles.nuclear_radiation.inject": "Zastrzyk",
+
+  "item.nuclear_radiation.geiger_counter": "Licznik Geigera",
+  "item.nuclear_radiation.dosimeter": "Dozymetr",
+
+  "item.nuclear_radiation.hazmat_helmet": "Hełm ochronny",
+  "item.nuclear_radiation.hazmat_chestplate": "Kombinezon ochronny",
+  "item.nuclear_radiation.hazmat_leggings": "Spodnie ochronne",
+  "item.nuclear_radiation.hazmat_boots": "Buty ochronne",
+
+  "item.nuclear_radiation.iodine_pill": "Tabletka jodowa",
+  "item.nuclear_radiation.prussian_blue": "Błękit pruski",
+  "item.nuclear_radiation.rad_protection_potion": "Mikstura ochrony przed promieniowaniem",
+  "item.nuclear_radiation.rad_protection_potion_2": "Mikstura ochrony przed promieniowaniem II",
+  "item.nuclear_radiation.anti_rad_injection": "Zastrzyk antyradiacyjny",
+  "item.nuclear_radiation.radaway": "Radaway",
+
+  "effect.nuclear_radiation.radiation_protection": "Ochrona przed promieniowaniem",
+  "effect.nuclear_radiation.radiation_purge": "Usuwanie promieniowania",
+  "effect.nuclear_radiation.iodine_protection": "Blokada jodowa",
+  "effect.nuclear_radiation.cesium_purge": "Usuwanie cezu",
+
+  "nuclear_radiation.configuration.title": "Ustawienia Nuclear Radiation",
+
+  "jei.nuclear_radiation.category.isotope_stats": "Charakterystyka izotopu",
+  "jei.nuclear_radiation.category.radioactive_items": "Przedmioty radioaktywne",
+  "jei.nuclear_radiation.category.decay_graph": "Schemat rozpadu",
+  "jei.nuclear_radiation.category.armor_protection": "Ochrona pancerza przed promieniowaniem",
+  "jei.nuclear_radiation.category.block_shielding": "Ekranowanie bloków przed promieniowaniem",
+  "jei.nuclear_radiation.category.mutation": "Mutacja radioaktywna",
+  "jei.nuclear_radiation.category.block_irradiation": "Napromieniowanie bloków",
+
+  "jei.nuclear_radiation.block_irradiation.min_bq": "Min. aktywność: %s",
+  "jei.nuclear_radiation.block_irradiation.chance": "Szansa: %s",
+
+  "jei.nuclear_radiation.mutation.dose": "Dawka całkowita: %s",
+  "jei.nuclear_radiation.mutation.rate": "Ekspozycja:",
+  "jei.nuclear_radiation.mutation.min_rate": "Min.: %s",
+  "jei.nuclear_radiation.mutation.max_rate": "Maks.: %s",
+  "jei.nuclear_radiation.mutation.chance": "Szansa: %s",
+
+  "jei.nuclear_radiation.armor_protection.xray": "Ɣ gamma: %s",
+  "jei.nuclear_radiation.armor_protection.alpha": "ɑ alfa: %s",
+  "jei.nuclear_radiation.armor_protection.beta": "ꞵ beta: %s",
+  "jei.nuclear_radiation.armor_protection.neutron": "Neutrony: %s",
+
+  "jei.nuclear_radiation.block_shielding.xray": "Ɣ osłabienie gamma: %s cm⁻¹",
+  "jei.nuclear_radiation.block_shielding.neutron": "Osłabienie neutronów: %s cm⁻¹",
+
+
+  "jei.nuclear_radiation.isotope_stats.id": "ID: %s",
+  "jei.nuclear_radiation.isotope_stats.half_life": "λ Okres półtrwania: %s",
+  "jei.nuclear_radiation.isotope_stats.dose_mix": "Skład dawki:",
+  "jei.nuclear_radiation.isotope_stats.alpha": " ɑ alfa:       %s",
+  "jei.nuclear_radiation.isotope_stats.beta": " ꞵ beta:       %s",
+  "jei.nuclear_radiation.isotope_stats.x_gamma": " Ɣ gamma:    %s",
+  "jei.nuclear_radiation.isotope_stats.neutron": " neutrony:   %s",
+  "jei.nuclear_radiation.isotope_stats.decays_to": "Rozpada się w: %s",
+
+  "jei.nuclear_radiation.radioactive_items.total": "Razem: %s",
+  "jei.nuclear_radiation.radioactive_items.radiation_mix": "Skład promieniowania:",
+  "jei.nuclear_radiation.radioactive_items.alpha": " ɑ alfa: %s",
+  "jei.nuclear_radiation.radioactive_items.beta": " ꞵ beta: %s",
+  "jei.nuclear_radiation.radioactive_items.gamma": " Ɣ gamma: %s",
+  "jei.nuclear_radiation.radioactive_items.neutron": " neutrony: %s",
+  "jei.nuclear_radiation.radioactive_items.isotopes": "Izotopy:",
+  "jei.nuclear_radiation.radioactive_items.isotope_entry": " %s  %s",
+
+  "tooltip.nuclear_radiation.isotope": "Izotop: %s",
+  "tooltip.nuclear_radiation.half_life": "λ Okres półtrwania: %s",
+
+  "tooltip.nuclear_radiation.block_shielding": "Ekranowanie przed promieniowaniem",
+  "tooltip.nuclear_radiation.armor_protection": "Ochrona przed promieniowaniem",
+  "tooltip.nuclear_radiation.armor.xray": " Ɣ gamma: %s",
+  "tooltip.nuclear_radiation.armor.alpha": " ɑ alfa: %s",
+  "tooltip.nuclear_radiation.armor.beta": " ꞵ beta: %s",
+  "tooltip.nuclear_radiation.armor.neutron": " Neutrony: %s",
+
+  "isotope.nuclear_radiation.u_238": "Uran-238",
+  "isotope.nuclear_radiation.u_235": "Uran-235",
+  "isotope.nuclear_radiation.pu_239": "Pluton-239",
+  "isotope.nuclear_radiation.cs_137": "Cez-137",
+  "isotope.nuclear_radiation.i_131": "Jod-131",
+  "isotope.nuclear_radiation.sr_90": "Stront-90",
+  "isotope.nuclear_radiation.co_60": "Kobalt-60",
+  "isotope.nuclear_radiation.cf_252": "Kaliforn-252",
+
+  "block.nuclear_radiation.creative_rad_source": "Kreatywne źródło promieniowania",
+  "block.nuclear_radiation.corium_block": "Blok korium",
+  "block.nuclear_radiation.fallout_dust_block": "Blok pyłu radioaktywnego",
+  "item.nuclear_radiation.fallout_dust": "Pył radioaktywny",
+  "fluid_type.nuclear_radiation.molten_corium": "Stopione korium",
+  "item.nuclear_radiation.molten_corium_bucket": "Wiadro stopionego korium",
+
+  "gui.nuclear_radiation.creative_rad_source.apply": "Zastosuj",
+  "gui.nuclear_radiation.creative_rad_source.alpha": "Alfa MBq:",
+  "gui.nuclear_radiation.creative_rad_source.beta": "Beta MBq:",
+  "gui.nuclear_radiation.creative_rad_source.xray": "Rentgen MBq:",
+  "gui.nuclear_radiation.creative_rad_source.neutron": "Neutrony MBq:"
+}

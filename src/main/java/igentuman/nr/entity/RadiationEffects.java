@@ -1,5 +1,6 @@
 package igentuman.nr.entity;
 
+import igentuman.nr.NRDamageTypes;
 import igentuman.nr.NRSounds;
 import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.config.RadiationConfig;
@@ -61,6 +62,8 @@ public final class RadiationEffects {
 
         int stage = computeStage(svPerHour, svTotalCareer);
         if (stage <= 0) return;
+        if (!(entity.level() instanceof ServerLevel server)) return;
+        DamageSource radiation = NRDamageTypes.source(server, NRDamageTypes.RADIATION);
 
         addEffect(entity, MobEffects.WEAKNESS, 2000, 0);
         addEffect(entity, MobEffects.UNLUCK, 2000, 0);
@@ -71,15 +74,15 @@ public final class RadiationEffects {
             addEffect(entity, MobEffects.CONFUSION, 2000, 0);
             addEffect(entity, MobEffects.DIG_SLOWDOWN, 2000, 1);
             addEffect(entity, MobEffects.MOVEMENT_SLOWDOWN, 2000, 1);
-            entity.hurt(entity.damageSources().magic(), 0.5f);
+            entity.hurt(radiation, 0.5f);
         }
         if (stage >= 3) {
             addEffect(entity, MobEffects.BLINDNESS, 2000, 0);
-            entity.hurt(entity.damageSources().magic(), 1.5f);
+            entity.hurt(radiation, 1.5f);
         }
         if (stage >= 4) {
             addEffect(entity, MobEffects.WITHER, 10, 0);
-            entity.hurt(entity.damageSources().magic(), 20.0f);
+            entity.hurt(radiation, 20.0f);
         }
 
         triggerVomit(entity, stage);

@@ -1,0 +1,107 @@
+{
+  "itemGroup.nuclear_radiation": "Radiation Nucléaire",
+  "death.attack.nuclear_radiation.lung_cancer": "%1$s est mort d'un cancer du poumon",
+  "death.attack.nuclear_radiation.lung_cancer.player": "%1$s est mort d'un cancer du poumon en combattant %2$s",
+  "death.attack.nuclear_radiation.radiation": "%1$s a succombé à une intoxication aux radiations",
+  "death.attack.nuclear_radiation.radiation.player": "%1$s a succombé à une intoxication aux radiations en combattant %2$s",
+  "subtitles.nuclear_radiation.vomit": "Vomissement",
+  "subtitles.nuclear_radiation.inject": "Injection",
+
+  "item.nuclear_radiation.geiger_counter": "Compteur Geiger",
+  "item.nuclear_radiation.dosimeter": "Dosimètre",
+
+  "item.nuclear_radiation.hazmat_helmet": "Casque anti-radiations",
+  "item.nuclear_radiation.hazmat_chestplate": "Combinaison anti-radiations",
+  "item.nuclear_radiation.hazmat_leggings": "Jambières anti-radiations",
+  "item.nuclear_radiation.hazmat_boots": "Bottes anti-radiations",
+
+  "item.nuclear_radiation.iodine_pill": "Comprimé d'iode",
+  "item.nuclear_radiation.prussian_blue": "Bleu de Prusse",
+  "item.nuclear_radiation.rad_protection_potion": "Potion de protection anti-radiations",
+  "item.nuclear_radiation.rad_protection_potion_2": "Potion de protection anti-radiations II",
+  "item.nuclear_radiation.anti_rad_injection": "Injection anti-radiations",
+  "item.nuclear_radiation.radaway": "Radaway",
+
+  "effect.nuclear_radiation.radiation_protection": "Protection anti-radiations",
+  "effect.nuclear_radiation.radiation_purge": "Purge des radiations",
+  "effect.nuclear_radiation.iodine_protection": "Blocage à l'iode",
+  "effect.nuclear_radiation.cesium_purge": "Purge du césium",
+
+  "nuclear_radiation.configuration.title": "Configuration de Radiation Nucléaire",
+
+  "jei.nuclear_radiation.category.isotope_stats": "Statistiques des isotopes",
+  "jei.nuclear_radiation.category.radioactive_items": "Objets radioactifs",
+  "jei.nuclear_radiation.category.decay_graph": "Graphe de désintégration",
+  "jei.nuclear_radiation.category.armor_protection": "Protection de l'armure contre les radiations",
+  "jei.nuclear_radiation.category.block_shielding": "Blindage des blocs contre les radiations",
+  "jei.nuclear_radiation.category.mutation": "Mutation radioactive",
+  "jei.nuclear_radiation.category.block_irradiation": "Irradiation des blocs",
+
+  "jei.nuclear_radiation.block_irradiation.min_bq": "Activité min. : %s",
+  "jei.nuclear_radiation.block_irradiation.chance": "Chance : %s",
+
+  "jei.nuclear_radiation.mutation.dose": "Dose totale : %s",
+  "jei.nuclear_radiation.mutation.rate": "Exposition :",
+  "jei.nuclear_radiation.mutation.min_rate": "Min : %s",
+  "jei.nuclear_radiation.mutation.max_rate": "Max : %s",
+  "jei.nuclear_radiation.mutation.chance": "Chance : %s",
+
+  "jei.nuclear_radiation.armor_protection.xray": "Ɣ gamma : %s",
+  "jei.nuclear_radiation.armor_protection.alpha": "ɑ alpha : %s",
+  "jei.nuclear_radiation.armor_protection.beta": "ꞵ bêta : %s",
+  "jei.nuclear_radiation.armor_protection.neutron": "Neutron : %s",
+
+  "jei.nuclear_radiation.block_shielding.xray": "Atténuation Ɣ gamma : %s cm⁻¹",
+  "jei.nuclear_radiation.block_shielding.neutron": "Atténuation neutron : %s cm⁻¹",
+
+
+  "jei.nuclear_radiation.isotope_stats.id": "ID : %s",
+  "jei.nuclear_radiation.isotope_stats.half_life": "λ Demi-vie : %s",
+  "jei.nuclear_radiation.isotope_stats.dose_mix": "Composition de la dose :",
+  "jei.nuclear_radiation.isotope_stats.alpha": " ɑ alpha :      %s",
+  "jei.nuclear_radiation.isotope_stats.beta": " ꞵ bêta:       %s",
+  "jei.nuclear_radiation.isotope_stats.x_gamma": " Ɣ gamma:    %s",
+  "jei.nuclear_radiation.isotope_stats.neutron": " neutron:    %s",
+  "jei.nuclear_radiation.isotope_stats.decays_to": "Se désintègre en : %s",
+
+  "jei.nuclear_radiation.radioactive_items.total": "Total : %s",
+  "jei.nuclear_radiation.radioactive_items.radiation_mix": "Composition des radiations :",
+  "jei.nuclear_radiation.radioactive_items.alpha": " ɑ alpha : %s",
+  "jei.nuclear_radiation.radioactive_items.beta": " ꞵ bêta : %s",
+  "jei.nuclear_radiation.radioactive_items.gamma": " Ɣ gamma : %s",
+  "jei.nuclear_radiation.radioactive_items.neutron": " neutron : %s",
+  "jei.nuclear_radiation.radioactive_items.isotopes": "Isotopes :",
+  "jei.nuclear_radiation.radioactive_items.isotope_entry": " %s  %s",
+
+  "tooltip.nuclear_radiation.isotope": "Isotope : %s",
+  "tooltip.nuclear_radiation.half_life": "λ Demi-vie : %s",
+
+  "tooltip.nuclear_radiation.block_shielding": "Blindage anti-radiations",
+  "tooltip.nuclear_radiation.armor_protection": "Protection anti-radiations",
+  "tooltip.nuclear_radiation.armor.xray": " Ɣ gamma : %s",
+  "tooltip.nuclear_radiation.armor.alpha": " ɑ alpha : %s",
+  "tooltip.nuclear_radiation.armor.beta": " ꞵ bêta : %s",
+  "tooltip.nuclear_radiation.armor.neutron": " Neutron : %s",
+
+  "isotope.nuclear_radiation.u_238": "Uranium-238",
+  "isotope.nuclear_radiation.u_235": "Uranium-235",
+  "isotope.nuclear_radiation.pu_239": "Plutonium-239",
+  "isotope.nuclear_radiation.cs_137": "Césium-137",
+  "isotope.nuclear_radiation.i_131": "Iode-131",
+  "isotope.nuclear_radiation.sr_90": "Strontium-90",
+  "isotope.nuclear_radiation.co_60": "Cobalt-60",
+  "isotope.nuclear_radiation.cf_252": "Californium-252",
+
+  "block.nuclear_radiation.creative_rad_source": "Source de radiation créative",
+  "block.nuclear_radiation.corium_block": "Bloc de corium",
+  "block.nuclear_radiation.fallout_dust_block": "Bloc de poussière de retombées",
+  "item.nuclear_radiation.fallout_dust": "Poussière de retombées",
+  "fluid_type.nuclear_radiation.molten_corium": "Corium en fusion",
+  "item.nuclear_radiation.molten_corium_bucket": "Seau de corium en fusion",
+
+  "gui.nuclear_radiation.creative_rad_source.apply": "Appliquer",
+  "gui.nuclear_radiation.creative_rad_source.alpha": "Alpha MBq :",
+  "gui.nuclear_radiation.creative_rad_source.beta": "Bêta MBq :",
+  "gui.nuclear_radiation.creative_rad_source.xray": "Rayons X MBq :",
+  "gui.nuclear_radiation.creative_rad_source.neutron": "Neutron MBq :"
+}

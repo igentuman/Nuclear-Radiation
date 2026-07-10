@@ -26,6 +26,13 @@ public final class NRAttachments {
                             .copyOnDeath()
                             .build());
 
+    public static final Supplier<AttachmentType<LungPollutionData>> LUNG_POLLUTION =
+            ATTACHMENTS.register("lung_pollution",
+                    () -> AttachmentType.<LungPollutionData>builder(() -> new LungPollutionData())
+                            .serialize(LungPollutionData.CODEC)
+                            .copyOnDeath()
+                            .build());
+
     public static final Supplier<AttachmentType<LevelRadiationData>> LEVEL_SOURCES =
             ATTACHMENTS.register("level_sources",
                     () -> AttachmentType.<LevelRadiationData>builder(() -> new LevelRadiationData())

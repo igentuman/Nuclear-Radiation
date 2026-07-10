@@ -7,5 +7,6 @@ public interface IRadiationArmor {
     double alphaProtection();
     double betaProtection();
     double neutronProtection();
+    boolean gasProtection();
     EquipmentSlot slot();
 }

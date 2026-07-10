@@ -89,6 +89,11 @@ public class RadiationBindingProvider implements DataProvider {
     public static List<BindingDefinition> defaults() {
         List<BindingDefinition> list = new ArrayList<>();
 
+        list.add(BindingDefinition.builder("moon_surface_regolith")
+                .item(rec("creatingspace:moon_surface_regolith"))
+                .isotope(Isotopes.H_3, 1.1e17)
+                .build());
+
         list.add(BindingDefinition.builder("fuel_rods/heuo2")
                 .itemTag(cTag("fuel_rods/heuo2"))
                 .isotope(Isotopes.U_235, 19.72e19)
