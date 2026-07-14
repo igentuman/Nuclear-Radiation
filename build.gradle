@@ -133,7 +133,12 @@ dependencies {
     runtimeOnly "curse.maven:irisshaders-455508:6661598"
 
     implementation "curse.maven:create-328085:7963363"
-    implementation "curse.maven:create-creating-space-858897:8348413"
+    implementation "curse.maven:create-nuclear-tech-1533315:8156986"
+    implementation "curse.maven:create-crowns-968670:8402364"
+    implementation "curse.maven:chemica-1351412:8188060"
+    implementation "curse.maven:create-industry-693815:8205648"
+    implementation "curse.maven:formicapi-1282701:8287469"
+    //implementation "curse.maven:create-creating-space-858897:8348413"
 
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
@@ -146,15 +151,15 @@ dependencies {
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
 
     implementation "curse.maven:extreme-reactors-250277:7344744"
-    runtimeOnly "curse.maven:multi-builder-tool-827020:8084902"
-    compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
+    runtimeOnly "curse.maven:multi-builder-tool-827020:8383941"
+    implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:additions")// Mekanism: Additions
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:tools")// Mekanism: Tools
 
-    implementation "curse.maven:applied-energistics-2-223794:7027323"
+    compileOnly "curse.maven:applied-energistics-2-223794:7027323"
     implementation "curse.maven:guideme-1173950:7127444"
 
     testImplementation platform("org.junit:junit-bom:5.10.2")

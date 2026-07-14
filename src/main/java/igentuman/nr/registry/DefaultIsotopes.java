@@ -182,6 +182,13 @@ public final class DefaultIsotopes {
                 .branch(U_234, 1.0)
                 .build());
 
+        list.add(IsotopeDefinition.create(PU_240)
+                .alpha(0.94f).beta(0.0f).xray(0.03f).neutron(0.03f)
+                .halfLife(saturate(6561.0 * TICKS_PER_YEAR))
+                .quality(1.0f, 1.0f, 20.0f, 10.0f)
+                .branch(U_238, 1.0)
+                .build());
+
         list.add(IsotopeDefinition.create(PU_241)
                 .alpha(0.0f).beta(0.98f).xray(0.02f).neutron(0.0f)
                 .halfLife(saturate(14.329 * TICKS_PER_YEAR))

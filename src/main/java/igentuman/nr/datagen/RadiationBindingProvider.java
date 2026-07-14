@@ -606,6 +606,141 @@ public class RadiationBindingProvider implements DataProvider {
                 .isotope(Isotopes.I_131, 20.0e13)
                 .build());
 
+        list.add(BindingDefinition.builder("cnt_plutonium_239_ingot")
+                .item(rec("createnucleartech:plutonium_239_ingot"))
+                .isotope(Isotopes.PU_239, 3.57e21)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_plutonium_core")
+                .item(rec("createnucleartech:plutonium_core"))
+                .isotope(Isotopes.PU_239, 3.57e21)
+                .isotope(Isotopes.PU_241, 5.95e21)
+                .isotope(Isotopes.AM_241, 19.72e19)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_natural_uranium_fuel_rod")
+                .item(rec("createnucleartech:natural_uranium_fuel_rod"))
+                .isotope(Isotopes.U_235, 1.5e19)
+                .isotope(Isotopes.U_238, 11.72e21)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_enriched_uranium_fuel_rod")
+                .item(rec("createnucleartech:enriched_uranium_fuel_rod"))
+                .isotope(Isotopes.U_235, 1.72e21)
+                .isotope(Isotopes.U_238, 11.72e21)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_military_uranium_fuel_rod")
+                .item(rec("createnucleartech:military_uranium_fuel_rod"))
+                .isotope(Isotopes.U_235, 19.72e21)
+                .isotope(Isotopes.U_238, 11.72e22)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_mox_fuel_rod")
+                .item(rec("createnucleartech:mox_fuel_rod"))
+                .isotope(Isotopes.PU_238, 21.72e19)
+                .isotope(Isotopes.PU_239, 3.57e21)
+                .isotope(Isotopes.U_238, 11.72e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_plutonium_fuel_rod")
+                .item(rec("createnucleartech:plutonium_fuel_rod"))
+                .isotope(Isotopes.PU_238, 21.72e20)
+                .isotope(Isotopes.PU_239, 3.57e21)
+                .isotope(Isotopes.U_238, 11.72e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_reactor_plutonium_fuel_rod")
+                .item(rec("createnucleartech:reactor_plutonium_fuel_rod"))
+                .isotope(Isotopes.PU_239, 3.57e21)
+                .isotope(Isotopes.PU_241, 5.95e20)
+                .isotope(Isotopes.AM_241, 19.72e19)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_thorium_fuel_rod")
+                .item(rec("createnucleartech:thorium_fuel_rod"))
+                .isotope(Isotopes.TH_232, 6.31e20)
+                .isotope(Isotopes.TH_230, 6.31e16)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_spent_fuel_rod")
+                .item(rec("createnucleartech:spent_fuel_rod"))
+                .isotope(Isotopes.PU_239, 1.72e19)
+                .isotope(Isotopes.AM_241, 0.72e20)
+                .isotope(Isotopes.CS_137, 4.4e19)
+                .isotope(Isotopes.SR_90, 3.0e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_spent_natural_uranium_fuel_rod")
+                .item(rec("createnucleartech:spent_natural_uranium_fuel_rod"))
+                .isotope(Isotopes.U_238, 1.93e14)
+                .isotope(Isotopes.PU_239, 1.72e18)
+                .isotope(Isotopes.CS_137, 4.5e19)
+                .isotope(Isotopes.SR_90, 3.0e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_spent_enriched_uranium_fuel_rod")
+                .item(rec("createnucleartech:spent_enriched_uranium_fuel_rod"))
+                .isotope(Isotopes.U_238, 1.93e14)
+                .isotope(Isotopes.PU_239, 1.72e19)
+                .isotope(Isotopes.CS_137, 7.4e19)
+                .isotope(Isotopes.SR_90, 3.0e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_spent_military_uranium_fuel_rod")
+                .item(rec("createnucleartech:spent_military_uranium_fuel_rod"))
+                .isotope(Isotopes.U_238, 1.93e14)
+                .isotope(Isotopes.PU_239, 1.72e19)
+                .isotope(Isotopes.CS_137, 8.4e19)
+                .isotope(Isotopes.SR_90, 3.0e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_spent_mox_fuel_rod")
+                .item(rec("createnucleartech:spent_mox_fuel_rod"))
+                .isotope(Isotopes.PU_239, 1.72e19)
+                .isotope(Isotopes.AM_241, 0.72e20)
+                .isotope(Isotopes.CS_137, 1.4e20)
+                .isotope(Isotopes.SR_90, 3.0e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_spent_plutonium_fuel_rod")
+                .item(rec("createnucleartech:spent_plutonium_fuel_rod"))
+                .isotope(Isotopes.AM_241, 0.72e20)
+                .isotope(Isotopes.AM_243, 1.15e19)
+                .isotope(Isotopes.CS_137, 9.4e19)
+                .isotope(Isotopes.SR_90, 3.0e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_spent_reactor_plutonium_fuel_rod")
+                .item(rec("createnucleartech:spent_reactor_plutonium_fuel_rod"))
+                .isotope(Isotopes.PU_239, 1.72e19)
+                .isotope(Isotopes.AM_241, 0.72e20)
+                .isotope(Isotopes.CS_137, 4.4e20)
+                .isotope(Isotopes.SR_90, 3.0e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_spent_thorium_fuel_rod")
+                .item(rec("createnucleartech:spent_thorium_fuel_rod"))
+                .isotope(Isotopes.U_233, 5.54e20)
+                .isotope(Isotopes.CS_137, 4.4e218)
+                .isotope(Isotopes.SR_90, 3.0e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_plutonium_240_ingot")
+                .item(rec("createnucleartech:plutonium_240_ingot"))
+                .isotope(Isotopes.PU_240, 8.4e20)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_cobalt_60_source")
+                .item(rec("createnucleartech:cobalt_60_source"))
+                .isotope(Isotopes.CO_60, 6.50e22)
+                .build());
+
+        list.add(BindingDefinition.builder("cnt_iridium_192_source")
+                .item(rec("createnucleartech:iridium_192_source"))
+                .isotope(Isotopes.IR_192, 5.30e23)
+                .build());
+
         return list;
     }
 

@@ -3,9 +3,11 @@
   "package": "igentuman.nr.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AssemblyBlockEntityMixin",
     "BlockEntitySetChangedMixin",
     "BlockItemVoltaicMixin",
     "CapabilityRadiationRecipientMixin",
+    "CreateNTRadiationDataMixin",
     "FissionReactorMultiblockDataMixin",
     "ItemVoltaicMixin",
     "MekRadiationManagerMixin",

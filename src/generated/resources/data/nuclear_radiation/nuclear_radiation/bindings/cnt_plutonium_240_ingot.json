@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:pu_240": {
+      "atoms": 8.4E20
+    }
+  },
+  "target": "createnucleartech:plutonium_240_ingot"
+}

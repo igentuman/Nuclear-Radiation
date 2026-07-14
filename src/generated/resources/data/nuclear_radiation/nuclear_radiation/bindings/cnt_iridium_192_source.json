@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:ir_192": {
+      "atoms": 5.3E23
+    }
+  },
+  "target": "createnucleartech:iridium_192_source"
+}

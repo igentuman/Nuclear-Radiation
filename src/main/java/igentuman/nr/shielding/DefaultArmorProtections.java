@@ -46,6 +46,22 @@ public final class DefaultArmorProtections {
         addCustom(list, "nuclearcraftneohaul:hazmat_chestplate", 0.9, 1, 1, 0.92, false);
         addCustom(list, "nuclearcraftneohaul:hazmat_leggings", 0.9, 1, 1, 0.92, false);
         addCustom(list, "nuclearcraftneohaul:hazmat_boots", 0.9, 1, 1, 0.92, false);
+        addCustom(list, "createnucleartech:basic_hazmat_helmet",      0.80, 1, 1, 0.82, true);
+        addCustom(list, "createnucleartech:basic_hazmat_chestplate",  0.80, 1, 1, 0.82, false);
+        addCustom(list, "createnucleartech:basic_hazmat_leggings",    0.80, 1, 1, 0.82, false);
+        addCustom(list, "createnucleartech:basic_hazmat_boots",       0.80, 1, 1, 0.82, false);
+        addCustom(list, "createnucleartech:advanced_hazmat_helmet",     0.88, 1, 1, 0.88, true);
+        addCustom(list, "createnucleartech:advanced_hazmat_chestplate", 0.88, 1, 1, 0.88, false);
+        addCustom(list, "createnucleartech:advanced_hazmat_leggings",   0.88, 1, 1, 0.88, false);
+        addCustom(list, "createnucleartech:advanced_hazmat_boots",      0.88, 1, 1, 0.88, false);
+        addCustom(list, "createnucleartech:reinforced_hazmat_helmet",     0.92, 1, 1, 0.92, true);
+        addCustom(list, "createnucleartech:reinforced_hazmat_chestplate", 0.92, 1, 1, 0.92, false);
+        addCustom(list, "createnucleartech:reinforced_hazmat_leggings",   0.92, 1, 1, 0.92, false);
+        addCustom(list, "createnucleartech:reinforced_hazmat_boots",      0.92, 1, 1, 0.92, false);
+        addCustom(list, "createnucleartech:elite_hazmat_helmet",     0.95, 1, 1, 0.95, true);
+        addCustom(list, "createnucleartech:elite_hazmat_chestplate", 0.95, 1, 1, 0.95, false);
+        addCustom(list, "createnucleartech:elite_hazmat_leggings",   0.95, 1, 1, 0.95, false);
+        addCustom(list, "createnucleartech:elite_hazmat_boots",      0.95, 1, 1, 0.95, false);
         return list;
     }
 

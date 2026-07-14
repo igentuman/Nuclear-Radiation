@@ -1,0 +1,15 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:am_241": {
+      "atoms": 1.972E20
+    },
+    "nr:pu_239": {
+      "atoms": 3.57E21
+    },
+    "nr:pu_241": {
+      "atoms": 5.95E21
+    }
+  },
+  "target": "createnucleartech:plutonium_core"
+}

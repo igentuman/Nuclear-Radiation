@@ -28,6 +28,7 @@ public final class Isotopes {
     public static final String NP_236  = "nr:np_236";
     public static final String NP_237  = "nr:np_237";
     public static final String PU_238  = "nr:pu_238";
+    public static final String PU_240  = "nr:pu_240";
     public static final String PU_241  = "nr:pu_241";
     public static final String PU_242  = "nr:pu_242";
     public static final String AM_241  = "nr:am_241";

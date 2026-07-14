@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:u_235": {
+      "atoms": 1.5E19
+    },
+    "nr:u_238": {
+      "atoms": 1.172E22
+    }
+  },
+  "target": "createnucleartech:natural_uranium_fuel_rod"
+}

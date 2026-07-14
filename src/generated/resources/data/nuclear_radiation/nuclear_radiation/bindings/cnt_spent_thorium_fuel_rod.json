@@ -1,0 +1,15 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:cs_137": {
+      "atoms": 4.4E218
+    },
+    "nr:sr_90": {
+      "atoms": 3.0E20
+    },
+    "nr:u_233": {
+      "atoms": 5.54E20
+    }
+  },
+  "target": "createnucleartech:spent_thorium_fuel_rod"
+}
