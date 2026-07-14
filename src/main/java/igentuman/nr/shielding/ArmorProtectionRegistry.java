@@ -1,5 +1,6 @@
 package igentuman.nr.shielding;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -16,11 +17,16 @@ public final class ArmorProtectionRegistry {
     }
 
     private static final Map<Item, Protection> BY_ITEM = new HashMap<>();
+    private static final Map<TagKey<Item>, Protection> BY_TAG = new HashMap<>();
 
     private ArmorProtectionRegistry() {}
 
     public static void register(Item item, Protection p) {
         BY_ITEM.put(item, p);
+    }
+
+    public static void registerTag(TagKey<Item> tag, Protection p) {
+        BY_TAG.put(tag, p);
     }
 
     public static void remove(Item item) {
@@ -29,10 +35,15 @@ public final class ArmorProtectionRegistry {
 
     public static void clear() {
         BY_ITEM.clear();
+        BY_TAG.clear();
     }
 
     public static Map<Item, Protection> all() {
         return Collections.unmodifiableMap(BY_ITEM);
+    }
+
+    public static Map<TagKey<Item>, Protection> allTags() {
+        return Collections.unmodifiableMap(BY_TAG);
     }
 
     public static Protection get(ItemStack stack) {
@@ -42,7 +53,11 @@ public final class ArmorProtectionRegistry {
                     a.betaProtection(), a.neutronProtection(), a.gasProtection());
         }
         Protection p = BY_ITEM.get(stack.getItem());
-        return p != null ? p : Protection.NONE;
+        if (p != null) return p;
+        for (Map.Entry<TagKey<Item>, Protection> e : BY_TAG.entrySet()) {
+            if (stack.is(e.getKey())) return e.getValue();
+        }
+        return Protection.NONE;
     }
 
     public static Protection summed(LivingEntity entity) {

@@ -13,7 +13,9 @@
     "MekRadiationManagerMixin",
     "NCMeltdownMixin",
     "NCRadiationHandlerMixin",
-    "NuclearScienceRadiationManagerMixin"
+    "NuclearScienceRadiationManagerMixin",
+    "RadiationEffectMixin",
+    "ReactorCoreEntityMixin"
   ],
   "client": [
     "client.NCTooltipHandlerMixin"

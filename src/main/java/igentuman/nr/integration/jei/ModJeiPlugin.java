@@ -88,11 +88,28 @@ public class ModJeiPlugin implements IModPlugin {
 
     private static List<ArmorProtectionEntry> collectArmorProtection() {
         List<ArmorProtectionEntry> out = new ArrayList<>();
+        Set<Item> seen = new HashSet<>();
+
         for (Map.Entry<Item, ArmorProtectionRegistry.Protection> e : ArmorProtectionRegistry.all().entrySet()) {
             ArmorProtectionRegistry.Protection p = e.getValue();
             if (p.xray() <= 0 && p.alpha() <= 0 && p.beta() <= 0 && p.neutron() <= 0) continue;
-            out.add(new ArmorProtectionEntry(new ItemStack(e.getKey()), p));
+            if (seen.add(e.getKey())) {
+                out.add(new ArmorProtectionEntry(new ItemStack(e.getKey()), p));
+            }
         }
+
+        if (!ArmorProtectionRegistry.allTags().isEmpty()) {
+            for (Item item : BuiltInRegistries.ITEM) {
+                if (!seen.add(item)) continue;
+                ItemStack stack = new ItemStack(item);
+                if (stack.isEmpty()) continue;
+                ArmorProtectionRegistry.Protection p = ArmorProtectionRegistry.get(stack);
+                if (p == ArmorProtectionRegistry.Protection.NONE) continue;
+                if (p.xray() <= 0 && p.alpha() <= 0 && p.beta() <= 0 && p.neutron() <= 0) continue;
+                out.add(new ArmorProtectionEntry(stack, p));
+            }
+        }
+
         out.sort(Comparator.comparing(en -> BuiltInRegistries.ITEM.getKey(en.stack().getItem()).toString()));
         return out;
     }

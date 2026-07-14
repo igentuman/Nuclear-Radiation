@@ -6,9 +6,11 @@ import com.google.gson.JsonObject;
 import igentuman.nr.NuclearRadiation;
 import igentuman.nr.api.NREvents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 
@@ -27,24 +29,33 @@ public class ArmorProtectionReloadListener extends SimpleJsonResourceReloadListe
     protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager mgr, ProfilerFiller profiler) {
         ArmorProtectionRegistry.clear();
         DefaultArmorProtections.defaults().forEach(ArmorProtectionReloadListener::applyDefinition);
+        DefaultArmorProtections.tagDefaults().forEach(ArmorProtectionRegistry::registerTag);
 
         for (Map.Entry<ResourceLocation, JsonElement> e : map.entrySet()) {
             try {
                 JsonObject obj = e.getValue().getAsJsonObject();
-                ResourceLocation target = ResourceLocation.parse(obj.get("target").getAsString());
+                String targetStr = obj.get("target").getAsString();
                 double xray = readDouble(obj, "xray");
                 double alpha = readDouble(obj, "alpha");
                 double beta = readDouble(obj, "beta");
                 double neutron = readDouble(obj, "neutron");
                 boolean gas = obj.has("gas_protection") && obj.get("gas_protection").getAsBoolean();
+                ArmorProtectionRegistry.Protection protection =
+                        new ArmorProtectionRegistry.Protection(xray, alpha, beta, neutron, gas);
 
-                Item item = BuiltInRegistries.ITEM.get(target);
-                if (item == null) {
-                    NuclearRadiation.LOGGER.warn("Armor protection target not found: {}", target);
-                    continue;
+                if (targetStr.startsWith("#")) {
+                    TagKey<Item> tag = TagKey.create(Registries.ITEM,
+                            ResourceLocation.parse(targetStr.substring(1)));
+                    ArmorProtectionRegistry.registerTag(tag, protection);
+                } else {
+                    ResourceLocation target = ResourceLocation.parse(targetStr);
+                    Item item = BuiltInRegistries.ITEM.get(target);
+                    if (item == null) {
+                        NuclearRadiation.LOGGER.warn("Armor protection target not found: {}", target);
+                        continue;
+                    }
+                    ArmorProtectionRegistry.register(item, protection);
                 }
-                ArmorProtectionRegistry.register(item,
-                        new ArmorProtectionRegistry.Protection(xray, alpha, beta, neutron, gas));
             } catch (Exception ex) {
                 NuclearRadiation.LOGGER.error("Failed to load armor protection {}", e.getKey(), ex);
             }

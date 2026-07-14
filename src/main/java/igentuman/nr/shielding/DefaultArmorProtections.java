@@ -1,9 +1,14 @@
 package igentuman.nr.shielding;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static igentuman.nr.datagen.RadiationBindingProvider.rec;
 
@@ -63,6 +68,21 @@ public final class DefaultArmorProtections {
         addCustom(list, "createnucleartech:elite_hazmat_leggings",   0.95, 1, 1, 0.95, false);
         addCustom(list, "createnucleartech:elite_hazmat_boots",      0.95, 1, 1, 0.95, false);
         return list;
+    }
+
+    public static Map<TagKey<Item>, ArmorProtectionRegistry.Protection> tagDefaults() {
+        Map<TagKey<Item>, ArmorProtectionRegistry.Protection> map = new LinkedHashMap<>();
+        addTag(map, "createnuclear:anti_radiation_helmet_dye",     0.85, 1.0, 1.0, 0.85, true);
+        addTag(map, "createnuclear:anti_radiation_chestplate_dye", 0.85, 1.0, 1.0, 0.85, false);
+        addTag(map, "createnuclear:anti_radiation_leggings_dye",   0.85, 1.0, 1.0, 0.85, false);
+        addTag(map, "createnuclear:anti_radiation_boots_dye",      0.85, 1.0, 1.0, 0.85, false);
+        return map;
+    }
+
+    private static void addTag(Map<TagKey<Item>, ArmorProtectionRegistry.Protection> map, String tag,
+                               double xray, double alpha, double beta, double neutron, boolean protectsFromGas) {
+        TagKey<Item> key = TagKey.create(Registries.ITEM, ResourceLocation.parse(tag));
+        map.put(key, new ArmorProtectionRegistry.Protection(xray, alpha, beta, neutron, protectsFromGas));
     }
 
     private static void addCustom(List<ArmorProtectionDefinition> list, String material,

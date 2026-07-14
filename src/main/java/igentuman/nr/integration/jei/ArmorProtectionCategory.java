@@ -14,6 +14,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.NonNull;
 
 import static igentuman.nr.util.TextUtils.__;
 
@@ -29,12 +30,12 @@ public class ArmorProtectionCategory implements IRecipeCategory<ArmorProtectionE
     }
 
     @Override
-    public RecipeType<ArmorProtectionEntry> getRecipeType() {
+    public @NonNull RecipeType<ArmorProtectionEntry> getRecipeType() {
         return NRJeiTypes.ARMOR_PROTECTION;
     }
 
     @Override
-    public Component getTitle() {
+    public @NonNull Component getTitle() {
         return __("jei.nuclear_radiation.category.armor_protection");
     }
 
@@ -48,12 +49,13 @@ public class ArmorProtectionCategory implements IRecipeCategory<ArmorProtectionE
     public IDrawable getIcon() { return icon; }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, ArmorProtectionEntry recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, ArmorProtectionEntry recipe, @NonNull IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, 6, 6).addItemStack(recipe.stack());
+        builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addItemStack(recipe.stack());
     }
 
     @Override
-    public void draw(ArmorProtectionEntry recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics g, double mouseX, double mouseY) {
+    public void draw(ArmorProtectionEntry recipe, @NonNull IRecipeSlotsView recipeSlotsView, GuiGraphics g, double mouseX, double mouseY) {
         Font font = Minecraft.getInstance().font;
         int x = 30;
         int y = 6;

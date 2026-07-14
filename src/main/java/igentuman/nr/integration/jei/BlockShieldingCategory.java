@@ -13,6 +13,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.NonNull;
 
 import static igentuman.nr.util.TextUtils.__;
 
@@ -33,7 +34,7 @@ public class BlockShieldingCategory implements IRecipeCategory<BlockShieldingEnt
     }
 
     @Override
-    public Component getTitle() {
+    public @NonNull Component getTitle() {
         return __("jei.nuclear_radiation.category.block_shielding");
     }
 
@@ -47,13 +48,13 @@ public class BlockShieldingCategory implements IRecipeCategory<BlockShieldingEnt
     public IDrawable getIcon() { return icon; }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, BlockShieldingEntry recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, BlockShieldingEntry recipe, @NonNull IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, 6, 6).addItemStack(recipe.stack());
         builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addItemStack(recipe.stack());
     }
 
     @Override
-    public void draw(BlockShieldingEntry recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics g, double mouseX, double mouseY) {
+    public void draw(BlockShieldingEntry recipe, @NonNull IRecipeSlotsView recipeSlotsView, GuiGraphics g, double mouseX, double mouseY) {
         Font font = Minecraft.getInstance().font;
         int x = 30;
         int y = 6;

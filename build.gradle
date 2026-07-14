@@ -133,11 +133,15 @@ dependencies {
     runtimeOnly "curse.maven:irisshaders-455508:6661598"
 
     implementation "curse.maven:create-328085:7963363"
-    implementation "curse.maven:create-nuclear-tech-1533315:8156986"
-    implementation "curse.maven:create-crowns-968670:8402364"
-    implementation "curse.maven:chemica-1351412:8188060"
-    implementation "curse.maven:create-industry-693815:8205648"
-    implementation "curse.maven:formicapi-1282701:8287469"
+
+    compileOnly "curse.maven:create-nuclear-tech-1533315:8156986"
+    compileOnly "curse.maven:create-crowns-968670:8402364"
+    compileOnly "curse.maven:chemica-1351412:8188060"
+    compileOnly "curse.maven:create-industry-693815:8205648"
+    compileOnly "curse.maven:formicapi-1282701:8287469"
+
+    implementation "curse.maven:createnuclear-989797:7329038"
+
     //implementation "curse.maven:create-creating-space-858897:8348413"
 
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")

@@ -6,6 +6,7 @@ import igentuman.nr.block.CreativeRadSourceBlockEntity;
 import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.corium.Corium;
 import igentuman.nr.corium.CoriumConfig;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -193,5 +194,9 @@ public class NuclearRadiation {
         event.addListener(new RadiationBindingsReloadListener());
         event.addListener(new ShieldingBindingsReloadListener());
         event.addListener(new ArmorProtectionReloadListener());
+    }
+
+    public static ResourceLocation rl(String path) {
+        return ResourceLocation.tryBuild(MODID, path);
     }
 }

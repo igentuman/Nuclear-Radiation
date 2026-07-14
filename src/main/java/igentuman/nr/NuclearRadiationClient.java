@@ -33,8 +33,11 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
+
+import static igentuman.nr.NuclearRadiation.rl;
 
 @Mod(value = NuclearRadiation.MODID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = NuclearRadiation.MODID, value = Dist.CLIENT)
@@ -47,7 +50,7 @@ public class NuclearRadiationClient {
     static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> ItemProperties.register(
                 NRTools.GEIGER_COUNTER.get(),
-                ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "radiation"),
+                rl("radiation"),
                 (stack, level, entity, seed) -> {
                     double svh = ClientRadiationCache.svPerHour();
                     if (svh < 0.00001) { // 10 uSv/h
@@ -76,12 +79,12 @@ public class NuclearRadiationClient {
         if (Corium.MOLTEN_CORIUM_TYPE.get() instanceof CoriumFluidType type) {
             event.registerFluidType(new IClientFluidTypeExtensions() {
                 @Override
-                public ResourceLocation getStillTexture() {
+                public @NonNull ResourceLocation getStillTexture() {
                     return type.getStillTexture();
                 }
 
                 @Override
-                public ResourceLocation getFlowingTexture() {
+                public @NonNull ResourceLocation getFlowingTexture() {
                     return type.getFlowingTexture();
                 }
 
@@ -113,13 +116,13 @@ public class NuclearRadiationClient {
     @SubscribeEvent
     static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
         event.registerBelowAll(
-                ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "radiation_screen_effect"),
+                rl("radiation_screen_effect"),
                 new RadiationScreenLayer());
         event.registerAboveAll(
-                ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "radiation_hud"),
+                rl("radiation_hud"),
                 new RadiationHudLayer());
         event.registerAboveAll(
-                ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "contamination_hud"),
+                rl("contamination_hud"),
                 new ContaminationHudLayer());
     }
 
