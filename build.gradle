@@ -140,7 +140,9 @@ dependencies {
     compileOnly "curse.maven:create-industry-693815:8205648"
     compileOnly "curse.maven:formicapi-1282701:8287469"
 
-    implementation "curse.maven:createnuclear-989797:7329038"
+    compileOnly "curse.maven:createnuclear-989797:7329038"
+
+    compileOnly "curse.maven:bmnw-1001929:6903872"
 
     //implementation "curse.maven:create-creating-space-858897:8348413"
 
@@ -158,7 +160,7 @@ dependencies {
     runtimeOnly "curse.maven:multi-builder-tool-827020:8383941"
     implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
-    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
+    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:additions")// Mekanism: Additions
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:tools")// Mekanism: Tools

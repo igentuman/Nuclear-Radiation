@@ -37,6 +37,12 @@ public final class NRNetwork {
                         NuclearRadiationClient.handleCreativeRadSourceOpen(payload);
                     }
                 });
+        reg.playToClient(VomitPayload.TYPE, VomitPayload.STREAM_CODEC,
+                (payload, ctx) -> {
+                    if (FMLEnvironment.dist == Dist.CLIENT) {
+                        NuclearRadiationClient.handleVomit(payload);
+                    }
+                });
         reg.playToServer(CreativeRadSourceConfigPayload.TYPE, CreativeRadSourceConfigPayload.STREAM_CODEC,
                 (payload, ctx) -> {
                     ServerPlayer player = (ServerPlayer) ctx.player();

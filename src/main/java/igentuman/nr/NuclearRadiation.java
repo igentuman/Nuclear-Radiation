@@ -73,6 +73,9 @@ public class NuclearRadiation {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> RADIATION_PARTICLE =
             PARTICLE_TYPES.register("radiation", () -> new SimpleParticleType(false));
 
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> VOMIT_PARTICLE =
+            PARTICLE_TYPES.register("vomit", () -> new SimpleParticleType(false));
+
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> GAS_CLOUD_PARTICLE =
             PARTICLE_TYPES.register("gas_cloud", () -> new SimpleParticleType(false));
 

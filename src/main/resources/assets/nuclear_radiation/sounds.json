@@ -5,6 +5,12 @@
       "nuclear_radiation:vomit"
     ]
   },
+  "cough": {
+    "subtitle": "subtitles.nuclear_radiation.cough",
+    "sounds": [
+      "nuclear_radiation:cough"
+    ]
+  },
   "inject": {
     "subtitle": "subtitles.nuclear_radiation.inject",
     "sounds": [

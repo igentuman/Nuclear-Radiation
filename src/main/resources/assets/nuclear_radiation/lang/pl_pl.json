@@ -6,6 +6,7 @@
   "death.attack.nuclear_radiation.radiation.player": "%1$s zmarł na chorobę popromienną podczas walki z %2$s",
   "subtitles.nuclear_radiation.vomit": "Wymioty",
   "subtitles.nuclear_radiation.inject": "Zastrzyk",
+  "subtitles.nuclear_radiation.cough": "Kaszel",
 
   "item.nuclear_radiation.geiger_counter": "Licznik Geigera",
   "item.nuclear_radiation.dosimeter": "Dozymetr",

@@ -6,6 +6,7 @@
   "death.attack.nuclear_radiation.radiation.player": "%1$s погиб от лучевой болезни в бою с %2$s",
   "subtitles.nuclear_radiation.vomit": "Рвота",
   "subtitles.nuclear_radiation.inject": "Инъекция",
+  "subtitles.nuclear_radiation.cough": "Кашель",
 
   "item.nuclear_radiation.geiger_counter": "Счётчик Гейгера",
   "item.nuclear_radiation.dosimeter": "Дозиметр",

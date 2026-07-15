@@ -18,6 +18,10 @@ public final class NRSounds {
             SOUND_EVENTS.register("vomit",
                     () -> SoundEvent.createVariableRangeEvent(rl("vomit")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> COUGH =
+            SOUND_EVENTS.register("cough",
+                    () -> SoundEvent.createVariableRangeEvent(rl("cough")));
+
     public static final DeferredHolder<SoundEvent, SoundEvent> INJECT =
             SOUND_EVENTS.register("inject",
                     () -> SoundEvent.createVariableRangeEvent(rl("inject")));

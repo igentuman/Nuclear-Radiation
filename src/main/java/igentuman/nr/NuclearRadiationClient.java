@@ -2,14 +2,17 @@ package igentuman.nr;
 
 import igentuman.nr.block.client.CreativeRadSourceScreen;
 import igentuman.nr.client.particle.GasCloudParticle;
+import igentuman.nr.client.particle.VomitParticle;
 import igentuman.nr.corium.Corium;
 import igentuman.nr.corium.CoriumFluidType;
 import igentuman.nr.client.GlowSilhouette;
 import igentuman.nr.client.particle.RadiationParticle;
+import igentuman.nr.client.particle.VomitEmitter;
 import igentuman.nr.client.IonizationGlowRenderer;
 import igentuman.nr.client.RadiationScreenLayer;
 import igentuman.nr.network.ClientRadiationCache;
 import igentuman.nr.network.CreativeRadSourceOpenPayload;
+import igentuman.nr.network.VomitPayload;
 import igentuman.nr.tools.NRTools;
 import igentuman.nr.tools.client.ContaminationHudLayer;
 import igentuman.nr.tools.client.RadiationHudLayer;
@@ -72,6 +75,7 @@ public class NuclearRadiationClient {
     static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(NuclearRadiation.RADIATION_PARTICLE.get(), RadiationParticle.Provider::new);
         event.registerSpriteSet(NuclearRadiation.GAS_CLOUD_PARTICLE.get(), GasCloudParticle.Provider::new);
+        event.registerSpriteSet(NuclearRadiation.VOMIT_PARTICLE.get(), VomitParticle.Provider::new);
     }
 
     @SubscribeEvent
@@ -124,6 +128,11 @@ public class NuclearRadiationClient {
         event.registerAboveAll(
                 rl("contamination_hud"),
                 new ContaminationHudLayer());
+    }
+
+    public static void handleVomit(VomitPayload payload) {
+        Minecraft.getInstance().execute(() ->
+                VomitEmitter.add(payload.entityId(), payload.stage()));
     }
 
     public static void handleCreativeRadSourceOpen(CreativeRadSourceOpenPayload payload) {

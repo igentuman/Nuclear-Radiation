@@ -1,6 +1,7 @@
 package igentuman.nr.entity;
 
 import igentuman.nr.NRDamageTypes;
+import igentuman.nr.NRSounds;
 import igentuman.nr.binding.RadiationTags;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.shielding.ArmorProtectionRegistry;
@@ -41,6 +42,9 @@ public final class LungProcessor {
         applyStageEffects(level, entity, lung.pollution(), now, intervalTicks);
     }
 
+    private static final int COUGH_INTERVAL_MID = 800;
+    private static final int COUGH_INTERVAL_HIGH = 400;
+
     private static void applyStageEffects(ServerLevel level, LivingEntity entity, double pollution, long now, int intervalTicks) {
         if (EntityIgnoreFilter.shouldSkipHarm(entity)) return;
         double mid = RadiationConfig.LUNG_MID_THRESHOLD.get();
@@ -52,9 +56,18 @@ public final class LungProcessor {
                 entity.hurt(NRDamageTypes.source(level, NRDamageTypes.LUNG_CANCER),
                         RadiationConfig.LUNG_CANCER_DAMAGE.get().floatValue());
             }
+            playCough(level, entity, now, intervalTicks, COUGH_INTERVAL_HIGH);
         } else if (pollution >= mid) {
             entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 2000, 0, true, false, false));
+            playCough(level, entity, now, intervalTicks, COUGH_INTERVAL_MID);
         }
+    }
+
+    private static void playCough(ServerLevel level, LivingEntity entity, long now, int intervalTicks, int coughInterval) {
+        if (now % coughInterval >= intervalTicks) return;
+        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                NRSounds.COUGH.get(), entity.getSoundSource(),
+                1.5f, 0.9f + entity.getRandom().nextFloat() * 0.2f);
     }
 
     private static boolean carriesAirborneContaminant(LivingEntity entity) {

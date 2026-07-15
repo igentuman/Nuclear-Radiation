@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "nuclear_radiation:radiation",
+    "nuclear_radiation:lung_cancer"
+  ]
+}

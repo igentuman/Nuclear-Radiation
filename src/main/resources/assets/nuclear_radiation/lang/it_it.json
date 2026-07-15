@@ -6,6 +6,7 @@
   "death.attack.nuclear_radiation.radiation.player": "%1$s è morto per avvelenamento da radiazioni combattendo contro %2$s",
   "subtitles.nuclear_radiation.vomit": "Vomito",
   "subtitles.nuclear_radiation.inject": "Iniezione",
+  "subtitles.nuclear_radiation.cough": "Tosse",
 
   "item.nuclear_radiation.geiger_counter": "Contatore Geiger",
   "item.nuclear_radiation.dosimeter": "Dosimetro",

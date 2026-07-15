@@ -207,7 +207,7 @@ public final class RadiationConfig {
         LUNG_HIGH_THRESHOLD = b.comment("Pollution (0..1) at/above which lungs reach HIGH stage (lung cancer: Weakness II + damage).")
                 .defineInRange("lung_high_threshold", 0.75, 0.0, 1.0);
         LUNG_CANCER_DAMAGE = b.comment("Damage dealt per damage interval at HIGH lung stage.")
-                .defineInRange("lung_cancer_damage", 1.0, 0.0, 1000.0);
+                .defineInRange("lung_cancer_damage", 2.0, 0.0, 1000.0);
         LUNG_CANCER_DAMAGE_INTERVAL_TICKS = b.comment("Ticks between lung cancer damage applications at HIGH stage.")
                 .defineInRange("lung_cancer_damage_interval_ticks", 40, 1, 24000);
         b.pop();

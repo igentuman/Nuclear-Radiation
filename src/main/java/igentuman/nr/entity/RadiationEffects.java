@@ -4,29 +4,16 @@ import igentuman.nr.NRDamageTypes;
 import igentuman.nr.NRSounds;
 import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.config.RadiationConfig;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ItemParticleOption;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
+import igentuman.nr.network.VomitPayload;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
-
-import static net.minecraft.core.particles.ParticleTypes.SNEEZE;
-import static net.minecraft.core.particles.ParticleTypes.SPIT;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class RadiationEffects {
 
@@ -89,13 +76,9 @@ public final class RadiationEffects {
     }
 
     private static final String VOMIT_COOLDOWN_KEY = "nr_next_vomit_tick";
-    private static final String VOMIT_BURST_KEY = "nr_vomit_burst_remaining";
-    private static final String VOMIT_STAGE_KEY = "nr_vomit_burst_stage";
-    private static final int VOMIT_INTERVAL_STAGE_1 = 12000;
-    private static final int VOMIT_INTERVAL_STAGE_2 = 6000;
-    private static final int VOMIT_INTERVAL_STAGE_3_4 = 2400;
-    private static final int VOMIT_BURST_TICKS = 5;
-    private static final int VOMIT_PARTICLES_PER_TICK = 2;
+    private static final int VOMIT_INTERVAL_STAGE_1 = 6000;
+    private static final int VOMIT_INTERVAL_STAGE_2 = 3000;
+    private static final int VOMIT_INTERVAL_STAGE_3_4 = 1000;
 
     private static void addEffect(LivingEntity entity, net.minecraft.core.Holder<net.minecraft.world.effect.MobEffect> effect,
                                   int duration, int amplifier) {
@@ -109,14 +92,6 @@ public final class RadiationEffects {
         long now = server.getGameTime();
         CompoundTag data = entity.getPersistentData();
 
-        int burstRemaining = data.getInt(VOMIT_BURST_KEY);
-        if (burstRemaining > 0) {
-            int burstStage = data.getInt(VOMIT_STAGE_KEY);
-            spawnVomitParticles(server, entity, burstStage, VOMIT_PARTICLES_PER_TICK);
-            data.putInt(VOMIT_BURST_KEY, burstRemaining - 1);
-            return;
-        }
-
         long next = data.getLong(VOMIT_COOLDOWN_KEY);
         if (now < next) return;
 
@@ -126,55 +101,12 @@ public final class RadiationEffects {
             default -> VOMIT_INTERVAL_STAGE_3_4;
         };
         data.putLong(VOMIT_COOLDOWN_KEY, now + interval);
-        data.putInt(VOMIT_BURST_KEY, VOMIT_BURST_TICKS - 1);
-        data.putInt(VOMIT_STAGE_KEY, stage);
 
-        spawnVomitParticles(server, entity, stage, VOMIT_PARTICLES_PER_TICK);
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new VomitPayload(entity.getId(), stage));
         server.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
                 NRSounds.VOMIT.get(), entity.getSoundSource(),
                 1.0f, 0.9f + entity.getRandom().nextFloat() * 0.2f);
     }
-
-    private static void spawnVomitParticles(ServerLevel server, LivingEntity entity, int stage, int count) {
-        Vec3 eye = entity.getEyePosition();
-        Vec3 look = entity.getLookAngle();
-        double ox = eye.x + look.x * 0.45;
-        double oy = eye.y - 0.1;
-        double oz = eye.z + look.z * 0.45;
-        var rand = entity.getRandom();
-        Vec3 right = new Vec3(-look.z, 0, look.x).normalize();
-        for (int i = 0; i < 1; i++) {
-            ParticleOptions particle = stage >= 3
-                    ? new DustParticleOptions(new Vector3f(0.75f, 0.05f, 0.05f), 1.4f)
-                    : new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ROTTEN_FLESH));
-            double spreadR = (rand.nextDouble() - 0.45) * 5.5;
-            double spreadU = (rand.nextDouble() - 0.45) * 5.5;
-            double speedMul = 0.07 + rand.nextDouble() * 0.01;
-            double vx = (look.x + right.x * spreadR) * speedMul;
-            double vy = (look.y + spreadU) * speedMul - 0.25;
-            double vz = (look.z + right.z * spreadR) * speedMul;
-            double px = ox + (rand.nextDouble() - 0.5) * 0.17;
-            double py = oy - (rand.nextDouble() - 0.5) * 0.05;
-            double pz = oz + (rand.nextDouble() - 0.5) * 0.17;
-            sendParticles(server, entity, particle, px, py, pz, 0, vx, vy, vz, rand.nextDouble() - 0.5);
-        }
-    }
-
-    private static final double PARTICLE_BROADCAST_RADIUS = 32.0;
-    private static final double PARTICLE_BROADCAST_RADIUS_SQ = PARTICLE_BROADCAST_RADIUS * PARTICLE_BROADCAST_RADIUS;
-
-    public static <T extends ParticleOptions> void sendParticles(ServerLevel level, LivingEntity entity, T type, double posX, double posY, double posZ, int particleCount, double xOffset, double yOffset, double zOffset, double speed) {
-        ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(type, true, posX, posY, posZ, (float)xOffset, (float)yOffset, (float)zOffset, (float)speed, particleCount);
-        double ex = entity.getX();
-        double ey = entity.getY();
-        double ez = entity.getZ();
-        for (ServerPlayer player : level.players()) {
-            if (player.distanceToSqr(ex, ey, ez) <= PARTICLE_BROADCAST_RADIUS_SQ) {
-                player.connection.send(packet);
-            }
-        }
-    }
-
 
 
     @SuppressWarnings("unused")

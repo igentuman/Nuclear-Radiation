@@ -94,6 +94,19 @@ public class RadiationBindingProvider implements DataProvider {
                 .isotope(Isotopes.H_3, 1.1e17)
                 .build());
 
+        list.add(BindingDefinition.builder("enriched_yellowcake")
+                .item(rec("createnuclear:enriched_yellowcake"))
+                .isotope(Isotopes.U_235, 2.72e26)
+                .isotope(Isotopes.U_233, 2.72e22)
+                .isotope(Isotopes.U_238, 11.72e24)
+                .build());
+
+        list.add(BindingDefinition.builder("yellowcake")
+                .item(rec("createnuclear:yellowcake"))
+                .isotope(Isotopes.U_235, 19.72e22)
+                .isotope(Isotopes.U_238, 11.72e24)
+                .build());
+
         list.add(BindingDefinition.builder("fuel_rods/heuo2")
                 .itemTag(cTag("fuel_rods/heuo2"))
                 .isotope(Isotopes.U_235, 19.72e19)
@@ -429,7 +442,7 @@ public class RadiationBindingProvider implements DataProvider {
                 .isotope(Isotopes.PU_241, 2.27e17)
                 .build());
 
-        list.add(BindingDefinition.builder("americium_block ")
+        list.add(BindingDefinition.builder("americium_block")
                 .itemTag(blockTag("americium"))
                 .isotope(Isotopes.AM_241, 19.72e19)
                 .isotope(Isotopes.AM_242, 19.72e19)

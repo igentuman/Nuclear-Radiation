@@ -6,6 +6,7 @@
   "death.attack.nuclear_radiation.radiation.player": "%1$s succumbed to radiation poisoning while fighting %2$s",
   "subtitles.nuclear_radiation.vomit": "Vomiting",
   "subtitles.nuclear_radiation.inject": "Injection",
+  "subtitles.nuclear_radiation.cough": "Coughing",
 
   "item.nuclear_radiation.geiger_counter": "Geiger Counter",
   "item.nuclear_radiation.dosimeter": "Dosimeter",
