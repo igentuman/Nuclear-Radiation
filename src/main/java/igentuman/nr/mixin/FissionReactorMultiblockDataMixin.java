@@ -1,6 +1,6 @@
 package igentuman.nr.mixin;
 
-import igentuman.nr.particle.MeltdownParticles;
+import igentuman.nr.client.particle.MeltdownParticles;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import net.minecraft.core.BlockPos;

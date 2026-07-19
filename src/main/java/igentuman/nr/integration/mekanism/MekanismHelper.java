@@ -1,9 +1,9 @@
 package igentuman.nr.integration.mekanism;
 
-import igentuman.nr.api.Isotope;
-import igentuman.nr.api.IsotopeStack;
+import igentuman.nr.api.isotope.Isotope;
+import igentuman.nr.api.isotope.IsotopeStack;
 import igentuman.nr.api.RadiationProfile;
-import igentuman.nr.registry.IsotopeRegistry;
+import igentuman.nr.api.isotope.IsotopeRegistry;
 import igentuman.nr.registry.Isotopes;
 
 public class MekanismHelper {

@@ -23,4 +23,16 @@ public final class DecayGraph {
     public static void remove(String fromIsotopeId) { EDGES.remove(fromIsotopeId); }
 
     public static void clear() { EDGES.clear(); }
+
+    public static interface WorldRadSource extends IPointRadiationSource {
+
+        long spawnedTick();
+
+        @Override
+        RadiationProfile getProfile();
+
+        boolean contaminatesArea();
+
+        default long expiryGameTime() { return Long.MAX_VALUE; }
+    }
 }

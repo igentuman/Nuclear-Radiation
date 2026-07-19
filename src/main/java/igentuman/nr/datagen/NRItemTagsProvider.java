@@ -1,8 +1,8 @@
 package igentuman.nr.datagen;
 
 import igentuman.nr.NuclearRadiation;
-import igentuman.nr.binding.RadiationTags;
-import igentuman.nr.corium.Corium;
+import igentuman.nr.registry.RadiationTags;
+import igentuman.nr.radiation.source.Corium;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;

@@ -3,7 +3,7 @@ package igentuman.nr.integration.emi;
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import igentuman.nr.api.IsotopeStack;
+import igentuman.nr.api.isotope.IsotopeStack;
 import igentuman.nr.integration.jei.JeiFormat;
 import igentuman.nr.integration.jei.RadioactiveItemEntry;
 import net.minecraft.client.Minecraft;

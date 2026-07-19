@@ -1,6 +1,6 @@
 package igentuman.nr.integration.kubejs;
 
-import igentuman.nr.particle.MeltdownParticles;
+import igentuman.nr.client.particle.MeltdownParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 

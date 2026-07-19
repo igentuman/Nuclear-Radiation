@@ -1,10 +1,10 @@
 package igentuman.nr;
 
-import igentuman.nr.block.client.CreativeRadSourceScreen;
+import igentuman.nr.client.CreativeRadSourceScreen;
 import igentuman.nr.client.particle.GasCloudParticle;
 import igentuman.nr.client.particle.VomitParticle;
-import igentuman.nr.corium.Corium;
-import igentuman.nr.corium.CoriumFluidType;
+import igentuman.nr.radiation.source.Corium;
+import igentuman.nr.registry.CoriumFluidType;
 import igentuman.nr.client.GlowSilhouette;
 import igentuman.nr.client.particle.RadiationParticle;
 import igentuman.nr.client.particle.VomitEmitter;
@@ -13,9 +13,9 @@ import igentuman.nr.client.RadiationScreenLayer;
 import igentuman.nr.network.ClientRadiationCache;
 import igentuman.nr.network.CreativeRadSourceOpenPayload;
 import igentuman.nr.network.VomitPayload;
-import igentuman.nr.tools.NRTools;
-import igentuman.nr.tools.client.ContaminationHudLayer;
-import igentuman.nr.tools.client.RadiationHudLayer;
+import igentuman.nr.registry.NRTools;
+import igentuman.nr.client.ContaminationHudLayer;
+import igentuman.nr.client.RadiationHudLayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;

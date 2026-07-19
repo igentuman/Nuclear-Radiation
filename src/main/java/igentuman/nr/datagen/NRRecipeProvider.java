@@ -1,14 +1,14 @@
 package igentuman.nr.datagen;
 
 import igentuman.nr.NuclearRadiation;
-import igentuman.nr.armor.NRArmorItems;
-import igentuman.nr.medicine.NRMedicineItems;
+import igentuman.nr.registry.NRArmorItems;
+import igentuman.nr.registry.NRMedicineItems;
 import igentuman.nr.recipe.BlockIrradiationRecipe;
 import igentuman.nr.recipe.BlockIrradiationRecipe.BlockOutput;
 import igentuman.nr.recipe.EntityIngredient;
 import igentuman.nr.recipe.EntityResult;
 import igentuman.nr.recipe.MutationRecipe;
-import igentuman.nr.tools.NRTools;
+import igentuman.nr.registry.NRTools;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;

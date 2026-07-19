@@ -3,9 +3,9 @@ package igentuman.nr.datagen;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import igentuman.nr.api.DecayEdge;
+import igentuman.nr.api.IChunkRadiation;
 import igentuman.nr.registry.DefaultIsotopes;
-import igentuman.nr.registry.IsotopeDefinition;
-import igentuman.nr.registry.IsotopesReloadListener;
+import igentuman.nr.events.IsotopesReloadListener;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -20,13 +20,13 @@ import static igentuman.nr.NuclearRadiation.MODID;
 public class IsotopeProvider implements DataProvider {
 
     private final PackOutput output;
-    private final List<IsotopeDefinition> isotopes;
+    private final List<IChunkRadiation.IsotopeDefinition> isotopes;
 
     public IsotopeProvider(PackOutput output) {
         this(output, DefaultIsotopes.defaults());
     }
 
-    public IsotopeProvider(PackOutput output, List<IsotopeDefinition> isotopes) {
+    public IsotopeProvider(PackOutput output, List<IChunkRadiation.IsotopeDefinition> isotopes) {
         this.output = output;
         this.isotopes = isotopes;
     }
@@ -36,7 +36,7 @@ public class IsotopeProvider implements DataProvider {
         Path root = output.getOutputFolder(PackOutput.Target.DATA_PACK);
 
         List<CompletableFuture<?>> futures = new ArrayList<>(isotopes.size());
-        for (IsotopeDefinition def : isotopes) {
+        for (IChunkRadiation.IsotopeDefinition def : isotopes) {
             JsonObject obj = new JsonObject();
             obj.addProperty("alpha", def.alpha);
             obj.addProperty("beta", def.beta);

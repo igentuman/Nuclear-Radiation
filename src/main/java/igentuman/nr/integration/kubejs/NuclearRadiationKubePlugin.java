@@ -6,7 +6,7 @@ import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ScriptType;
-import igentuman.nr.api.NREvents;
+import igentuman.nr.events.NREvents;
 import igentuman.nr.integration.kubejs.event.ArmorKubeEvent;
 import igentuman.nr.integration.kubejs.event.BindingKubeEvent;
 import igentuman.nr.integration.kubejs.event.DosePhaseKubeEvent;

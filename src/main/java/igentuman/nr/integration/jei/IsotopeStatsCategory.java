@@ -1,6 +1,6 @@
 package igentuman.nr.integration.jei;
 
-import igentuman.nr.api.Isotope;
+import igentuman.nr.api.isotope.Isotope;
 import igentuman.nr.api.RadiationQuality;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;

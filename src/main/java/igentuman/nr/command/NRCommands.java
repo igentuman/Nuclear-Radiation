@@ -1,8 +1,8 @@
 package igentuman.nr.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import igentuman.nr.util.persistence.EntityRadiationData;
-import igentuman.nr.util.persistence.NRAttachments;
+import igentuman.nr.radiation.storage.EntityRadiationData;
+import igentuman.nr.radiation.storage.NRAttachments;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;

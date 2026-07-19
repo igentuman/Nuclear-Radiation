@@ -6,7 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.logging.LogUtils;
 import igentuman.nr.NuclearRadiation;
-import igentuman.nr.binding.RadiationBindings;
+import igentuman.nr.api.binding.RadiationBindings;
 import igentuman.nr.config.NRClientConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;

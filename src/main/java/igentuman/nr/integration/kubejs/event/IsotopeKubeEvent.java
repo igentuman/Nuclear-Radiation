@@ -1,8 +1,8 @@
 package igentuman.nr.integration.kubejs.event;
 
 import dev.latvian.mods.kubejs.event.KubeStartupEvent;
+import igentuman.nr.api.IChunkRadiation;
 import igentuman.nr.integration.kubejs.NuclearRadiationKubeData;
-import igentuman.nr.registry.IsotopeDefinition;
 
 /**
  * {@code NRStartupEvents.isotopes} — register new isotopes or remove existing ones.
@@ -12,7 +12,7 @@ public class IsotopeKubeEvent implements KubeStartupEvent {
 
     /** Registers (or overrides) an isotope. Returns a fluent builder; chain the decay properties. */
     public Builder add(String id) {
-        IsotopeDefinition.Builder b = IsotopeDefinition.create(id);
+        IChunkRadiation.IsotopeDefinition.Builder b = IChunkRadiation.IsotopeDefinition.create(id);
         NuclearRadiationKubeData.ISOTOPE_ADDS.add(b);
         return new Builder(b);
     }
@@ -27,9 +27,9 @@ public class IsotopeKubeEvent implements KubeStartupEvent {
         private static final long TICKS_PER_DAY = 24000L;
         private static final long TICKS_PER_HOUR = 1000L;
 
-        private final IsotopeDefinition.Builder b;
+        private final IChunkRadiation.IsotopeDefinition.Builder b;
 
-        Builder(IsotopeDefinition.Builder b) {
+        Builder(IChunkRadiation.IsotopeDefinition.Builder b) {
             this.b = b;
         }
 

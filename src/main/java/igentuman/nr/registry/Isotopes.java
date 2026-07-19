@@ -1,5 +1,7 @@
 package igentuman.nr.registry;
 
+import igentuman.nr.api.isotope.IsotopeRegistry;
+
 public final class Isotopes {
     private Isotopes() {}
 

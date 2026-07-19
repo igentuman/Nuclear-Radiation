@@ -1,6 +1,6 @@
 package igentuman.nr.mixin;
 
-import igentuman.nr.containers.ContainerRadiationTicker;
+import igentuman.nr.radiation.simulation.containers.ContainerRadiationTicker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;

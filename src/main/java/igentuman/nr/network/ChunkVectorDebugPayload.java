@@ -1,7 +1,7 @@
 package igentuman.nr.network;
 
 import igentuman.nr.NuclearRadiation;
-import igentuman.nr.simulation.SubChunkRadVector;
+import igentuman.nr.radiation.simulation.SubChunkRadVector;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

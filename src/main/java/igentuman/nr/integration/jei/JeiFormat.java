@@ -1,6 +1,6 @@
 package igentuman.nr.integration.jei;
 
-import igentuman.nr.api.Units;
+import igentuman.nr.util.Units;
 
 public final class JeiFormat {
     private JeiFormat() {}

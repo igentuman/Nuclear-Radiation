@@ -2,9 +2,9 @@ package igentuman.nr.mixin;
 
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.integration.createnucleartech.CreateNTHelper;
-import igentuman.nr.particle.MeltdownParticles;
-import igentuman.nr.util.tracking.LeftOverRadSource;
-import igentuman.nr.util.tracking.WorldSourceRegistry;
+import igentuman.nr.client.particle.MeltdownParticles;
+import igentuman.nr.radiation.source.LeftOverRadSource;
+import igentuman.nr.radiation.source.WorldSourceRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;

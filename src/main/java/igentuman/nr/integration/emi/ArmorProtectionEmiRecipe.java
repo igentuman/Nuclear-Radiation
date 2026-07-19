@@ -5,7 +5,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nr.integration.jei.ArmorProtectionEntry;
 import igentuman.nr.integration.jei.JeiFormat;
-import igentuman.nr.shielding.ArmorProtectionRegistry;
+import igentuman.nr.api.shielding.ArmorProtectionRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;

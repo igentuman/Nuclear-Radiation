@@ -2,7 +2,7 @@ package igentuman.nr.mixin;
 
 import com.rae.crowns.content.nuclear.NuclearExplosion;
 import com.rae.crowns.content.nuclear.fuel_assembly.AssemblyBlockEntity;
-import igentuman.nr.corium.Corium;
+import igentuman.nr.radiation.source.Corium;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;

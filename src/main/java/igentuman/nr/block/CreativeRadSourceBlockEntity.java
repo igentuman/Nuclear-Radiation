@@ -1,7 +1,7 @@
 package igentuman.nr.block;
 
-import igentuman.nr.util.tracking.CreativeRadSource;
-import igentuman.nr.util.tracking.WorldSourceRegistry;
+import igentuman.nr.radiation.source.CreativeRadSource;
+import igentuman.nr.radiation.source.WorldSourceRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

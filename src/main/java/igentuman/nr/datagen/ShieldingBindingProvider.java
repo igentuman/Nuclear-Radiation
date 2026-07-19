@@ -2,9 +2,9 @@ package igentuman.nr.datagen;
 
 import com.google.gson.JsonObject;
 import igentuman.nr.NuclearRadiation;
-import igentuman.nr.shielding.DefaultShieldingBindings;
-import igentuman.nr.shielding.ShieldingBindingDefinition;
-import igentuman.nr.shielding.ShieldingBindingsReloadListener;
+import igentuman.nr.radiation.shielding.world.DefaultShieldingBindings;
+import igentuman.nr.api.shielding.ShieldingBindingDefinition;
+import igentuman.nr.events.ShieldingBindingsReloadListener;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;

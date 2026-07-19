@@ -2,8 +2,8 @@ package igentuman.nr.mixin;
 
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.integration.mekanism.MekanismHelper;
-import igentuman.nr.util.tracking.LeftOverRadSource;
-import igentuman.nr.util.tracking.WorldSourceRegistry;
+import igentuman.nr.radiation.source.LeftOverRadSource;
+import igentuman.nr.radiation.source.WorldSourceRegistry;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import net.minecraft.core.BlockPos;

@@ -1,7 +1,6 @@
 package igentuman.nr.integration.jei;
 
-import igentuman.nr.NuclearRadiation;
-import igentuman.nr.api.Isotope;
+import igentuman.nr.api.isotope.Isotope;
 import igentuman.nr.recipe.BlockIrradiationRecipe;
 import igentuman.nr.recipe.MutationRecipe;
 import mezz.jei.api.recipe.RecipeType;

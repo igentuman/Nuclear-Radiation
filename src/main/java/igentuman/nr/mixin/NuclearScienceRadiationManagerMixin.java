@@ -1,8 +1,8 @@
 package igentuman.nr.mixin;
 
 import igentuman.nr.integration.nuclear_science.NuclearScienceHelper;
-import igentuman.nr.util.tracking.LeftOverRadSource;
-import igentuman.nr.util.tracking.WorldSourceRegistry;
+import igentuman.nr.radiation.source.LeftOverRadSource;
+import igentuman.nr.radiation.source.WorldSourceRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;

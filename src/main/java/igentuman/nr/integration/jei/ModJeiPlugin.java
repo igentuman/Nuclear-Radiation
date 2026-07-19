@@ -1,14 +1,14 @@
 package igentuman.nr.integration.jei;
 
-import igentuman.nr.api.Isotope;
-import igentuman.nr.binding.RadiationBindings;
+import igentuman.nr.api.isotope.Isotope;
+import igentuman.nr.api.binding.RadiationBindings;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.recipe.BlockIrradiationRecipe;
 import igentuman.nr.recipe.MutationRecipe;
 import igentuman.nr.recipe.NRRecipes;
-import igentuman.nr.registry.IsotopeRegistry;
-import igentuman.nr.shielding.ArmorProtectionRegistry;
-import igentuman.nr.shielding.ShieldingRegistry;
+import igentuman.nr.api.isotope.IsotopeRegistry;
+import igentuman.nr.api.shielding.ArmorProtectionRegistry;
+import igentuman.nr.radiation.shielding.world.ShieldingRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;

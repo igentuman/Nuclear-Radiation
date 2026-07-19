@@ -1,6 +1,6 @@
 package igentuman.nr.integration.jei;
 
-import igentuman.nr.shielding.ArmorProtectionRegistry;
+import igentuman.nr.api.shielding.ArmorProtectionRegistry;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;

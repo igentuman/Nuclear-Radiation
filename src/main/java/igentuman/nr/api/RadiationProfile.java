@@ -1,6 +1,10 @@
 package igentuman.nr.api;
 
-import igentuman.nr.registry.IsotopeRegistry;
+import igentuman.nr.api.isotope.Isotope;
+import igentuman.nr.api.isotope.IsotopeRegistry;
+import igentuman.nr.api.isotope.IsotopeStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -171,5 +175,16 @@ public class RadiationProfile {
         for (IsotopeStack s : isotopes.values()) {
             s.setAtoms(s.atoms() / rate);
         }
+    }
+
+    public static interface IRadiatingContainer {
+
+        BlockEntity blockEntity();
+
+        Container container();
+
+        default double containerAttenuation() { return 0.0; }
+
+        default boolean contaminatesArea() { return false; }
     }
 }

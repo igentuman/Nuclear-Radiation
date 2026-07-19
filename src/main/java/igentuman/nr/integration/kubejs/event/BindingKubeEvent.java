@@ -2,8 +2,8 @@ package igentuman.nr.integration.kubejs.event;
 
 import dev.latvian.mods.kubejs.event.KubeStartupEvent;
 import igentuman.nr.NuclearRadiation;
-import igentuman.nr.binding.Bindings;
-import igentuman.nr.builder.RadiationBindingBuilder;
+import igentuman.nr.api.binding.Bindings;
+import igentuman.nr.api.binding.RadiationBindingBuilder;
 import igentuman.nr.integration.kubejs.NuclearRadiationKubeData;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;

@@ -3,7 +3,7 @@ package igentuman.nr.integration.kubejs.event;
 import dev.latvian.mods.kubejs.event.KubeStartupEvent;
 import igentuman.nr.NuclearRadiation;
 import igentuman.nr.integration.kubejs.NuclearRadiationKubeData;
-import igentuman.nr.shielding.ArmorProtectionRegistry;
+import igentuman.nr.api.shielding.ArmorProtectionRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

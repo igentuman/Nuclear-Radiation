@@ -1,10 +1,10 @@
 package igentuman.nr.integration.kubejs;
 
 import igentuman.nr.api.DecayGraph;
-import igentuman.nr.api.NREvents;
+import igentuman.nr.api.IChunkRadiation;
+import igentuman.nr.events.NREvents;
 import igentuman.nr.registry.DefaultIsotopes;
-import igentuman.nr.registry.IsotopeDefinition;
-import igentuman.nr.registry.IsotopeRegistry;
+import igentuman.nr.api.isotope.IsotopeRegistry;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -23,7 +23,7 @@ public final class NuclearRadiationKubeData {
 
     private NuclearRadiationKubeData() {}
 
-    public static final List<IsotopeDefinition.Builder> ISOTOPE_ADDS = new ArrayList<>();
+    public static final List<IChunkRadiation.IsotopeDefinition.Builder> ISOTOPE_ADDS = new ArrayList<>();
     public static final Set<String> ISOTOPE_REMOVES = new LinkedHashSet<>();
 
     // Deferred registry mutations captured in script call order; replayed on each reload.
@@ -51,7 +51,7 @@ public final class NuclearRadiationKubeData {
     }
 
     static void applyIsotopes() {
-        for (IsotopeDefinition.Builder b : ISOTOPE_ADDS) {
+        for (IChunkRadiation.IsotopeDefinition.Builder b : ISOTOPE_ADDS) {
             DefaultIsotopes.apply(b.build());
         }
         for (String id : ISOTOPE_REMOVES) {
