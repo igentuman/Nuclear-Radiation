@@ -10,11 +10,19 @@ import java.util.UUID;
 
 public final class BlockRadSource extends AbstractWorldRadSource {
 
+    public boolean contaminatesArea = false;
+
     public BlockRadSource(UUID id, ResourceKey<Level> dim, BlockPos pos,
                           RadiationProfile profile, long spawnedTick) {
+        this(id, dim, pos, profile, spawnedTick, true);
+    }
+
+    public BlockRadSource(UUID id, ResourceKey<Level> dim, BlockPos pos,
+                          RadiationProfile profile, long spawnedTick, boolean contamiateArea) {
         super(id, dim, pos, profile, spawnedTick);
+        this.contaminatesArea = contamiateArea;
     }
 
     @Override
-    public boolean contaminatesArea() { return true; }
+    public boolean contaminatesArea() { return contaminatesArea; }
 }
