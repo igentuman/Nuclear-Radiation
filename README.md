@@ -4,6 +4,12 @@ Physics-driven radiation simulation mod for Minecraft 1.21.1 (NeoForge).
 
 Models radioactive isotopes, decay, contamination, dose, shielding, and medicine using real units (Bq, Gy, Sv) rather than ad-hoc "rads".
 
+## Documentation
+
+- **[Modpacker Guide](docs/Modpackers.md)** - no-code setup (datapack JSON, KubeJS, config). FAQ: make blocks/items radioactive, biome/dimension background, block & armor shielding, isotopes, mutations, block irradiation.
+- **[Mod Developer Guide](docs/ModDevelopers.md)** - Java API: radiation sources, profiles, bindings, shielding, isotopes, dose sampling, and the `NREvents` integration bridge.
+- **[KubeJS Guide](docs/KubeJS.md)** - full scripting reference.
+
 ## Requirements
 
 - Minecraft 1.21.1
@@ -13,76 +19,76 @@ Models radioactive isotopes, decay, contamination, dose, shielding, and medicine
 ## Features
 
 ### Units & Physics
-- **Bq** — radioactive source activity (decays/sec)
-- **Gy** — absorbed dose, used for shielding attenuation
-- **Sv** — biological dose to entities (rate + career total)
+- **Bq** - radioactive source activity (decays/sec)
+- **Gy** - absorbed dose, used for shielding attenuation
+- **Sv** - biological dose to entities (rate + career total)
 - Per-type quality factors: alpha (Q=20), beta (Q=1), gamma/x-ray (Q=1), neutron (Q≈10)
 
 ### Radiation Sources
-- Block radiation sources (placed radioactive blocks) — `BlockRadSource`
-- Item entity sources (dropped radioactive stacks, with radioactive glow) — `ItemEntityRadSource`
-- Fluid sources (radioactive fluids in world) — `FluidRadSource`
-- Container sources (chests/barrels with radioactive contents — point source, no contamination spread) — `ContainerRadSource`
-- Creative radiation source block — fully tunable α/β/x-ray/neutron emitter in MBq, GUI-configurable (`CreativeRadSourceBlock`, `CreativeRadSource`)
-- Residual/leftover contamination source — `LeftOverRadSource`
+- Block radiation sources (placed radioactive blocks) - `BlockRadSource`
+- Item entity sources (dropped radioactive stacks, with radioactive glow) - `ItemEntityRadSource`
+- Fluid sources (radioactive fluids in world) - `FluidRadSource`
+- Container sources (chests/barrels with radioactive contents - point source, no contamination spread) - `ContainerRadSource`
+- Creative radiation source block - fully tunable α/β/x-ray/neutron emitter in MBq, GUI-configurable (`CreativeRadSourceBlock`, `CreativeRadSource`)
+- Residual/leftover contamination source - `LeftOverRadSource`
 - Per-chunk soil/air/water contamination profiles (`ChunkRadiationData`)
 
 ### Decay
-- Absolute-expiry model — sources carry `expiryGameTime`, no per-tick decrement
+- Absolute-expiry model - sources carry `expiryGameTime`, no per-tick decrement
 - Lazy decay on sampled access (`atoms *= exp(-λ·Δt)`)
 - Optional branching decay chains via `DecayEdge` probabilities
-- Long-lived isotopes (effective half-life ≥ `static_half_life_years`) treated as static — Bq computed, no daughter ingrowth
+- Long-lived isotopes (effective half-life ≥ `static_half_life_years`) treated as static - Bq computed, no daughter ingrowth
 - 40 built-in isotopes: U-233/234/235/238, Pu-238/239/241/242, Np-236/237, Am-241/242/243, Cm-243/245/246/247, Bk-247/248, Cf-249/250/251/252, Th-230/232, Ac-225, plus Cs-137, I-131, Sr-90, Y-90, Co-60, H-3, Po-210, Xe-133, Kr-85, Na-22, Ca-48, Be-7, Ir-192, Cn-291
 - Isotopes are data-driven: defaults in `DefaultIsotopes`, overridable via datapack JSON (`data/<ns>/nuclear_radiation/isotopes/*.json`, `IsotopesReloadListener`) or KubeJS
 
 ### Exposure Pipeline
-- External dose — sampled from per-subchunk `SubChunkRadVector` (6-direction cone field, not scalar)
-- Inventory dose — per-slot contact factor (held/offhand/armor/main inv), alpha/beta pass-through configurable
-- Internal dose — ingested/inhaled isotopes per entity
-- Background dose — per-dimension and per-biome uSv/h overrides
+- External dose - sampled from per-subchunk `SubChunkRadVector` (6-direction cone field, not scalar)
+- Inventory dose - per-slot contact factor (held/offhand/armor/main inv), alpha/beta pass-through configurable
+- Internal dose - ingested/inhaled isotopes per entity
+- Background dose - per-dimension and per-biome uSv/h overrides
 - Stagger buckets prevent tick spikes (`entityId % interval`)
 
 ### Shielding
 - Block attenuation via binding system: blocks bind to one of 3 tiers (`light`/`mid`/`heavy`, each a `(xray, neutron)` preset) through tags `nr:shielding/{light,mid,heavy}`, datapack JSON (`nuclear_radiation/shielding/*.json`, supports tier ref or raw override), or the `IShieldingBlock` interface. Resolved by `ShieldingBindings` (direct block binding wins over tag).
 - Single-pass dual-attenuation voxel-DDA raycast (x-ray + neutron in one walk)
 - Cached per `(sourceChunk, targetChunk)`, invalidated on block change
-- Armor attenuation via `ArmorProtectionRegistry` — datapack-driven (`ArmorProtectionReloadListener`); defaults cover vanilla iron/gold/netherite sets with per-type (xray/alpha/beta/neutron) coefficients
-- Mod-added **Hazmat Suit** (helmet/chestplate/leggings/boots, `NRArmorItems`) — full-body set for working in hot zones
+- Armor attenuation via `ArmorProtectionRegistry` - datapack-driven (`ArmorProtectionReloadListener`); defaults cover vanilla iron/gold/netherite sets with per-type (xray/alpha/beta/neutron) coefficients
+- Mod-added **Hazmat Suit** (helmet/chestplate/leggings/boots, `NRArmorItems`) - full-body set for working in hot zones
 
 ### Medicine
-- Iodine pill — blocks I-131 uptake (`iodine_protection` effect)
-- Prussian blue — accelerates Cs-137 purge (`cesium_purge` effect)
-- Anti-rad injection — strong purge boost
-- Radaway — gradual purge
-- Rad-protection potion item — generic `radiation_protection` effect
+- Iodine pill - blocks I-131 uptake (`iodine_protection` effect)
+- Prussian blue - accelerates Cs-137 purge (`cesium_purge` effect)
+- Anti-rad injection - strong purge boost
+- Radaway - gradual purge
+- Rad-protection potion item - generic `radiation_protection` effect
 - MobEffects: `radiation_protection`, `radiation_purge`, `iodine_protection`, `cesium_purge`
 
 ### Tools
-- **Geiger counter** — reads in-world Bq, audible clicks scale with activity
-- **Dosimeter** — reads Sv total + Sv/h + breakdown (external/inventory/internal), HUD overlay
+- **Geiger counter** - reads in-world Bq, audible clicks scale with activity
+- **Dosimeter** - reads Sv total + Sv/h + breakdown (external/inventory/internal), HUD overlay
 
 ### Visual Feedback
 - Radioactive **glow silhouette** post-shader on hot item entities (`GlowSilhouette`)
-- **White-noise screen overlay** in intense fields — static scales with dose rate (`RadiationScreenLayer`)
+- **White-noise screen overlay** in intense fields - static scales with dose rate (`RadiationScreenLayer`)
 - Debug renderers for subchunk vectors, contamination, and shielding rays (client caches + network payloads)
 
 ### Mutations & Block Irradiation
-- **Mob mutations** — prolonged dose transforms mobs into other entities. Recipe-driven (`nuclear_radiation:mutation`), one-shot per entity per recipe, gated on total Sv + Sv/h window with optional chance (`MutationProcessor`, `MutationRecipe`)
-- **Block irradiation** — sources transmute nearby blocks once local attenuated activity clears `min_bq`. Recipe-driven (`nuclear_radiation:block_irradiation`) with weighted outputs + chance (`BlockIrradiationRecipe`)
+- **Mob mutations** - prolonged dose transforms mobs into other entities. Recipe-driven (`nuclear_radiation:mutation`), one-shot per entity per recipe, gated on total Sv + Sv/h window with optional chance (`MutationProcessor`, `MutationRecipe`)
+- **Block irradiation** - sources transmute nearby blocks once local attenuated activity clears `min_bq`. Recipe-driven (`nuclear_radiation:block_irradiation`) with weighted outputs + chance (`BlockIrradiationRecipe`)
 - Both recipe types registered in `NRRecipes`; authorable via datapack JSON or KubeJS
 
 ### Mod Integrations
-- **JEI** (`ModJeiPlugin`) — custom info categories: Isotope Stats, Radioactive Items, Decay Graph, Armor Protection, Block Shielding, Mutation, Block Irradiation
-- **KubeJS** — scriptable isotopes, bindings, shielding, armor, recipes, and dose events (see [KubeJS integration guide](docs/KubeJS.md))
-- **Mekanism** — Mekanism radiation events mapped to an isotope cocktail (`MekRadiationManagerMixin`, `MekanismHelper`)
-- **Nuclear Science / Voltaic** — Voltaic radiation sources mapped to isotope profiles (`NuclearScienceRadiationManagerMixin`, `NuclearScienceHelper`)
-- Integration bridge `api/NREvents` keeps optional-mod types out of core — integrations register plain-Java callbacks; safe when a mod is absent
+- **JEI** (`ModJeiPlugin`) - custom info categories: Isotope Stats, Radioactive Items, Decay Graph, Armor Protection, Block Shielding, Mutation, Block Irradiation
+- **KubeJS** - scriptable isotopes, bindings, shielding, armor, recipes, and dose events (see [KubeJS integration guide](docs/KubeJS.md))
+- **Mekanism** - Mekanism radiation events mapped to an isotope cocktail (`MekRadiationManagerMixin`, `MekanismHelper`)
+- **Nuclear Science / Voltaic** - Voltaic radiation sources mapped to isotope profiles (`NuclearScienceRadiationManagerMixin`, `NuclearScienceHelper`)
+- Integration bridge `api/NREvents` keeps optional-mod types out of core - integrations register plain-Java callbacks; safe when a mod is absent
 
 ### Data-Driven Bindings
 Three input paths for assigning `RadiationProfile` to items/blocks/fluids:
-1. Datapack JSON (`data/<ns>/nuclear_radiation/bindings/*.json`) — handled by `RadiationBindingsReloadListener`
+1. Datapack JSON (`data/<ns>/nuclear_radiation/bindings/*.json`) - handled by `RadiationBindingsReloadListener`
 2. Tags (`nr:radioactive/low|medium|high`, `nr:radioactive/uranium_ore|uranium_raw|uranium_ingot|uranium_dust|spent_fuel`, fluid tag `nr:radioactive`)
-3. Item `DataComponent` (`RadiationComponent`) — per-stack runtime profile
+3. Item `DataComponent` (`RadiationComponent`) - per-stack runtime profile
 
 ## Architecture Highlights
 
@@ -123,15 +129,15 @@ Common config: `config/nuclear_radiation-common.toml`
 Radiation tuning: `config/nuclear_radiation-radiation.toml`
 
 Top-level sections in the radiation config:
-- `[radiation]` — `world_sim_interval_ticks`, `entity_sim_interval_ticks`, `max_source_radius_m`, `chunk_vector_ttl_ticks`, `stagger_entities`
-- `[entities]` — `ignore_creative`, `ignore_spectator`, `ignored` (entity id list)
-- `[thresholds_sv_per_hour]` — `mild`, `moderate`, `severe`, `lethal`
-- `[recovery]` — `base_decay_per_hour_sv`
-- `[conversion]` — `gy_per_bq_second`
-- `[inventory]` — `armor_blocks_inventory`, `inventory_alpha_pass`, `inventory_beta_pass`
-- `[background]` — `default_usv_per_hour`, `level_usv_per_hour`, `biome_usv_per_hour`
-- `[debug]` — `debug_radiation_vectors`
-- `[world_sources]` — `activity_floor_bq`, `world_source_min_bq`, `contamination_spread_factor`, `static_half_life_years`
+- `[radiation]` - `world_sim_interval_ticks`, `entity_sim_interval_ticks`, `max_source_radius_m`, `chunk_vector_ttl_ticks`, `stagger_entities`
+- `[entities]` - `ignore_creative`, `ignore_spectator`, `ignored` (entity id list)
+- `[thresholds_sv_per_hour]` - `mild`, `moderate`, `severe`, `lethal`
+- `[recovery]` - `base_decay_per_hour_sv`
+- `[conversion]` - `gy_per_bq_second`
+- `[inventory]` - `armor_blocks_inventory`, `inventory_alpha_pass`, `inventory_beta_pass`
+- `[background]` - `default_usv_per_hour`, `level_usv_per_hour`, `biome_usv_per_hour`
+- `[debug]` - `debug_radiation_vectors`
+- `[world_sources]` - `activity_floor_bq`, `world_source_min_bq`, `contamination_spread_factor`, `static_half_life_years`
 
 ## Build
 
@@ -158,7 +164,7 @@ See the full guide: **[docs/KubeJS.md](docs/KubeJS.md)**.
 
 ## Commands
 
-- `/nr clear <player>` — reset a player's accumulated dose (career Sv, Sv/h, protection, internal contamination). Requires permission level 2.
+- `/nr clear <player>` - reset a player's accumulated dose (career Sv, Sv/h, protection, internal contamination). Requires permission level 2.
 
 ## How It Works
 
@@ -166,7 +172,7 @@ See the full guide: **[docs/KubeJS.md](docs/KubeJS.md)**.
 
 A **subchunk** is a 16x16x16 block cube.
 
-Every subchunk that contains a living entity gets one `SubChunkRadVector`. Each vector stores radiation pointing **outward in 6 directions** (+X, -X, +Y, -Y, +Z, -Z) — 6 **square pyramids** sharing an apex at the cube's center, with ribs passing through the corners of the corresponding subchunk face. The 6 pyramids tile R³ disjointly; every point outside the apex falls into exactly one. (Sometimes called "cones" loosely — the geometry is square pyramids.)
+Every subchunk that contains a living entity gets one `SubChunkRadVector`. Each vector stores radiation pointing **outward in 6 directions** (+X, -X, +Y, -Y, +Z, -Z) - 6 **square pyramids** sharing an apex at the cube's center, with ribs passing through the corners of the corresponding subchunk face. The 6 pyramids tile R³ disjointly; every point outside the apex falls into exactly one. (Sometimes called "cones" loosely - the geometry is square pyramids.)
 
 **Build steps each sim tick** (`RadiationSimulator.compute`):
 
@@ -175,12 +181,12 @@ Every subchunk that contains a living entity gets one `SubChunkRadVector`. Each 
 3. Walk every radiation source in the world. Skip any farther than `MAX_SOURCE_RADIUS_M`.
 4. For each source, compute the vector from source → apex. `SubChunkRadVector.classify()` picks which of the 6 pyramids the source lives in (the biggest absolute axis wins).
 5. Add the source's contribution to that pyramid:
-   - `Bq * 1/(dist^2 + 1)` — inverse-square falloff.
+   - `Bq * 1/(dist^2 + 1)` - inverse-square falloff.
    - Split into x-ray Bq + neutron Bq.
    - Track a weighted centroid → `tip[dir]` ("where the radiation comes from", used for debug arrows).
 6. The resulting map (subchunk → vector) is posted back to the main thread and stored in `vectorByDim`.
 
-When an entity samples radiation, it reads the vector for its own subchunk — no per-source loop. That makes it O(N) entities, not O(N·M) entities x sources.
+When an entity samples radiation, it reads the vector for its own subchunk - no per-source loop. That makes it O(N) entities, not O(N·M) entities x sources.
 
 A TTL prunes stale vectors. If a dimension has no sources, its whole map is dropped.
 
@@ -195,7 +201,7 @@ A TTL prunes stale vectors. If a dimension has no sources, its whole map is drop
 3. Loop up to 1024 steps:
    - `tNext` = nearest boundary. `seg` = length of ray inside the current block.
    - Look up the block state in the chunk (cached per chunk column so lookups aren't repeated).
-   - `ShieldingRegistry.get(state)` returns coefficients `(xray, neutron)` — linear attenuation per meter.
+   - `ShieldingRegistry.get(state)` returns coefficients `(xray, neutron)` - linear attenuation per meter.
    - Accumulate `sumX += xray * seg`, `sumN += neutron * seg`.
    - Advance to the next block on the axis with the smallest `tMax`.
 4. Return `(exp(-sumX), exp(-sumN))`. Beer–Lambert law: each value is a 0..1 multiplier applied to incoming flux.

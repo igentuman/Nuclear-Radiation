@@ -609,14 +609,14 @@ public class RadiationBindingProvider implements DataProvider {
                 .item(rec("nuclear_radiation:fallout_dust_block"))
                 .isotope(Isotopes.CS_137, 12.0e15)
                 .isotope(Isotopes.SR_90, 2.0e15)
-                .isotope(Isotopes.I_131, 20.0e13)
+                .isotope(Isotopes.I_131, 20.0e12)
                 .build());
 
         list.add(Isotope.BindingDefinition.builder("fallout_dust_block")
                 .block(rec("nuclear_radiation:fallout_dust_block"))
                 .isotope(Isotopes.CS_137, 12.0e15)
                 .isotope(Isotopes.SR_90, 2.0e15)
-                .isotope(Isotopes.I_131, 20.0e13)
+                .isotope(Isotopes.I_131, 20.0e12)
                 .build());
 
         list.add(Isotope.BindingDefinition.builder("cnt_plutonium_239_ingot")
