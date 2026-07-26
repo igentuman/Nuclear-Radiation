@@ -10,6 +10,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
+import com.google.common.collect.Lists;
+import java.util.List;
+
 public class EntityExposureEvents {
 
     @SubscribeEvent
@@ -19,9 +22,12 @@ public class EntityExposureEvents {
         int interval = RadiationConfig.ENTITY_SIM_INTERVAL_TICKS.get();
         boolean stagger = RadiationConfig.STAGGER_ENTITIES.get() && interval > 1;
 
+        if (!stagger && now % interval != 0) return;
+        List<Entity> entities = Lists.newArrayList(server.getAllEntities());
+
         if (!stagger) {
-            if (now % interval != 0) return;
-            for (Entity entity : server.getAllEntities()) {
+            for (Entity entity : entities) {
+                if (!entity.isAlive()) continue;
                 if (!(entity instanceof LivingEntity living)) continue;
                 EntityDoseProcessor.tick(server, living, now, interval);
             }
@@ -29,7 +35,8 @@ public class EntityExposureEvents {
         }
 
         int bucket = (int) Math.floorMod(now, interval);
-        for (Entity entity : server.getAllEntities()) {
+        for (Entity entity : entities) {
+            if (!entity.isAlive()) continue;
             if (!(entity instanceof LivingEntity living)) continue;
             int entityBucket = Math.floorMod(entity.getId(), interval);
             if (entityBucket != bucket) continue;
