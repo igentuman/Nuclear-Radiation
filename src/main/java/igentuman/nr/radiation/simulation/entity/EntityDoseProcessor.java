@@ -47,6 +47,15 @@ public final class EntityDoseProcessor {
     private static final RadiationQuality DEFAULT_Q = RadiationQuality.DEFAULT;
     private static final double EMA_ALPHA = 0.2;
 
+    /**
+     * Display/feel gain applied ONLY to the shown dose-rate (Sv/h) and geiger response — NOT to
+     * the accumulated career dose. A large Bq field reads low in real Sv, so the rate is boosted
+     * for legibility while career stays in real Sv (and therefore stays recoverable and bounded).
+     */
+    private static final double RATE_GAIN = 72.0;
+    /** Career dose exponential drain rate: ln2 per hour → 1 h half-life before config multipliers. */
+    private static final double CAREER_DECAY_LN2_PER_HOUR = 0.6931471805599453;
+
     public static void tick(ServerLevel level, LivingEntity entity, long now, int intervalTicks) {
         if (EntityIgnoreFilter.shouldSkip(entity)) return;
 
@@ -67,35 +76,28 @@ public final class EntityDoseProcessor {
         Dose background = backgroundRadiation(level, entity, intervalSeconds, armor);
 
         double protection = clamp01(data.protectionFactor());
-        double doseScale = (1.0 - protection) * 72;
+        double physical = 1.0 - protection;   // real attenuated dose fraction (no display gain)
 
+        // Career accumulates REAL Sv over the interval. RATE_GAIN is applied only to the shown
+        // rate below, never here — otherwise career inflates 72x and outruns recovery forever.
         double svThisTick = (ext.sv() + svInternal + inventory.sv() + nearby.sv()
-                + contamination.sv() + background.sv()) * doseScale;
+                + contamination.sv() + background.sv()) * physical;
         // Geiger field reading: same dose ignoring worn armor.
         double svThisTickAmbient = (ext.svAmbient() + svInternal + inventory.svAmbient() + nearby.svAmbient()
-                + contamination.svAmbient() + background.svAmbient()) * doseScale;
+                + contamination.svAmbient() + background.svAmbient()) * physical;
 
         data.addSv(svThisTick);
 
-        double svPerHourInstant = (svThisTick / intervalSeconds) * Units.SECONDS_PER_HOUR;
+        double svPerHourInstant = (svThisTick * RATE_GAIN / intervalSeconds) * Units.SECONDS_PER_HOUR;
         double prev = data.svPerHour();
         double rolling = prev + EMA_ALPHA * (svPerHourInstant - prev);
         data.setSvPerHour(rolling);
 
-        double svPerHourInstantAmbient = (svThisTickAmbient / intervalSeconds) * Units.SECONDS_PER_HOUR;
+        double svPerHourInstantAmbient = (svThisTickAmbient * RATE_GAIN / intervalSeconds) * Units.SECONDS_PER_HOUR;
         double prevAmbient = data.svPerHourAmbient();
         data.setSvPerHourAmbient(prevAmbient + EMA_ALPHA * (svPerHourInstantAmbient - prevAmbient));
-        double mult = entity instanceof Player ? 0.01 : 0.001;
-        double recovery = RadiationConfig.BASE_DECAY_SV_PER_HOUR.get()
-                * data.decayMultiplier()
-                * GeneralConfig.ENTITY_DECAY_MULTIPLIER.get()
-                * 72D
-                * mult
-                * (intervalSeconds / Units.SECONDS_PER_HOUR);
-        if (recovery > 0 && data.svTotalCareer() > 0) {
-            double recoveryFactor = recovery / (recovery + svThisTick * 100000D);
-            data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() - recovery * recoveryFactor));
-        }
+
+        recoverCareer(data, intervalSeconds);
 
         int stage = RadiationEffects.computeStage(data.svPerHour(), data.svTotalCareer());
         boolean cancelled = false;
@@ -418,6 +420,25 @@ public final class EntityDoseProcessor {
         double svPerHour = uSvPerHour * 1.0e-6;
         double svAmbient = svPerHour * (intervalSeconds / Units.SECONDS_PER_HOUR);
         return new Dose(svAmbient * (1.0 - armor.xray()), svAmbient);
+    }
+
+    /**
+     * Drain accumulated career dose toward zero. Exponential (fast for large values, so corrupt or
+     * legacy saves self-heal) plus an absolute floor drain to clear the tail. Independent of the
+     * current dose, so an entity on clean ground always recovers instead of being pinned at a stale
+     * lethal total while the geiger correctly reads background.
+     */
+    private static void recoverCareer(EntityRadiationData data, double intervalSeconds) {
+        double career = data.svTotalCareer();
+        if (!Double.isFinite(career) || career <= 0.0) {
+            if (career != 0.0) data.setSvTotalCareer(0.0);   // scrub NaN/Infinity/negatives
+            return;
+        }
+        double dtHours = intervalSeconds / Units.SECONDS_PER_HOUR;
+        double mult = Math.max(0.0, data.decayMultiplier()) * GeneralConfig.ENTITY_DECAY_MULTIPLIER.get();
+        double kept = Math.exp(-CAREER_DECAY_LN2_PER_HOUR * mult * dtHours);
+        double absolute = RadiationConfig.BASE_DECAY_SV_PER_HOUR.get() * mult * dtHours;
+        data.setSvTotalCareer(Math.max(0.0, career * kept - absolute));
     }
 
     private static double clamp01(double v) {

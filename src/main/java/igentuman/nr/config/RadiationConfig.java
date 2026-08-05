@@ -27,6 +27,10 @@ public final class RadiationConfig {
     public static final ModConfigSpec.DoubleValue THRESHOLD_MODERATE;
     public static final ModConfigSpec.DoubleValue THRESHOLD_SEVERE;
     public static final ModConfigSpec.DoubleValue THRESHOLD_LETHAL;
+    public static final ModConfigSpec.DoubleValue CAREER_MILD;
+    public static final ModConfigSpec.DoubleValue CAREER_MODERATE;
+    public static final ModConfigSpec.DoubleValue CAREER_SEVERE;
+    public static final ModConfigSpec.DoubleValue CAREER_LETHAL;
     public static final ModConfigSpec.DoubleValue TOTAL_SV_SCALE_K;
     public static final ModConfigSpec.DoubleValue BASE_DECAY_SV_PER_HOUR;
     public static final ModConfigSpec.DoubleValue GY_PER_BQ_SECOND;
@@ -97,8 +101,17 @@ public final class RadiationConfig {
         THRESHOLD_MODERATE = b.comment("ELEVATED band: 500 mSv/h").defineInRange("moderate", 0.5, 0.0, 1.0e6);
         THRESHOLD_SEVERE   = b.comment("HIGH band: 10 Sv/h").defineInRange("severe", 10.0, 0.0, 1.0e6);
         THRESHOLD_LETHAL   = b.comment("EXTREME band: 100 Sv/h").defineInRange("lethal", 100.0, 0.0, 1.0e6);
-        TOTAL_SV_SCALE_K   = b.comment("Cumulative Sv scaling constant K. Effective Sv/h = svPerHour * 0.001 + (svTotalCareer/K) * moderate_threshold. Lower K = harsher chronic penalty.")
-                .defineInRange("total_sv_scale_k", 1.0, 1.0e-6, 1.0e6);
+        TOTAL_SV_SCALE_K   = b.comment("Legacy chronic scaling constant. No longer used by the stage formula (kept for datapack/back-compat).")
+                .defineInRange("total_sv_scale_k", 5.0, 1.0e-6, 1.0e6);
+        b.pop();
+
+        b.push("thresholds_career_sv");
+        b.comment("Accumulated career dose (real Sv) that triggers each harm stage, anchored to acute",
+                  "whole-body radiobiology (LD50 ~4-5 Sv). Entity stage = max(rate band, career band).");
+        CAREER_MILD     = b.comment("Stage 1 at this career Sv").defineInRange("mild", 0.5, 0.0, 1.0e6);
+        CAREER_MODERATE = b.comment("Stage 2 at this career Sv").defineInRange("moderate", 2.0, 0.0, 1.0e6);
+        CAREER_SEVERE   = b.comment("Stage 3 at this career Sv").defineInRange("severe", 5.0, 0.0, 1.0e6);
+        CAREER_LETHAL   = b.comment("Stage 4 at this career Sv").defineInRange("lethal", 8.0, 0.0, 1.0e6);
         b.pop();
 
         b.push("recovery");

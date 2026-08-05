@@ -48,7 +48,7 @@ public class EntityRadiationData {
                                List<String> attemptedMutations,
                                int lastDoseStage,
                                double svPerHourAmbient) {
-        this.svTotalCareer = svTotalCareer;
+        this.svTotalCareer = sanitizeCareer(svTotalCareer);
         this.svPerHour = svPerHour;
         this.svPerHourAmbient = svPerHourAmbient;
         this.protectionFactor = protectionFactor;
@@ -67,13 +67,25 @@ public class EntityRadiationData {
     public int lastDoseStage() { return lastDoseStage; }
 
     public void setLastDoseStage(int v) { this.lastDoseStage = v; }
-    public void setSvTotalCareer(double v) { this.svTotalCareer = v; }
+    public void setSvTotalCareer(double v) { this.svTotalCareer = sanitizeCareer(v); }
     public void setSvPerHour(double v) { this.svPerHour = v; }
     public void setSvPerHourAmbient(double v) { this.svPerHourAmbient = v; }
     public void setProtectionFactor(double v) { this.protectionFactor = v; }
     public void setDecayMultiplier(double v) { this.decayMultiplier = v; }
 
-    public void addSv(double sv) { this.svTotalCareer += sv; }
+    /** Hard ceiling on career dose. Nothing realistic exceeds this; guards against runaway/overflow
+     *  (a corrupt save could otherwise store ~1e21 Sv and pin the entity at lethal forever). */
+    public static final double MAX_CAREER_SV = 1.0e4;
+
+    private static double sanitizeCareer(double v) {
+        if (!Double.isFinite(v) || v < 0.0) return v > 0.0 ? MAX_CAREER_SV : 0.0;
+        return Math.min(MAX_CAREER_SV, v);
+    }
+
+    public void addSv(double sv) {
+        if (!Double.isFinite(sv)) return;
+        this.svTotalCareer = sanitizeCareer(this.svTotalCareer + sv);
+    }
 
     public void addInternal(String isotopeId, double atoms) {
         internalContamination.merge(isotopeId, atoms, Double::sum);

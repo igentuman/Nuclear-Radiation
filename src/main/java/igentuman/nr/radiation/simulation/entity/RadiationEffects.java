@@ -25,19 +25,27 @@ public final class RadiationEffects {
      * (e.g. the KubeJS dose-phase event) see the exact stage that drives harm effects.
      */
     public static int computeStage(double svPerHour, double svTotalCareer) {
-        double mild = RadiationConfig.THRESHOLD_MILD.get();
-        double mod  = RadiationConfig.THRESHOLD_MODERATE.get();
-        double sev  = RadiationConfig.THRESHOLD_SEVERE.get();
-        double leth = RadiationConfig.THRESHOLD_LETHAL.get();
-        double k = RadiationConfig.TOTAL_SV_SCALE_K.get();
+        // Acute: current dose rate (Sv/h) vs rate thresholds.
+        int acute = band(svPerHour,
+                RadiationConfig.THRESHOLD_MILD.get(),
+                RadiationConfig.THRESHOLD_MODERATE.get(),
+                RadiationConfig.THRESHOLD_SEVERE.get(),
+                RadiationConfig.THRESHOLD_LETHAL.get());
+        // Chronic: accumulated career dose (real Sv) vs LD50-anchored bands.
+        int chronic = band(svTotalCareer,
+                RadiationConfig.CAREER_MILD.get(),
+                RadiationConfig.CAREER_MODERATE.get(),
+                RadiationConfig.CAREER_SEVERE.get(),
+                RadiationConfig.CAREER_LETHAL.get());
+        return Math.max(acute, chronic);
+    }
 
-        double ratio = svTotalCareer / k;
-        double effectiveSvPerHour = svPerHour * 0.001D + ratio * mod;
-
-        if (effectiveSvPerHour >= leth) return 4;
-        if (effectiveSvPerHour >= sev) return 3;
-        if (effectiveSvPerHour >= mod) return 2;
-        if (effectiveSvPerHour >= mild) return 1;
+    /** 0..4 band for {@code v} against ascending thresholds (mild, moderate, severe, lethal). */
+    private static int band(double v, double mild, double mod, double sev, double leth) {
+        if (v >= leth) return 4;
+        if (v >= sev) return 3;
+        if (v >= mod) return 2;
+        if (v >= mild) return 1;
         return 0;
     }
 
