@@ -55,6 +55,7 @@ public class NuclearRadiationClient {
                 NRTools.GEIGER_COUNTER.get(),
                 rl("radiation"),
                 (stack, level, entity, seed) -> {
+                    if (entity == null) return 0f;
                     double svh = ClientRadiationCache.svPerHour();
                     if (svh < 0.00001) { // 10 uSv/h
                         return 0f;
