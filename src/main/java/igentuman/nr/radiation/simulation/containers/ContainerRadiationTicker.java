@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
+import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -78,6 +79,7 @@ public final class ContainerRadiationTicker {
     public static void scan(ServerLevel level, BlockEntity be, long now, double floor) {
         Container container = resolveContainer(be);
         if (container == null) return;
+        if (hasUnresolvedLootTable(be) || hasUnresolvedLootTable(container)) return;
         if (container.isEmpty()) {
             removeIfPresent(level, be.getBlockPos());
             return;
@@ -129,6 +131,10 @@ public final class ContainerRadiationTicker {
         if (be instanceof RadiationProfile.IRadiatingContainer rc) return rc.container();
         if (be instanceof Container c) return c;
         return null;
+    }
+
+    private static boolean hasUnresolvedLootTable(Object obj) {
+        return obj instanceof RandomizableContainer rc && rc.getLootTable() != null;
     }
 
     private static double resolveAttenuation(BlockEntity be) {
