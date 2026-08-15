@@ -5,6 +5,7 @@ import igentuman.nr.api.binding.RadiationBindings;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.events.NREvents;
 import igentuman.nr.api.RadiationQuality;
+import igentuman.nr.util.PerlinNoise;
 import igentuman.nr.util.Units;
 import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.config.RadiationConfig;
@@ -46,14 +47,7 @@ public final class EntityDoseProcessor {
 
     private static final RadiationQuality DEFAULT_Q = RadiationQuality.DEFAULT;
     private static final double EMA_ALPHA = 0.2;
-
-    /**
-     * Display/feel gain applied ONLY to the shown dose-rate (Sv/h) and geiger response — NOT to
-     * the accumulated career dose. A large Bq field reads low in real Sv, so the rate is boosted
-     * for legibility while career stays in real Sv (and therefore stays recoverable and bounded).
-     */
     private static final double RATE_GAIN = 72.0;
-    /** Career dose exponential drain rate: ln2 per hour → 1 h half-life before config multipliers. */
     private static final double CAREER_DECAY_LN2_PER_HOUR = 0.6931471805599453;
 
     public static void tick(ServerLevel level, LivingEntity entity, long now, int intervalTicks) {
@@ -78,11 +72,9 @@ public final class EntityDoseProcessor {
         double protection = clamp01(data.protectionFactor());
         double physical = 1.0 - protection;   // real attenuated dose fraction (no display gain)
 
-        // Career accumulates REAL Sv over the interval. RATE_GAIN is applied only to the shown
-        // rate below, never here — otherwise career inflates 72x and outruns recovery forever.
         double svThisTick = (ext.sv() + svInternal + inventory.sv() + nearby.sv()
                 + contamination.sv() + background.sv()) * physical;
-        // Geiger field reading: same dose ignoring worn armor.
+
         double svThisTickAmbient = (ext.svAmbient() + svInternal + inventory.svAmbient() + nearby.svAmbient()
                 + contamination.svAmbient() + background.svAmbient()) * physical;
 
@@ -91,11 +83,11 @@ public final class EntityDoseProcessor {
         double svPerHourInstant = (svThisTick * RATE_GAIN / intervalSeconds) * Units.SECONDS_PER_HOUR;
         double prev = data.svPerHour();
         double rolling = prev + EMA_ALPHA * (svPerHourInstant - prev);
-        data.setSvPerHour(rolling);
+        data.setSvPerHour(Math.max(0.0, rolling));
 
         double svPerHourInstantAmbient = (svThisTickAmbient * RATE_GAIN / intervalSeconds) * Units.SECONDS_PER_HOUR;
         double prevAmbient = data.svPerHourAmbient();
-        data.setSvPerHourAmbient(prevAmbient + EMA_ALPHA * (svPerHourInstantAmbient - prevAmbient));
+        data.setSvPerHourAmbient(Math.max(0.0, prevAmbient + EMA_ALPHA * (svPerHourInstantAmbient - prevAmbient)));
 
         recoverCareer(data, intervalSeconds);
 
@@ -208,7 +200,7 @@ public final class EntityDoseProcessor {
         for (int d = 0; d < SubChunkRadVector.DIR_COUNT; d++) {
             double apexX = vec.xRayBq[d];
             double apexN = vec.neutronBq[d];
-            if (apexX <= 0 && apexN <= 0) continue;
+            if (apexX == 0 && apexN == 0) continue;
 
             Vec3 tip = vec.tip[d];
             double dxe = tip.x - eye.x;
@@ -387,7 +379,7 @@ public final class EntityDoseProcessor {
             cache.rescan(other, now);
             double bqX = cache.bqXRay();
             double bqN = cache.bqNeutron();
-            if (bqX <= 0.0 && bqN <= 0.0) continue;
+            if (bqX == 0.0 && bqN == 0.0) continue;
             Vec3 otherPos = other.getEyePosition();
             double dx = otherPos.x - selfEye.x;
             double dy = otherPos.y - selfEye.y;
@@ -404,6 +396,11 @@ public final class EntityDoseProcessor {
         return new Dose(sv, svAmbient);
     }
 
+    private static final double SPATIAL_NOISE_SCALE = 1.0 / 64.0;
+    private static final double SPATIAL_NOISE_AMPLITUDE = 0.10;
+    private static final double TEMPORAL_NOISE_SCALE = 0.3;
+    private static final double TEMPORAL_NOISE_AMPLITUDE = 0.05;
+
     public static Dose backgroundRadiation(ServerLevel level, LivingEntity entity, double intervalSeconds, ArmorProtectionRegistry.Protection armor) {
         ResourceLocation biomeKey = level.getBiome(entity.blockPosition())
                 .unwrapKey()
@@ -417,17 +414,22 @@ public final class EntityDoseProcessor {
             uSvPerHour = RadiationConfig.DEFAULT_BACKGROUND_USV_PER_HOUR.get();
         }
         if (uSvPerHour <= 0.0) return new Dose(0.0, 0.0);
-        double svPerHour = uSvPerHour * 1.0e-6;
+
+        BlockPos pos = entity.blockPosition();
+        double spatialNoise = PerlinNoise.noise(
+                pos.getX() * SPATIAL_NOISE_SCALE,
+                pos.getY() * SPATIAL_NOISE_SCALE,
+                pos.getZ() * SPATIAL_NOISE_SCALE);
+        double timeSeconds = level.getGameTime() * Units.SECONDS_PER_TICK;
+        double temporalNoise = PerlinNoise.noise(timeSeconds * TEMPORAL_NOISE_SCALE, 0, 0);
+
+        double multiplier = 1.0 + spatialNoise * SPATIAL_NOISE_AMPLITUDE + temporalNoise * TEMPORAL_NOISE_AMPLITUDE;
+
+        double svPerHour = uSvPerHour * 1.0e-6 * multiplier;
         double svAmbient = svPerHour * (intervalSeconds / Units.SECONDS_PER_HOUR);
         return new Dose(svAmbient * (1.0 - armor.xray()), svAmbient);
     }
 
-    /**
-     * Drain accumulated career dose toward zero. Exponential (fast for large values, so corrupt or
-     * legacy saves self-heal) plus an absolute floor drain to clear the tail. Independent of the
-     * current dose, so an entity on clean ground always recovers instead of being pinned at a stale
-     * lethal total while the geiger correctly reads background.
-     */
     private static void recoverCareer(EntityRadiationData data, double intervalSeconds) {
         double career = data.svTotalCareer();
         if (!Double.isFinite(career) || career <= 0.0) {

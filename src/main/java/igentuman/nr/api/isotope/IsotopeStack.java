@@ -42,6 +42,10 @@ public class IsotopeStack {
     public double advanceDecay(long currentTick) {
         long delta = currentTick - timestamp;
         if (delta <= 0) return 0.0;
+        if (atoms < 0) {
+            timestamp = currentTick;
+            return 0.0;
+        }
         double multiplier = GeneralConfig.ISOTOPE_DECAY_MULTIPLIER.get()*4.5D;
         if (isStatic(isotope, multiplier)) {
             timestamp = currentTick;
@@ -56,6 +60,7 @@ public class IsotopeStack {
     }
 
     public long expiryTick(double floorBq) {
+        if (atoms < 0) return Long.MAX_VALUE;
         if (isStatic(isotope, GeneralConfig.ISOTOPE_DECAY_MULTIPLIER.get()*4.5D)) return Long.MAX_VALUE;
         long dt = Units.ticksUntilActivityFloor(currentActivityBq(), isotope.halfLifeTicks(), floorBq);
         if (dt == Long.MAX_VALUE) return Long.MAX_VALUE;

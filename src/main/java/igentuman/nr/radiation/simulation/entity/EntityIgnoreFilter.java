@@ -24,8 +24,6 @@ public final class EntityIgnoreFilter {
         return ignored.contains(id);
     }
 
-    // Creative/spectator players are still simulated and synced (HUD/geiger update,
-    // dose accumulates); they are only exempt from radiation harm (damage + effects).
     public static boolean shouldSkipHarm(LivingEntity entity) {
         if (entity instanceof Player p) {
             if (RadiationConfig.IGNORE_CREATIVE.get() && p.isCreative()) return true;

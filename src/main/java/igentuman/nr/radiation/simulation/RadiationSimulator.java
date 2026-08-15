@@ -273,7 +273,7 @@ public class RadiationSimulator implements IRadiationSimulator {
             wx[dir] += s.x() * w;
             wy[dir] += s.y() * w;
             wz[dir] += s.z() * w;
-            if (w > maxBq) maxBq = w;
+            if (Math.abs(w) > maxBq) maxBq = Math.abs(w);
         }
 
         SubChunkRadVector toVector(long tick, long ttl) {
@@ -285,7 +285,7 @@ public class RadiationSimulator implements IRadiationSimulator {
             for (int i = 0; i < SubChunkRadVector.DIR_COUNT; i++) {
                 v.xRayBq[i] = sumXRay[i];
                 v.neutronBq[i] = sumNeutron[i];
-                if (sumW[i] > 0) {
+                if (sumW[i] != 0) {
                     double tx = wx[i] / sumW[i];
                     double ty = wy[i] / sumW[i];
                     double tz = wz[i] / sumW[i];

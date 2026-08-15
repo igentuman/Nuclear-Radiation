@@ -47,7 +47,7 @@ public final class CreativeRadSource implements DecayGraph.WorldRadSource {
     @Override public long spawnedTick()                 { return spawnedTick; }
     @Override public boolean contaminatesArea()         { return false; }
     @Override public long expiryGameTime()              { return Long.MAX_VALUE; }
-    @Override public boolean isActive()                 { return activityBq() > 0.0; }
+    @Override public boolean isActive()                 { return Math.abs(activityBq()) > 0.0; }
     @Override public double activityBq()                { return alphaBq + betaBq + xRayBq + neutronBq; }
     @Override public double radius()                    { return 32.0; }
     @Override public Vec3 emissionCenter() {

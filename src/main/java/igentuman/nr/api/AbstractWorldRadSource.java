@@ -51,7 +51,7 @@ public abstract class AbstractWorldRadSource implements DecayGraph.WorldRadSourc
     @Override public BlockPos getPosition() { return pos; }
     @Override public RadiationProfile getProfile() { return profile; }
     @Override public long spawnedTick() { return spawnedTick; }
-    @Override public boolean isActive() { return alive && profile.totalActivityBq() > 0.0; }
+    @Override public boolean isActive() { return alive && Math.abs(profile.totalActivityBq()) > 0.0; }
 
     public void markDead() { alive = false; }
 

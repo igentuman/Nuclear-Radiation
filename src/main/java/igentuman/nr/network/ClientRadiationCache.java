@@ -8,12 +8,12 @@ public final class ClientRadiationCache {
     private ClientRadiationCache() {}
 
     public static void update(RadiationSyncPayload p) {
-        svTotal = p.svTotal();
-        svPerHour = p.svPerHour();
-        svPerHourAmbient = p.svPerHourAmbient();
+        svTotal = Math.max(0.0, p.svTotal());
+        svPerHour = Math.max(0.0, p.svPerHour());
+        svPerHourAmbient = Math.max(0.0, p.svPerHourAmbient());
     }
 
-    public static double svTotal() { return svTotal; }
-    public static double svPerHour() { return svPerHour; }
-    public static double svPerHourAmbient() { return svPerHourAmbient; }
+    public static double svTotal() { return Math.max(0.0, svTotal); }
+    public static double svPerHour() { return Math.max(0.0, svPerHour); }
+    public static double svPerHourAmbient() { return Math.max(0.0, svPerHourAmbient); }
 }

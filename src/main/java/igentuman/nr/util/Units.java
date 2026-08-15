@@ -45,9 +45,10 @@ public final class Units {
     public static long ticksUntilActivityFloor(double currentBq, long halfLifeTicks, double floorBq) {
         if (halfLifeTicks <= 0) return Long.MAX_VALUE;
         if (floorBq <= 0.0) return Long.MAX_VALUE;
-        if (currentBq <= floorBq) return 0L;
+        double mag = Math.abs(currentBq);
+        if (mag <= floorBq) return 0L;
         double lambda = LN2 / halfLifeTicks;
-        double ticks = Math.log(currentBq / floorBq) / lambda;
+        double ticks = Math.log(mag / floorBq) / lambda;
         if (Double.isInfinite(ticks) || ticks >= Long.MAX_VALUE) return Long.MAX_VALUE;
         return (long) Math.ceil(ticks);
     }

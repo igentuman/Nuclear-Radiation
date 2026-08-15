@@ -69,4 +69,18 @@ class UnitsTest {
         double svPerHour = Units.svPerSecondToSvPerHour(svPerSec);
         assertEquals(svPerSec * 3600.0, svPerHour, 1e-18);
     }
+
+    @Test
+    void ticksUntilActivityFloorNegativeBqMatchesPositive() {
+        long halfLife = 1000L;
+        double floor = 1.0;
+        double pos = Units.ticksUntilActivityFloor(1.0e6, halfLife, floor);
+        double neg = Units.ticksUntilActivityFloor(-1.0e6, halfLife, floor);
+        assertEquals(pos, neg, 1.0);
+    }
+
+    @Test
+    void ticksUntilActivityFloorNegativeBelowFloorReturnsZero() {
+        assertEquals(0L, Units.ticksUntilActivityFloor(-0.5, 1000L, 1.0));
+    }
 }

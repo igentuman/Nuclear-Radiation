@@ -46,7 +46,7 @@ public class SubChunkRadVector {
 
     public boolean isEmpty() {
         for (int i = 0; i < DIR_COUNT; i++) {
-            if (xRayBq[i] > 0 || neutronBq[i] > 0) return false;
+            if (xRayBq[i] != 0 || neutronBq[i] != 0) return false;
         }
         return true;
     }

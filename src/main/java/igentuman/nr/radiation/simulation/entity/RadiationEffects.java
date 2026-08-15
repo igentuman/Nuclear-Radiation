@@ -69,7 +69,6 @@ public final class RadiationEffects {
             addEffect(entity, MobEffects.CONFUSION, 2000, 0);
             addEffect(entity, MobEffects.DIG_SLOWDOWN, 2000, 1);
             addEffect(entity, MobEffects.MOVEMENT_SLOWDOWN, 2000, 1);
-            entity.hurt(radiation, 0.5f);
         }
         if (stage >= 3) {
             addEffect(entity, MobEffects.BLINDNESS, 2000, 0);

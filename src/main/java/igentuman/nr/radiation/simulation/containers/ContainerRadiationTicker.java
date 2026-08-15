@@ -101,7 +101,7 @@ public final class ContainerRadiationTicker {
             }
         }
 
-        if (aggregate.totalActivityBq() < floor) {
+        if (Math.abs(aggregate.totalActivityBq()) < floor) {
             removeIfPresent(level, be.getBlockPos());
             return;
         }

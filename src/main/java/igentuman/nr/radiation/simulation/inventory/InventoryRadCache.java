@@ -71,7 +71,7 @@ public class InventoryRadCache {
                 double f = slot.slotFactor();
                 for (IsotopeStack s : p.stacks()) {
                     double bq = s.currentActivityBq() * count * f;
-                    if (bq <= 0.0) continue;
+                    if (bq == 0.0) continue;
                     RadiationQuality q = s.isotope().quality();
                     double bqXi = bq * s.isotope().xRayStrength();
                     double bqAi = bq * s.isotope().alphaStrength();

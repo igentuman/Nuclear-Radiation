@@ -52,7 +52,7 @@ public class WorldSourceRegistry {
 
     public synchronized void register(DecayGraph.WorldRadSource s) {
         if (s == null) return;
-        if (s.activityBq() < RadiationConfig.WORLD_SOURCE_MIN_BQ.get()) return;
+        if (Math.abs(s.activityBq()) < RadiationConfig.WORLD_SOURCE_MIN_BQ.get()) return;
         long pkey = packPos(s.getPosition());
         if (s instanceof LeftOverRadSource && byBlock.get(pkey) instanceof LeftOverRadSource old) {
             old.refresh(s.getProfile());
@@ -115,6 +115,7 @@ public class WorldSourceRegistry {
             Vec3 c = s.emissionCenter();
             double dx = c.x - pos.x, dy = c.y - pos.y, dz = c.z - pos.z;
             if (dx * dx + dy * dy + dz * dz <= r * r) return true;
+
         }
         return false;
     }
@@ -154,7 +155,7 @@ public class WorldSourceRegistry {
                 decayFalloutDust(s);
             }
             if (s instanceof AbstractWorldRadSource a) a.advanceDecay(now);
-            if (!s.isActive() || s.activityBq() < floor) {
+            if (!s.isActive() || Math.abs(s.activityBq()) < floor) {
                 dead.add(s.getId());
             }
         }
