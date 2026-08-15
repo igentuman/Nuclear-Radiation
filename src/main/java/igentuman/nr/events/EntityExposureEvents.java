@@ -3,11 +3,14 @@ package igentuman.nr.events;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.radiation.simulation.inventory.InventoryRadCache;
 import igentuman.nr.radiation.simulation.entity.EntityDoseProcessor;
+import igentuman.nr.radiation.storage.EntityRadiationData;
+import igentuman.nr.radiation.storage.NRAttachments;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 import com.google.common.collect.Lists;
@@ -49,5 +52,12 @@ public class EntityExposureEvents {
         if (event.getEntity() instanceof LivingEntity living) {
             InventoryRadCache.drop(living.getUUID());
         }
+    }
+
+    @SubscribeEvent
+    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.isEndConquered()) return;
+        EntityRadiationData data = event.getEntity().getData(NRAttachments.ENTITY_RADIATION.get());
+        data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() / 2.0));
     }
 }
