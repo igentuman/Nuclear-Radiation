@@ -18,6 +18,7 @@ public class SourceSpatialIndex {
 
     private final Map<UUID, IRadiationSource> byId = new HashMap<>();
     private final Map<Long, Set<UUID>> byChunk = new HashMap<>();
+    private final Map<UUID, Vec3> globalPosById = new HashMap<>();
 
     public synchronized void add(IRadiationSource src) {
         if (src == null) return;
@@ -26,10 +27,38 @@ public class SourceSpatialIndex {
         byChunk.computeIfAbsent(key, k -> new LinkedHashSet<>()).add(src.getId());
     }
 
+    public synchronized void add(IRadiationSource src, Vec3 globalPos) {
+        if (src == null) return;
+        byId.put(src.getId(), src);
+        globalPosById.put(src.getId(), globalPos);
+        long key = chunkKey(globalPos);
+        byChunk.computeIfAbsent(key, k -> new LinkedHashSet<>()).add(src.getId());
+    }
+
+    public synchronized void updateGlobalPosition(UUID id, Vec3 newGlobalPos) {
+        if (!byId.containsKey(id)) return;
+        Vec3 old = globalPosById.get(id);
+        long newKey = chunkKey(newGlobalPos);
+        if (old != null && chunkKey(old) == newKey) {
+            globalPosById.put(id, newGlobalPos);
+            return;
+        }
+        if (old != null) {
+            Set<UUID> oldSet = byChunk.get(chunkKey(old));
+            if (oldSet != null) {
+                oldSet.remove(id);
+                if (oldSet.isEmpty()) byChunk.remove(chunkKey(old));
+            }
+        }
+        byChunk.computeIfAbsent(newKey, k -> new LinkedHashSet<>()).add(id);
+        globalPosById.put(id, newGlobalPos);
+    }
+
     public synchronized void remove(UUID id) {
         IRadiationSource src = byId.remove(id);
         if (src == null) return;
-        long key = chunkKey(src.getPosition());
+        Vec3 globalPos = globalPosById.remove(id);
+        long key = globalPos != null ? chunkKey(globalPos) : chunkKey(src.getPosition());
         Set<UUID> set = byChunk.get(key);
         if (set != null) {
             set.remove(id);
@@ -62,10 +91,17 @@ public class SourceSpatialIndex {
                     for (UUID id : set) {
                         IRadiationSource s = byId.get(id);
                         if (s == null) continue;
-                        BlockPos p = s.getPosition();
-                        double dxv = p.getX() + 0.5 - center.x;
-                        double dyv = p.getY() + 0.5 - center.y;
-                        double dzv = p.getZ() + 0.5 - center.z;
+                        Vec3 gp = globalPosById.get(id);
+                        double px, py, pz;
+                        if (gp != null) {
+                            px = gp.x; py = gp.y; pz = gp.z;
+                        } else {
+                            BlockPos p = s.getPosition();
+                            px = p.getX() + 0.5; py = p.getY() + 0.5; pz = p.getZ() + 0.5;
+                        }
+                        double dxv = px - center.x;
+                        double dyv = py - center.y;
+                        double dzv = pz - center.z;
                         if (dxv * dxv + dyv * dyv + dzv * dzv <= r2) {
                             out.add(s);
                         }
@@ -81,10 +117,15 @@ public class SourceSpatialIndex {
     public synchronized void clear() {
         byId.clear();
         byChunk.clear();
+        globalPosById.clear();
     }
 
     private static long chunkKey(BlockPos pos) {
         return chunkKey(pos.getX() >> 4, pos.getY() >> 4, pos.getZ() >> 4);
+    }
+
+    private static long chunkKey(Vec3 pos) {
+        return chunkKey((int) Math.floor(pos.x) >> 4, (int) Math.floor(pos.y) >> 4, (int) Math.floor(pos.z) >> 4);
     }
 
     // Pack section key: cx (22 bits) | cz (22 bits) | cy (20 bits).

@@ -10,6 +10,7 @@ import igentuman.nr.radiation.storage.ChunkRadiationData;
 import igentuman.nr.radiation.storage.LevelRadiationData;
 import igentuman.nr.radiation.storage.NRAttachments;
 import igentuman.nr.radiation.simulation.RadiationSimulator;
+import igentuman.nr.integration.sable.SableIntegration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -64,7 +65,8 @@ public class WorldSourceRegistry {
         } else {
             byBlock.put(pkey, s);
         }
-        RadiationSimulator.get().addSource(level, s);
+        Vec3 globalPos = SableIntegration.projectPosition(level, s.emissionCenter());
+        RadiationSimulator.get().addSource(level, s, globalPos);
     }
 
     public synchronized void remove(UUID id) {
@@ -76,6 +78,15 @@ public class WorldSourceRegistry {
             byBlock.remove(packPos(s.getPosition()));
         }
         RadiationSimulator.get().removeSource(level, id);
+    }
+
+    // Re-indexes sources whose sub-level moved to a different chunk since last tick.
+    // Called every tick from RadSourceEvents.onLevelTick() — cheap, only re-buckets on chunk change.
+    public synchronized void tickSableSync(ServerLevel server) {
+        for (DecayGraph.WorldRadSource s : byId.values()) {
+            Vec3 newGlobal = SableIntegration.projectPosition(server, s.emissionCenter());
+            RadiationSimulator.get().updateSourcePosition(server, s.getId(), newGlobal);
+        }
     }
 
     public synchronized DecayGraph.WorldRadSource atBlock(BlockPos pos) {
@@ -97,10 +108,10 @@ public class WorldSourceRegistry {
         List<DecayGraph.WorldRadSource> out = new ArrayList<>();
         double r2 = radius * radius;
         for (DecayGraph.WorldRadSource s : byId.values()) {
-            BlockPos p = s.getPosition();
-            double dx = p.getX() + 0.5 - center.x;
-            double dy = p.getY() + 0.5 - center.y;
-            double dz = p.getZ() + 0.5 - center.z;
+            Vec3 gp = SableIntegration.projectPosition(level, s.emissionCenter());
+            double dx = gp.x - center.x;
+            double dy = gp.y - center.y;
+            double dz = gp.z - center.z;
             if (dx * dx + dy * dy + dz * dz <= r2) out.add(s);
         }
         return out;
@@ -112,7 +123,7 @@ public class WorldSourceRegistry {
             if (!GasClouds.isGasEmitting(s)) continue;
             double r = GasClouds.radius(s);
             if (r <= 0) continue;
-            Vec3 c = s.emissionCenter();
+            Vec3 c = SableIntegration.projectPosition(level, s.emissionCenter());
             double dx = c.x - pos.x, dy = c.y - pos.y, dz = c.z - pos.z;
             if (dx * dx + dy * dy + dz * dz <= r * r) return true;
 
@@ -130,7 +141,7 @@ public class WorldSourceRegistry {
             if (!GasClouds.isGasEmitting(s)) continue;
             double r = GasClouds.radius(s);
             if (r <= 0) continue;
-            Vec3 c = s.emissionCenter();
+            Vec3 c = SableIntegration.projectPosition(level, s.emissionCenter());
             int count = Math.min(4, 1 + (int) (r / 12.0));
             double spreadXZ = Math.min(r * 0.4, 8.0);
             double spreadY = Math.min(Math.max(1.0, r * 0.25), 4.0);
@@ -164,12 +175,13 @@ public class WorldSourceRegistry {
     }
 
     private void decayFalloutDust(DecayGraph.WorldRadSource s) {
-        ChunkPos cp = new ChunkPos(s.getPosition());
+        BlockPos globalPos = SableIntegration.projectBlockPos(level, s.getPosition());
+        ChunkPos cp = new ChunkPos(globalPos);
         LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
         if (chunk == null) return;
         ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
         if (data.air().isEmpty()) return;
-        BlockPos target = findFalloutDustPos(s.getPosition());
+        BlockPos target = findFalloutDustPos(globalPos);
         if (target == null) return;
         level.setBlockAndUpdate(target, NuclearRadiation.FALLOUT_DUST_BLOCK.get().defaultBlockState());
         data.air().reduceAtoms(1.25);
@@ -250,7 +262,7 @@ public class WorldSourceRegistry {
         if (base <= 0.0) return;
         for (DecayGraph.WorldRadSource s : all()) {
             if (!s.contaminatesArea() || !s.isActive()) continue;
-            ChunkPos cp = new ChunkPos(s.getPosition());
+            ChunkPos cp = SableIntegration.projectChunkPos(level, s.getPosition());
             LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
             if (chunk == null) continue;
             ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
@@ -283,6 +295,9 @@ public class WorldSourceRegistry {
                     || s instanceof CreativeRadSource || s instanceof ItemEntityRadSource) {
                 continue;
             }
+            // Sub-level plot-grid positions are meaningless on reload once the sub-level has
+            // moved — leftovers there are re-scanned from blocks when the sub-level chunk loads.
+            if (SableIntegration.isInSubLevel(level, s.getPosition())) continue;
             String type;
             if (s instanceof LeftOverRadSource) {
                 type = "leftover";

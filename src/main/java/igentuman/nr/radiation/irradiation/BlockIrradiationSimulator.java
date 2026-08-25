@@ -6,7 +6,9 @@ import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.recipe.BlockIrradiationRecipe;
 import igentuman.nr.recipe.BlockIrradiationRecipe.BlockOutput;
 import igentuman.nr.radiation.source.WorldSourceRegistry;
+import igentuman.nr.integration.sable.SableIntegration;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -109,8 +111,8 @@ public final class BlockIrradiationSimulator {
             double activity = s.activityBq();
             if (activity < minSourceBq) continue;
             used++;
-            BlockPos p = s.getPosition();
-            snapshot.add(new SourceData(p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, activity));
+            Vec3 gp = SableIntegration.projectPosition(level, s.emissionCenter());
+            snapshot.add(new SourceData(gp.x, gp.y, gp.z, activity));
         }
         if (snapshot.isEmpty()) return;
 

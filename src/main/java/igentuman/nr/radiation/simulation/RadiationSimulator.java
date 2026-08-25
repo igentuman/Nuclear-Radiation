@@ -75,6 +75,14 @@ public class RadiationSimulator implements IRadiationSimulator {
         indexFor(level).add(src);
     }
 
+    public void addSource(ServerLevel level, IRadiationSource src, Vec3 globalPos) {
+        indexFor(level).add(src, globalPos);
+    }
+
+    public void updateSourcePosition(ServerLevel level, UUID id, Vec3 newGlobalPos) {
+        indexFor(level).updateGlobalPosition(id, newGlobalPos);
+    }
+
     public void removeSource(ServerLevel level, java.util.UUID id) {
         indexFor(level).remove(id);
     }
@@ -116,7 +124,7 @@ public class RadiationSimulator implements IRadiationSimulator {
         List<RadiationSnapshot.SourceData> sources = new ArrayList<>();
         for (IRadiationSource s : index.all()) {
             if (!s.isActive()) continue;
-            if (s instanceof IPointRadiationSource p) sources.add(RadiationSnapshot.of(p));
+            if (s instanceof IPointRadiationSource p) sources.add(RadiationSnapshot.of(p, level));
         }
         if (sources.isEmpty()) {
             vectorByDim.remove(level.dimension());

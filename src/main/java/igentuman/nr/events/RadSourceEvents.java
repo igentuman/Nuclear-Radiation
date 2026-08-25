@@ -172,6 +172,7 @@ public class RadSourceEvents {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
         long now = server.getGameTime();
         MeltdownParticles.getOrCreate(server).spawnTick(server);
+        WorldSourceRegistry.get(server).tickSableSync(server);
         if (now % 3 == 0) WorldSourceRegistry.get(server).emitGasParticles();
         int interval = RadiationConfig.WORLD_SIM_INTERVAL_TICKS.get();
         if (now % interval != 0) return;

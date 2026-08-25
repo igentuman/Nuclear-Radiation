@@ -56,6 +56,14 @@ repositories {
     maven {
         url = "https://modmaven.dev/"
     }
+    exclusiveContent {
+        forRepository {
+            maven { url = "https://maven.ryanhcode.dev/releases" }
+        }
+        filter {
+            includeGroup("dev.ryanhcode.sable-companion")
+        }
+    }
 }
 
 base {
@@ -118,6 +126,8 @@ dependencies {
 
     compileOnly "curse.maven:hbms-nuclear-tech-ne-1449927:8062359"
 
+    implementation "curse.maven:sable-1312371:8673825"
+
     implementation "curse.maven:curios-309927:6529130"
     compileOnly "curse.maven:curios-309927:6529132"
     compileOnly "curse.maven:nuclear-science-318646:8252492"
@@ -129,8 +139,8 @@ dependencies {
     implementation "curse.maven:zerocore-247921:7344742"
 
     implementation "curse.maven:spark-361579:6225208"
-    runtimeOnly "curse.maven:sodium-394468:6382651"
-    runtimeOnly "curse.maven:irisshaders-455508:6661598"
+    compileOnly "curse.maven:sodium-394468:6382651"
+    compileOnly "curse.maven:irisshaders-455508:6661598"
 
     implementation "curse.maven:create-328085:7963363"
 
@@ -157,7 +167,7 @@ dependencies {
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
 
     implementation "curse.maven:extreme-reactors-250277:7344744"
-    runtimeOnly "curse.maven:multi-builder-tool-827020:8383941"
+    runtimeOnly "curse.maven:multi-builder-tool-827020:8505466"
     implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
     implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
@@ -167,6 +177,12 @@ dependencies {
 
     compileOnly "curse.maven:applied-energistics-2-223794:7027323"
     implementation "curse.maven:guideme-1173950:7127444"
+
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:[${project.sable_companion_version},)")) {
+        version {
+            prefer(project.sable_companion_version)
+        }
+    }
 
     testImplementation platform("org.junit:junit-bom:5.10.2")
     testImplementation "org.junit.jupiter:junit-jupiter"
