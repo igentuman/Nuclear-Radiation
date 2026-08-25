@@ -10,6 +10,7 @@ public class CoriumConfig {
     public static final ModConfigSpec.IntValue CORIUM_FIRE_SECONDS;
     public static final ModConfigSpec.DoubleValue CORIUM_DAMAGE;
     public static final ModConfigSpec.DoubleValue CORIUM_MELT_RATE;
+    public static final ModConfigSpec.DoubleValue CORIUM_FLOWING_MELT_MULTIPLIER;
     public static final ModConfigSpec.IntValue CORIUM_SOLIDIFY_TICKS;
     public static final ModConfigSpec.IntValue CORIUM_WATER_COOLING;
 
@@ -32,6 +33,9 @@ public class CoriumConfig {
         CORIUM_MELT_RATE = BUILDER
                 .comment("Melt aggressiveness for the block beneath corium. Per-update melt chance = rate / (hardness + 1). 0 disables melting.")
                 .defineInRange("melt_rate", 0.4, 0.0, 10.0);
+        CORIUM_FLOWING_MELT_MULTIPLIER = BUILDER
+                .comment("Multiplier applied to melt_rate for flowing (non-source) corium. Lower values make flowing corium melt blocks much slower. 1.0 = same as source, 0.0 = flowing corium cannot melt.")
+                .defineInRange("flowing_melt_multiplier", 0.05, 0.0, 1.0);
         CORIUM_SOLIDIFY_TICKS = BUILDER
                 .comment("Mean game ticks before a corium source block solidifies into corium_block (randomized).")
                 .defineInRange("solidify_ticks", 2400, 20, 200000);

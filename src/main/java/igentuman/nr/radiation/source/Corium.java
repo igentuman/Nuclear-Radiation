@@ -86,7 +86,7 @@ public final class Corium {
         return new BaseFlowingFluid.Properties(MOLTEN_CORIUM_TYPE::get, MOLTEN_CORIUM, FLOWING_MOLTEN_CORIUM)
                 .block(MOLTEN_CORIUM_BLOCK)
                 .bucket(MOLTEN_CORIUM_BUCKET)
-                .tickRate(30)
+                .tickRate(60)
                 .slopeFindDistance(2)
                 .levelDecreasePerBlock(2);
     }

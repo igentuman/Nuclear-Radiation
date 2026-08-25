@@ -59,6 +59,7 @@ public final class CoriumManager {
         int fireSeconds = CoriumConfig.CORIUM_FIRE_SECONDS.get();
         double damage = CoriumConfig.CORIUM_DAMAGE.get();
         double meltRate = CoriumConfig.CORIUM_MELT_RATE.get();
+        double flowingMeltMultiplier = CoriumConfig.CORIUM_FLOWING_MELT_MULTIPLIER.get();
         int solidifyTicks = Math.max(interval, CoriumConfig.CORIUM_SOLIDIFY_TICKS.get());
         double solidifyChance = (double) interval / solidifyTicks;
         int coolThreshold = CoriumConfig.CORIUM_WATER_COOLING.get();
@@ -91,7 +92,7 @@ public final class CoriumManager {
                 burnEntities(level, pos, radius, fireSeconds, damage, burned);
             }
             if (meltRate > 0) {
-                meltBelow(level, pos, meltRate, rnd);
+                meltBelow(level, pos, isSource ? meltRate : meltRate * flowingMeltMultiplier, rnd);
             }
             if (isSource && solid != Blocks.AIR && rnd.nextDouble() < solidifyChance) {
                 level.setBlock(pos, solid.defaultBlockState(), Block.UPDATE_ALL);
