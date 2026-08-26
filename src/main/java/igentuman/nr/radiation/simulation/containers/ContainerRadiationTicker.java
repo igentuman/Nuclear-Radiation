@@ -94,9 +94,9 @@ public final class ContainerRadiationTicker {
             for (IsotopeStack s : p.stacks()) {
                 IsotopeStack existing = aggregate.get(s.isotope().id());
                 if (existing == null) {
-                    aggregate.put(new IsotopeStack(s.isotope(), s.atoms() * stack.getCount(), now));
+                    aggregate.put(new IsotopeStack(s.isotope(), s.atoms() * stack.getCount() / 2, now));
                 } else {
-                    existing.setAtoms(existing.atoms() + s.atoms() * stack.getCount());
+                    existing.setAtoms(existing.atoms() + s.atoms() * stack.getCount() / 2);
                 }
             }
         }
