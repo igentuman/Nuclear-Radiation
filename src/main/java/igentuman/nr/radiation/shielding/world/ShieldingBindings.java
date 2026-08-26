@@ -37,6 +37,10 @@ public final class ShieldingBindings {
         seedPresets();
     }
 
+    public static Map<ResourceLocation, ShieldEntry> blocks() { return BLOCKS; }
+    public static Map<TagKey<Block>, ShieldEntry> blockTags() { return BLOCK_TAGS; }
+    public static Map<ShieldingTier, Coeffs> tierPresets() { return TIER_PRESETS; }
+
     private ShieldingBindings() {}
 
     private static void seedPresets() {

@@ -23,6 +23,9 @@ public final class NRNetwork {
     @SubscribeEvent
     public static void onRegister(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar reg = event.registrar(NuclearRadiation.MODID).versioned(VERSION);
+
+        reg.playToClient(DatapackRegistrySyncPayload.TYPE, DatapackRegistrySyncPayload.STREAM_CODEC, DatapackRegistrySyncPayload::handleData);
+
         reg.playToClient(RadiationSyncPayload.TYPE, RadiationSyncPayload.STREAM_CODEC,
                 (payload, ctx) -> ClientRadiationCache.update(payload));
         reg.playToClient(ChunkVectorDebugPayload.TYPE, ChunkVectorDebugPayload.STREAM_CODEC,

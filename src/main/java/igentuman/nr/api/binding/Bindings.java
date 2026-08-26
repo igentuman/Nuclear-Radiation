@@ -56,6 +56,10 @@ public final class Bindings {
     public static Map<TagKey<Block>, Supplier<RadiationProfile>> blockTags() { return BLOCK_TAGS; }
     public static Map<TagKey<Fluid>, Supplier<RadiationProfile>> fluidTags() { return FLUID_TAGS; }
 
+    public static Map<ResourceLocation, Supplier<RadiationProfile>> items() { return ITEMS; }
+    public static Map<ResourceLocation, Supplier<RadiationProfile>> blocks() { return BLOCKS; }
+    public static Map<ResourceLocation, Supplier<RadiationProfile>> fluids() { return FLUIDS; }
+
     public static void clear() {
         ITEMS.clear();
         BLOCKS.clear();

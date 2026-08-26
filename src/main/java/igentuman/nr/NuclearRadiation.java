@@ -126,6 +126,7 @@ public class NuclearRadiation {
         NeoForge.EVENT_BUS.register(new EntityExposureEvents());
         NeoForge.EVENT_BUS.register(new RadiationTooltip());
         NeoForge.EVENT_BUS.register(new BlockIrradiationEvents());
+        NeoForge.EVENT_BUS.register(new NetworkSyncEvents());
 
         modEventBus.addListener(this::addCreative);
 
