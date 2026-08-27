@@ -1,6 +1,7 @@
 package igentuman.nr.datagen;
 
 import igentuman.nr.NuclearRadiation;
+import igentuman.nr.registry.NRShieldingItems;
 import igentuman.nr.registry.RadiationTags;
 import igentuman.nr.radiation.source.Corium;
 import net.minecraft.core.HolderLookup;
@@ -39,6 +40,12 @@ public class NRItemTagsProvider extends ItemTagsProvider {
 
         tag(cItem("storage_blocks")).add(Corium.CORIUM_BLOCK_ITEM.get());
         tag(cItem("storage_blocks/corium")).add(Corium.CORIUM_BLOCK_ITEM.get());
+
+        tag(RadiationTags.SHIELDING_UPGRADE)
+                .add(NRShieldingItems.RAD_SHIELDING_LIGHT.get())
+                .add(NRShieldingItems.RAD_SHIELDING_MEDIUM.get())
+                .add(NRShieldingItems.RAD_SHIELDING_HEAVY.get())
+                .add(NRShieldingItems.RAD_SHIELDING_DPS.get());
     }
 
     private static ResourceLocation c(String path) {

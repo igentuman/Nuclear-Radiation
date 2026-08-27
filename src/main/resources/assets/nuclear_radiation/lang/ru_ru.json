@@ -23,6 +23,11 @@
   "item.nuclear_radiation.anti_rad_injection": "Противорадиационная инъекция",
   "item.nuclear_radiation.radaway": "Антирадин",
 
+  "item.nuclear_radiation.rad_shielding_light": "Лёгкое радиационное экранирование",
+  "item.nuclear_radiation.rad_shielding_medium": "Среднее радиационное экранирование",
+  "item.nuclear_radiation.rad_shielding_heavy": "Тяжёлое радиационное экранирование",
+  "item.nuclear_radiation.rad_shielding_dps": "Плотное радиационное экранирование",
+
   "effect.nuclear_radiation.radiation_protection": "Радиозащита",
   "effect.nuclear_radiation.radiation_purge": "Выведение радиации",
   "effect.nuclear_radiation.iodine_protection": "Йодная блокада",

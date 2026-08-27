@@ -6,6 +6,7 @@ import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.recipe.BlockIrradiationRecipe;
 import igentuman.nr.recipe.MutationRecipe;
 import igentuman.nr.recipe.NRRecipes;
+import igentuman.nr.recipe.ShieldingUpgradeRecipe;
 import igentuman.nr.api.isotope.IsotopeRegistry;
 import igentuman.nr.api.shielding.ArmorProtectionRegistry;
 import igentuman.nr.radiation.shielding.world.ShieldingRegistry;
@@ -14,6 +15,7 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +51,11 @@ public class ModJeiPlugin implements IModPlugin {
                 new MutationCategory(gh),
                 new BlockIrradiationCategory(gh)
         );
+    }
+
+    @Override
+    public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
+        registration.getSmithingCategory().addExtension(ShieldingUpgradeRecipe.class, new ShieldingUpgradeJeiExtension());
     }
 
     @Override

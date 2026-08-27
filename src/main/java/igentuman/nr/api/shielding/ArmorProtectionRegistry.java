@@ -54,11 +54,23 @@ public final class ArmorProtectionRegistry {
                     a.betaProtection(), a.neutronProtection(), a.gasProtection());
         }
         Protection p = BY_ITEM.get(stack.getItem());
-        if (p != null) return p;
+        if (p != null) return applyUpgrade(stack, p);
         for (Map.Entry<TagKey<Item>, Protection> e : BY_TAG.entrySet()) {
-            if (stack.is(e.getKey())) return e.getValue();
+            if (stack.is(e.getKey())) return applyUpgrade(stack, e.getValue());
         }
-        return Protection.NONE;
+        return applyUpgrade(stack, Protection.NONE);
+    }
+
+    private static Protection applyUpgrade(ItemStack stack, Protection base) {
+        Double upgrade = stack.get(ShieldingUpgradeComponent.TYPE);
+        if (upgrade == null || upgrade <= 0.0) return base;
+        return new Protection(
+                Math.min(1.0, base.xray()    + upgrade),
+                Math.min(1.0, base.alpha()   + upgrade),
+                Math.min(1.0, base.beta()    + upgrade),
+                Math.min(1.0, base.neutron() + upgrade),
+                base.protectsFromGas()
+        );
     }
 
     public static Protection summed(LivingEntity entity) {

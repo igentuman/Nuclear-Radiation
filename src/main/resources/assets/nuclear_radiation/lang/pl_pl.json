@@ -23,6 +23,11 @@
   "item.nuclear_radiation.anti_rad_injection": "Zastrzyk antyradiacyjny",
   "item.nuclear_radiation.radaway": "Radaway",
 
+  "item.nuclear_radiation.rad_shielding_light": "Lekkie ekranowanie przed promieniowaniem",
+  "item.nuclear_radiation.rad_shielding_medium": "Średnie ekranowanie przed promieniowaniem",
+  "item.nuclear_radiation.rad_shielding_heavy": "Ciężkie ekranowanie przed promieniowaniem",
+  "item.nuclear_radiation.rad_shielding_dps": "Gęste ekranowanie przed promieniowaniem",
+
   "effect.nuclear_radiation.radiation_protection": "Ochrona przed promieniowaniem",
   "effect.nuclear_radiation.radiation_purge": "Usuwanie promieniowania",
   "effect.nuclear_radiation.iodine_protection": "Blokada jodowa",

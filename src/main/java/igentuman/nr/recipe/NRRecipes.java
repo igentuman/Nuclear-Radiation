@@ -31,6 +31,9 @@ public final class NRRecipes {
     public static final DeferredHolder<RecipeSerializer<?>, BlockIrradiationRecipe.Serializer> BLOCK_IRRADIATION_SERIALIZER =
             SERIALIZERS.register("block_irradiation", BlockIrradiationRecipe.Serializer::new);
 
+    public static final DeferredHolder<RecipeSerializer<?>, ShieldingUpgradeRecipe.Serializer> SHIELDING_UPGRADE_SERIALIZER =
+            SERIALIZERS.register("shielding_upgrade", ShieldingUpgradeRecipe.Serializer::new);
+
     public static void register(IEventBus bus) {
         TYPES.register(bus);
         SERIALIZERS.register(bus);

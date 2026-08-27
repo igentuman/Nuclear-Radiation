@@ -23,6 +23,11 @@
   "item.nuclear_radiation.anti_rad_injection": "Injection anti-radiations",
   "item.nuclear_radiation.radaway": "Radaway",
 
+  "item.nuclear_radiation.rad_shielding_light": "Blindage anti-radiations léger",
+  "item.nuclear_radiation.rad_shielding_medium": "Blindage anti-radiations moyen",
+  "item.nuclear_radiation.rad_shielding_heavy": "Blindage anti-radiations lourd",
+  "item.nuclear_radiation.rad_shielding_dps": "Blindage anti-radiations dense",
+
   "effect.nuclear_radiation.radiation_protection": "Protection anti-radiations",
   "effect.nuclear_radiation.radiation_purge": "Purge des radiations",
   "effect.nuclear_radiation.iodine_protection": "Blocage à l'iode",

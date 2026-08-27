@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "P": {
+      "item": "minecraft:prismarine"
+    }
+  },
+  "pattern": [
+    "OGO",
+    "GPG",
+    "OGO"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclear_radiation:rad_shielding_heavy"
+  }
+}

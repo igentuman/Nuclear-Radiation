@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-@EventBusSubscriber(modid = NuclearRadiation.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = NuclearRadiation.MODID)
 public final class NRNetwork {
 
     public static final String VERSION = "1";

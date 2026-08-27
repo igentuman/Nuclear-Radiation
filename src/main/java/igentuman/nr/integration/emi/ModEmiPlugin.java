@@ -6,9 +6,11 @@ import dev.emi.emi.api.EmiRegistry;
 import igentuman.nr.api.isotope.Isotope;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.api.binding.RadiationBindings;
+import igentuman.nr.api.shielding.ShieldingUpgradeRegistry;
 import igentuman.nr.integration.jei.ArmorProtectionEntry;
 import igentuman.nr.integration.jei.BlockShieldingEntry;
 import igentuman.nr.integration.jei.RadioactiveItemEntry;
+import igentuman.nr.integration.jei.ShieldingUpgradeEntry;
 import igentuman.nr.recipe.BlockIrradiationRecipe;
 import igentuman.nr.recipe.MutationRecipe;
 import igentuman.nr.recipe.NRRecipes;
@@ -63,6 +65,12 @@ public class ModEmiPlugin implements EmiPlugin {
         }
         for (RecipeHolder<BlockIrradiationRecipe> holder : registry.getRecipeManager().getAllRecipesFor(NRRecipes.BLOCK_IRRADIATION_TYPE.get())) {
             registry.addRecipe(new BlockIrradiationEmiRecipe(holder.id(), holder.value()));
+        }
+
+        for (Map.Entry<Item, Double> e : ShieldingUpgradeRegistry.all().entrySet()) {
+            ItemStack stack = new ItemStack(e.getKey());
+            if (stack.isEmpty()) continue;
+            registry.addRecipe(new ShieldingUpgradeEmiRecipe(new ShieldingUpgradeEntry(stack, e.getValue())));
         }
     }
 

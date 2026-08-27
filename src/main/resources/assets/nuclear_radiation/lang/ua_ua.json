@@ -23,6 +23,11 @@
   "item.nuclear_radiation.anti_rad_injection": "Протирадіаційна ін'єкція",
   "item.nuclear_radiation.radaway": "Радевей",
 
+  "item.nuclear_radiation.rad_shielding_light": "Легке радіаційне екранування",
+  "item.nuclear_radiation.rad_shielding_medium": "Середнє радіаційне екранування",
+  "item.nuclear_radiation.rad_shielding_heavy": "Важке радіаційне екранування",
+  "item.nuclear_radiation.rad_shielding_dps": "Щільне радіаційне екранування",
+
   "effect.nuclear_radiation.radiation_protection": "Протирадіаційний захист",
   "effect.nuclear_radiation.radiation_purge": "Виведення радіації",
   "effect.nuclear_radiation.iodine_protection": "Блокування йодом",

@@ -16,6 +16,7 @@ public final class RadiationTags {
     public static final TagKey<Item> ITEM_HIGH = itemTag("radioactive/high");
     public static final TagKey<Item> ITEM_SPENT_FUEL = itemTag("radioactive/spent_fuel");
     public static final TagKey<Item> ITEM_AIRBORNE_CONTAMINANT = itemTag("airborne_contaminant");
+    public static final TagKey<Item> SHIELDING_UPGRADE = itemTag("shielding_upgrade");
 
     public static final TagKey<Block> BLOCK_LOW = blockTag("radioactive/low");
     public static final TagKey<Block> BLOCK_MEDIUM = blockTag("radioactive/medium");

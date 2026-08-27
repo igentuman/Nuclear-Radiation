@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 public record DatapackRegistrySyncPayload(
-        List<IsotopeDTO> isotopes,
+        List<IsotopeImpl> isotopes,
+        Map<String, List<DecayEdge>> decayGraph,
         List<BindingDTO> bindings,
         List<ArmorDTO> armors,
         List<ShieldingPresetDTO> shieldingPresets,
@@ -63,18 +64,14 @@ public record DatapackRegistrySyncPayload(
             ShieldingBindings.clear();
 
             // 1. Isotope Recovery
-            for (IsotopeDTO dto : isotopes()) {
-                RadiationQuality q = new RadiationQuality(dto.qXRay(), dto.qBeta(), dto.qAlpha(), dto.qNeutron());
-                IsotopeImpl iso = new IsotopeImpl(dto.id(), dto.xray(), dto.alpha(), dto.beta(), dto.neutron(),
-                        dto.halfLifeTicks(), dto.decaysTo(), q);
+            for (IsotopeImpl iso : isotopes()) {
                 IsotopeRegistry.register(iso);
+            }
 
-                if (dto.decaysTo() != null && dto.branches().isEmpty()) {
-                    DecayGraph.addEdge(dto.id(), new DecayEdge(dto.decaysTo(), 1.0));
-                } else {
-                    for (DecayEdgeDTO edge : dto.branches()) {
-                        DecayGraph.addEdge(dto.id(), new DecayEdge(edge.targetId(), edge.probability()));
-                    }
+            // 1b. Decay Graph Recovery
+            for (Map.Entry<String, List<DecayEdge>> entry : decayGraph().entrySet()) {
+                for (DecayEdge edge : entry.getValue()) {
+                    DecayGraph.addEdge(entry.getKey(), edge);
                 }
             }
 
@@ -137,34 +134,38 @@ public record DatapackRegistrySyncPayload(
                 }
             }
 
-            NuclearRadiation.LOGGER.info("Successfully synced NR Datapacks from server. Loaded {} isotopes, {} bindings, {} armors, {} shields.",
-                    isotopes().size(), bindings().size(), armors().size(), shieldingBlocks().size());
+            NuclearRadiation.LOGGER.debug("Successfully synced NR Datapacks from server. Loaded {} isotopes, {} decay edges, {} bindings, {} armors, {} shields.",
+                    isotopes().size(), decayGraph().size(), bindings().size(), armors().size(), shieldingBlocks().size());
         });
     }
 
     private static void encode(RegistryFriendlyByteBuf buf, DatapackRegistrySyncPayload payload) {
         buf.writeVarInt(payload.isotopes().size());
-        for (IsotopeDTO iso : payload.isotopes()) {
+        for (IsotopeImpl iso : payload.isotopes()) {
             buf.writeUtf(iso.id());
-            buf.writeFloat(iso.xray());
-            buf.writeFloat(iso.alpha());
-            buf.writeFloat(iso.beta());
-            buf.writeFloat(iso.neutron());
+            buf.writeFloat(iso.xRayStrength());
+            buf.writeFloat(iso.alphaStrength());
+            buf.writeFloat(iso.betaStrength());
+            buf.writeFloat(iso.neutronStrength());
             buf.writeLong(iso.halfLifeTicks());
 
-            buf.writeBoolean(iso.decaysTo() != null);
-            if (iso.decaysTo() != null) {
-                buf.writeUtf(iso.decaysTo());
+            buf.writeBoolean(iso.decaysToId() != null);
+            if (iso.decaysToId() != null) {
+                buf.writeUtf(iso.decaysToId());
             }
 
-            buf.writeFloat(iso.qXRay());
-            buf.writeFloat(iso.qBeta());
-            buf.writeFloat(iso.qAlpha());
-            buf.writeFloat(iso.qNeutron());
+            buf.writeFloat(iso.quality().qXRay);
+            buf.writeFloat(iso.quality().qBeta);
+            buf.writeFloat(iso.quality().qAlpha);
+            buf.writeFloat(iso.quality().qNeutron);
+        }
 
-            buf.writeVarInt(iso.branches().size());
-            for (DecayEdgeDTO edge : iso.branches()) {
-                buf.writeUtf(edge.targetId());
+        buf.writeVarInt(payload.decayGraph().size());
+        for (Map.Entry<String, List<DecayEdge>> entry : payload.decayGraph().entrySet()) {
+            buf.writeUtf(entry.getKey());
+            buf.writeVarInt(entry.getValue().size());
+            for (DecayEdge edge : entry.getValue()) {
+                buf.writeUtf(edge.targetIsotopeId());
                 buf.writeDouble(edge.probability());
             }
         }
@@ -216,7 +217,7 @@ public record DatapackRegistrySyncPayload(
 
     private static DatapackRegistrySyncPayload decode(RegistryFriendlyByteBuf buf) {
         int isoSize = buf.readVarInt();
-        List<IsotopeDTO> isotopes = new ArrayList<>(isoSize);
+        List<IsotopeImpl> isotopes = new ArrayList<>(isoSize);
         for (int i = 0; i < isoSize; i++) {
             String id = buf.readUtf();
             float xray = buf.readFloat();
@@ -235,13 +236,20 @@ public record DatapackRegistrySyncPayload(
             float qAlpha = buf.readFloat();
             float qNeutron = buf.readFloat();
 
-            int edgeSize = buf.readVarInt();
-            List<DecayEdgeDTO> branches = new ArrayList<>(edgeSize);
-            for (int j = 0; j < edgeSize; j++) {
-                branches.add(new DecayEdgeDTO(buf.readUtf(), buf.readDouble()));
-            }
+            isotopes.add(new IsotopeImpl(id, xray, alpha, beta, neutron, halfLife, decaysTo,
+                    new RadiationQuality(qXray, qBeta, qAlpha, qNeutron)));
+        }
 
-            isotopes.add(new IsotopeDTO(id, xray, alpha, beta, neutron, halfLife, decaysTo, qXray, qBeta, qAlpha, qNeutron, branches));
+        int graphSize = buf.readVarInt();
+        Map<String, List<DecayEdge>> decayGraph = new LinkedHashMap<>(graphSize);
+        for (int i = 0; i < graphSize; i++) {
+            String fromId = buf.readUtf();
+            int edgeSize = buf.readVarInt();
+            List<DecayEdge> edges = new ArrayList<>(edgeSize);
+            for (int j = 0; j < edgeSize; j++) {
+                edges.add(new DecayEdge(buf.readUtf(), buf.readDouble()));
+            }
+            decayGraph.put(fromId, edges);
         }
 
         int bindSize = buf.readVarInt();
@@ -298,18 +306,8 @@ public record DatapackRegistrySyncPayload(
             shieldingBlocks.add(new ShieldingBlockDTO(isTag, targetId, usesTier, tierId, xray, neutron));
         }
 
-        return new DatapackRegistrySyncPayload(isotopes, bindings, armors, shieldingPresets, shieldingBlocks);
+        return new DatapackRegistrySyncPayload(isotopes, decayGraph, bindings, armors, shieldingPresets, shieldingBlocks);
     }
-
-    // --- DTO Structures ---
-
-    public record IsotopeDTO(
-            String id, float xray, float alpha, float beta, float neutron, long halfLifeTicks,
-            String decaysTo, float qXRay, float qBeta, float qAlpha, float qNeutron,
-            List<DecayEdgeDTO> branches
-    ) {}
-
-    public record DecayEdgeDTO(String targetId, double probability) {}
 
     public static final class TargetTypes {
         public static final byte ITEM = 0;

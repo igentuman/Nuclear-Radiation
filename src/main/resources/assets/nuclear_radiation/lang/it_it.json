@@ -23,6 +23,11 @@
   "item.nuclear_radiation.anti_rad_injection": "Iniezione Anti-Radiazioni",
   "item.nuclear_radiation.radaway": "Radaway",
 
+  "item.nuclear_radiation.rad_shielding_light": "Schermatura dalle Radiazioni Leggera",
+  "item.nuclear_radiation.rad_shielding_medium": "Schermatura dalle Radiazioni Media",
+  "item.nuclear_radiation.rad_shielding_heavy": "Schermatura dalle Radiazioni Pesante",
+  "item.nuclear_radiation.rad_shielding_dps": "Schermatura dalle Radiazioni Densa",
+
   "effect.nuclear_radiation.radiation_protection": "Protezione dalle Radiazioni",
   "effect.nuclear_radiation.radiation_purge": "Purificazione da Radiazioni",
   "effect.nuclear_radiation.iodine_protection": "Blocco Iodio",

@@ -3,12 +3,15 @@ package igentuman.nr.datagen;
 import igentuman.nr.NuclearRadiation;
 import igentuman.nr.registry.NRArmorItems;
 import igentuman.nr.registry.NRMedicineItems;
+import igentuman.nr.registry.NRShieldingItems;
 import igentuman.nr.recipe.BlockIrradiationRecipe;
 import igentuman.nr.recipe.BlockIrradiationRecipe.BlockOutput;
 import igentuman.nr.recipe.EntityIngredient;
 import igentuman.nr.recipe.EntityResult;
 import igentuman.nr.recipe.MutationRecipe;
+import igentuman.nr.recipe.ShieldingUpgradeRecipe;
 import igentuman.nr.registry.NRTools;
+import igentuman.nr.registry.RadiationTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -20,7 +23,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
 import java.util.Optional;
@@ -134,8 +139,61 @@ public class NRRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_phantom_membrane", has(Items.PHANTOM_MEMBRANE))
                 .save(recipeOutput);
 
+        buildShieldingItems(recipeOutput);
         buildMutations(recipeOutput);
         buildBlockIrradiations(recipeOutput);
+        buildShieldingUpgrade(recipeOutput);
+    }
+
+    private void buildShieldingItems(RecipeOutput recipeOutput) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NRShieldingItems.RAD_SHIELDING_LIGHT.get(), 4)
+                .pattern("BLB")
+                .pattern("ICI")
+                .pattern("BLB")
+                .define('L', Items.LEATHER)
+                .define('I', Items.IRON_NUGGET)
+                .define('C', Items.CLAY_BALL)
+                .define('B', Items.COPPER_INGOT)
+                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NRShieldingItems.RAD_SHIELDING_MEDIUM.get(), 2)
+                .pattern("ILI")
+                .pattern("LGL")
+                .pattern("ILI")
+                .define('G', Items.GOLD_BLOCK)
+                .define('I', Items.IRON_INGOT)
+                .define('L', Items.LAPIS_LAZULI)
+                .unlockedBy("has_lapis", has(Items.LAPIS_LAZULI))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NRShieldingItems.RAD_SHIELDING_HEAVY.get())
+                .pattern("OGO")
+                .pattern("GPG")
+                .pattern("OGO")
+                .define('P', Items.PRISMARINE)
+                .define('O', Items.OBSIDIAN)
+                .define('G', Items.GOLD_INGOT)
+                .unlockedBy("has_obsidian", has(Items.OBSIDIAN))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NRShieldingItems.RAD_SHIELDING_DPS.get())
+                .pattern("DDD")
+                .pattern("DND")
+                .pattern("DDD")
+                .define('D', Items.DIAMOND)
+                .define('N', Items.NETHERITE_INGOT)
+                .unlockedBy("has_netherite_ingot", has(Items.NETHERITE_INGOT))
+                .save(recipeOutput);
+    }
+
+    private void buildShieldingUpgrade(RecipeOutput recipeOutput) {
+        recipeOutput.accept(NuclearRadiation.rl("shielding_upgrade"),
+                new ShieldingUpgradeRecipe(
+                        Ingredient.of(Tags.Items.ARMORS),
+                        Ingredient.of(RadiationTags.SHIELDING_UPGRADE)
+                ),
+                null);
     }
 
     private void buildBlockIrradiations(RecipeOutput recipeOutput) {

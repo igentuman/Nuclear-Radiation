@@ -1,0 +1,8 @@
+{
+  "values": [
+    "nuclear_radiation:rad_shielding_light",
+    "nuclear_radiation:rad_shielding_medium",
+    "nuclear_radiation:rad_shielding_heavy",
+    "nuclear_radiation:rad_shielding_dps"
+  ]
+}

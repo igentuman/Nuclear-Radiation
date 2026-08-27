@@ -26,6 +26,7 @@ public final class NRDataGenerators {
         gen.addProvider(event.includeServer(), new RadiationBindingProvider(output));
         gen.addProvider(event.includeServer(), new ShieldingBindingProvider(output));
         gen.addProvider(event.includeServer(), new ArmorProtectionProvider(output));
+        gen.addProvider(event.includeServer(), new ShieldingUpgradeProvider(output));
         gen.addProvider(event.includeServer(), new NRRecipeProvider(output, lookup));
 
         NRBlockTagsProvider blockTags = new NRBlockTagsProvider(output, lookup, existing);

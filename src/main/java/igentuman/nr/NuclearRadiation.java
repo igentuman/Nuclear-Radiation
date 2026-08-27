@@ -15,6 +15,7 @@ import com.mojang.logging.LogUtils;
 
 import igentuman.nr.events.RadiationBindingsReloadListener;
 import igentuman.nr.api.binding.RadiationComponent;
+import igentuman.nr.api.shielding.ShieldingUpgradeComponent;
 import igentuman.nr.command.NRCommands;
 import igentuman.nr.config.NRClientConfig;
 import igentuman.nr.config.RadiationConfig;
@@ -110,10 +111,12 @@ public class NuclearRadiation {
         BLOCK_ENTITIES.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
         RadiationComponent.register(modEventBus);
+        ShieldingUpgradeComponent.register(modEventBus);
         NRAttachments.register(modEventBus);
         NREffects.register(modEventBus);
         NRMedicineItems.register(modEventBus);
         NRArmorItems.register(modEventBus);
+        NRShieldingItems.register(modEventBus);
         NRTools.register(modEventBus);
         NRSounds.register(modEventBus);
         NRRecipes.register(modEventBus);
@@ -163,6 +166,10 @@ public class NuclearRadiation {
             event.accept(NRArmorItems.HAZMAT_CHESTPLATE);
             event.accept(NRArmorItems.HAZMAT_LEGGINGS);
             event.accept(NRArmorItems.HAZMAT_BOOTS);
+            event.accept(NRShieldingItems.RAD_SHIELDING_LIGHT);
+            event.accept(NRShieldingItems.RAD_SHIELDING_MEDIUM);
+            event.accept(NRShieldingItems.RAD_SHIELDING_HEAVY);
+            event.accept(NRShieldingItems.RAD_SHIELDING_DPS);
         }
         if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
             event.accept(NRMedicineItems.IODINE_PILL);
@@ -190,6 +197,7 @@ public class NuclearRadiation {
         event.addListener(new RadiationBindingsReloadListener());
         event.addListener(new ShieldingBindingsReloadListener());
         event.addListener(new ArmorProtectionReloadListener());
+        event.addListener(new ShieldingUpgradeReloadListener());
     }
 
     public static ResourceLocation rl(String path) {

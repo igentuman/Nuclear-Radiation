@@ -6,6 +6,7 @@ import igentuman.nr.api.DecayGraph;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.api.binding.Bindings;
 import igentuman.nr.api.isotope.Isotope;
+import igentuman.nr.api.isotope.IsotopeImpl;
 import igentuman.nr.api.isotope.IsotopeRegistry;
 import igentuman.nr.api.isotope.IsotopeStack;
 import igentuman.nr.api.shielding.ArmorProtectionRegistry;
@@ -26,6 +27,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -35,19 +37,14 @@ public class NetworkSyncEvents {
     @SubscribeEvent
     public void onDatapackSync(OnDatapackSyncEvent event) {
         // 1. Compilation of Isotopes and Decay Trees
-        List<IsotopeDTO> isotopes = new ArrayList<>();
+        List<IsotopeImpl> isotopes = new ArrayList<>();
+        Map<String, List<DecayEdge>> decayGraph = new LinkedHashMap<>();
         for (Isotope iso : IsotopeRegistry.all()) {
-            String decaysTo = iso.decaysTo().map(Isotope::id).orElse(null);
-            List<DecayEdgeDTO> edges = new ArrayList<>();
-            for (DecayEdge edge : DecayGraph.outputs(iso.id())) {
-                edges.add(new DecayEdgeDTO(edge.targetIsotopeId(), edge.probability()));
+            isotopes.add((IsotopeImpl) iso);
+            List<DecayEdge> edges = DecayGraph.outputs(iso.id());
+            if (!edges.isEmpty()) {
+                decayGraph.put(iso.id(), new ArrayList<>(edges));
             }
-            isotopes.add(new IsotopeDTO(
-                    iso.id(), iso.xRayStrength(), iso.alphaStrength(), iso.betaStrength(), iso.neutronStrength(),
-                    iso.halfLifeTicks(), decaysTo,
-                    iso.quality().qXRay, iso.quality().qBeta, iso.quality().qAlpha, iso.quality().qNeutron,
-                    edges
-            ));
         }
 
         // 2. Compilation of Radiation Relationships (Bindings)
@@ -84,16 +81,16 @@ public class NetworkSyncEvents {
             packShieldEntry(shieldBlocks, true, entry.getKey().location(), entry.getValue());
         }
 
-        DatapackRegistrySyncPayload payload = new DatapackRegistrySyncPayload(isotopes, bindings, armors, presets, shieldBlocks);
+        DatapackRegistrySyncPayload payload = new DatapackRegistrySyncPayload(isotopes, decayGraph, bindings, armors, presets, shieldBlocks);
 
         // 5. Sending and Logging
         if (event.getPlayer() != null) {
-            NuclearRadiation.LOGGER.info("Sending NR Datapack Sync to player {}. Packing {} isotopes, {} bindings, {} armors, {} shields.",
-                    event.getPlayer().getName().getString(), isotopes.size(), bindings.size(), armors.size(), shieldBlocks.size());
+            NuclearRadiation.LOGGER.debug("Sending NR Datapack Sync to player {}. Packing {} isotopes, {} decay edges, {} bindings, {} armors, {} shields.",
+                    event.getPlayer().getName().getString(), isotopes.size(), decayGraph.size(), bindings.size(), armors.size(), shieldBlocks.size());
             PacketDistributor.sendToPlayer(event.getPlayer(), payload);
         } else {
-            NuclearRadiation.LOGGER.info("Sending NR Datapack Sync globally (reload). Packing {} isotopes, {} bindings, {} armors, {} shields.",
-                    isotopes.size(), bindings.size(), armors.size(), shieldBlocks.size());
+            NuclearRadiation.LOGGER.info("Sending NR Datapack Sync globally (reload). Packing {} isotopes, {} decay edges, {} bindings, {} armors, {} shields.",
+                    isotopes.size(), decayGraph.size(), bindings.size(), armors.size(), shieldBlocks.size());
             for (ServerPlayer player : event.getPlayerList().getPlayers()) {
                 PacketDistributor.sendToPlayer(player, payload);
             }

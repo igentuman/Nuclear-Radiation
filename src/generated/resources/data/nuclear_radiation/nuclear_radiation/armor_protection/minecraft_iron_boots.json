@@ -1,8 +1,8 @@
 {
   "alpha": 0.2,
-  "beta": 0.1,
+  "beta": 0.07,
   "gas_protection": false,
   "neutron": 0.01,
   "target": "minecraft:iron_boots",
-  "xray": 0.04
+  "xray": 0.03
 }

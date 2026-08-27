@@ -93,7 +93,6 @@ neoForge {
 
         server {
             server()
-            programArgument '--nogui'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
@@ -104,6 +103,7 @@ neoForge {
 
         configureEach {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
+            gameDirectory = project.file("run/${name}")
             logLevel = org.slf4j.event.Level.DEBUG
         }
     }

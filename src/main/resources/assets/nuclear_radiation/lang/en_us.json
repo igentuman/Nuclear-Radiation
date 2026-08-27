@@ -23,6 +23,11 @@
   "item.nuclear_radiation.anti_rad_injection": "Anti-Rad Injection",
   "item.nuclear_radiation.radaway": "Radaway",
 
+  "item.nuclear_radiation.rad_shielding_light": "Light Radiation Shielding",
+  "item.nuclear_radiation.rad_shielding_medium": "Medium Radiation Shielding",
+  "item.nuclear_radiation.rad_shielding_heavy": "Heavy Radiation Shielding",
+  "item.nuclear_radiation.rad_shielding_dps": "Dense Radiation Shielding",
+
   "effect.nuclear_radiation.radiation_protection": "Radiation Protection",
   "effect.nuclear_radiation.radiation_purge": "Radiation Purge",
   "effect.nuclear_radiation.iodine_protection": "Iodine Block",
@@ -37,6 +42,7 @@
   "jei.nuclear_radiation.category.block_shielding": "Block Radiation Shielding",
   "jei.nuclear_radiation.category.mutation": "Radioactive Mutation",
   "jei.nuclear_radiation.category.block_irradiation": "Block Irradiation",
+  "jei.nuclear_radiation.category.shielding_upgrade": "Armor Shielding Upgrade",
 
   "jei.nuclear_radiation.block_irradiation.min_bq": "Min activity: %s",
   "jei.nuclear_radiation.block_irradiation.chance": "Chance: %s",
@@ -54,6 +60,8 @@
 
   "jei.nuclear_radiation.block_shielding.xray": "Ɣ gamma attenuation: %s cm⁻¹",
   "jei.nuclear_radiation.block_shielding.neutron": "Neutron attenuation: %s cm⁻¹",
+
+  "jei.nuclear_radiation.shielding_upgrade.value": "Shielding: %s",
 
 
   "jei.nuclear_radiation.isotope_stats.id": "ID: %s",
