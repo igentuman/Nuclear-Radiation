@@ -4,8 +4,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Collections;
 
 public final class RadiationConfig {
 
@@ -37,6 +40,7 @@ public final class RadiationConfig {
     public static final ModConfigSpec.DoubleValue ARMOR_BLOCKS_INVENTORY;
     public static final ModConfigSpec.DoubleValue INVENTORY_ALPHA_PASS;
     public static final ModConfigSpec.DoubleValue INVENTORY_BETA_PASS;
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> IGNORED_MENUS;
     public static final ModConfigSpec.BooleanValue DEBUG_RADIATION_VECTORS;
     public static final ModConfigSpec.DoubleValue DEFAULT_BACKGROUND_USV_PER_HOUR;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> LEVEL_BACKGROUND_USV_PER_HOUR;
@@ -63,6 +67,7 @@ public final class RadiationConfig {
 
     private static volatile Map<ResourceLocation, Double> levelBackgroundCache;
     private static volatile Map<ResourceLocation, Double> biomeBackgroundCache;
+    private static volatile Set<ResourceLocation> ignoredMenusCache;
 
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
@@ -107,7 +112,7 @@ public final class RadiationConfig {
 
         b.push("thresholds_career_sv");
         b.comment("Accumulated career dose (real Sv) that triggers each harm stage, anchored to acute",
-                  "whole-body radiobiology (LD50 ~4-5 Sv). Entity stage = max(rate band, career band).");
+                "whole-body radiobiology (LD50 ~4-5 Sv). Entity stage = max(rate band, career band).");
         CAREER_MILD     = b.comment("Stage 1 at this career Sv").defineInRange("mild", 0.5, 0.0, 1.0e6);
         CAREER_MODERATE = b.comment("Stage 2 at this career Sv").defineInRange("moderate", 2.0, 0.0, 1.0e6);
         CAREER_SEVERE   = b.comment("Stage 3 at this career Sv").defineInRange("severe", 5.0, 0.0, 1.0e6);
@@ -129,14 +134,16 @@ public final class RadiationConfig {
                 .defineInRange("inventory_alpha_pass", 0.0, 0.0, 1.0);
         INVENTORY_BETA_PASS = b.comment("Fraction of beta radiation that escapes inventory containers/clothing to reach the body. Beta particles are stopped by a few mm of plastic or cm of cloth, default 0.2 (most blocked).")
                 .defineInRange("inventory_beta_pass", 0.2, 0.0, 1.0);
+        IGNORED_MENUS = b.comment("List of GUI menu Registry IDs to ignore (e.g. appeng:crafting_terminal). Items in these menus will not emit radiation.")
+                .defineList("ignored_menus", List.of(), o -> o instanceof String);
         b.pop();
 
         b.push("background");
         DEFAULT_BACKGROUND_USV_PER_HOUR = b.comment("Global background radiation in uSv/h applied everywhere when no level/biome override matches.")
                 .defineInRange("default_usv_per_hour", 0.1, 0.0, 1.0e6);
         LEVEL_BACKGROUND_USV_PER_HOUR = b.comment(
-                "Per-dimension background radiation in uSv/h. Format: \"<dim_id>=<value>\".",
-                "Overrides default; biome entries override this.")
+                        "Per-dimension background radiation in uSv/h. Format: \"<dim_id>=<value>\".",
+                        "Overrides default; biome entries override this.")
                 .defineList("level_usv_per_hour",
                         List.of(
                                 "minecraft:the_nether=1.5",
@@ -153,8 +160,8 @@ public final class RadiationConfig {
                         () -> "minecraft:overworld=0.1",
                         o -> o instanceof String && ((String) o).contains("="));
         BIOME_BACKGROUND_USV_PER_HOUR = b.comment(
-                "Per-biome background radiation in uSv/h. Format: \"<biome_id>=<value>\".",
-                "Highest priority; overrides level and default.")
+                        "Per-biome background radiation in uSv/h. Format: \"<biome_id>=<value>\".",
+                        "Highest priority; overrides level and default.")
                 .defineList("biome_usv_per_hour",
                         List.of(
                                 "minecraft:nether_wastes=50.0",
@@ -250,9 +257,20 @@ public final class RadiationConfig {
         return map.get(biome);
     }
 
+    public static boolean isMenuIgnored(ResourceLocation id) {
+        if (id == null) return false;
+        Set<ResourceLocation> set = ignoredMenusCache;
+        if (set == null) {
+            set = parseSet(IGNORED_MENUS.get());
+            ignoredMenusCache = set;
+        }
+        return set.contains(id);
+    }
+
     public static void invalidateBackgroundCaches() {
         levelBackgroundCache = null;
         biomeBackgroundCache = null;
+        ignoredMenusCache = null;
     }
 
     private static Map<ResourceLocation, Double> parse(List<? extends String> entries) {
@@ -268,5 +286,15 @@ public final class RadiationConfig {
             } catch (NumberFormatException ignored) {}
         }
         return out;
+    }
+
+    private static Set<ResourceLocation> parseSet(List<? extends String> entries) {
+        Set<ResourceLocation> out = new HashSet<>();
+        if (entries == null) return out;
+        for (String s : entries) {
+            ResourceLocation key = ResourceLocation.tryParse(s.trim());
+            if (key != null) out.add(key);
+        }
+        return Collections.unmodifiableSet(out);
     }
 }
