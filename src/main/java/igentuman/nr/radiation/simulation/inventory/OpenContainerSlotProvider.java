@@ -2,6 +2,7 @@ package igentuman.nr.radiation.simulation.inventory;
 
 import igentuman.nr.api.IInventoryRadSlotProvider;
 import igentuman.nr.radiation.simulation.containers.OpenContainerRegistry;
+import igentuman.nr.util.GuiFilter;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,17 +20,26 @@ public class OpenContainerSlotProvider implements IInventoryRadSlotProvider {
     @Override
     public Stream<RadiatedSlot> slots(LivingEntity entity) {
         if (!(entity instanceof Player player)) return Stream.empty();
+
         AbstractContainerMenu menu = OpenContainerRegistry.current(player.getUUID());
-        if (menu == null) return Stream.empty();
+        if (menu == null || GuiFilter.isMenuIgnored(menu)) return Stream.empty();
+
         Inventory inv = player.getInventory();
         List<RadiatedSlot> out = new ArrayList<>();
+
         for (Slot slot : menu.slots) {
+            // Ignore holographic items in filters or patterns
+            if (GuiFilter.isSlotIgnored(slot)) continue;
+
             Container source = slot.container;
             if (source == inv) continue;
+
             ItemStack stack = slot.getItem();
             if (stack.isEmpty()) continue;
+
             out.add(new RadiatedSlot(stack, SlotFactors.OPEN_CONTAINER, false));
         }
+
         return out.stream();
     }
 }
