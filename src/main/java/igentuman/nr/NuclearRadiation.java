@@ -120,6 +120,7 @@ public class NuclearRadiation {
         NRTools.register(modEventBus);
         NRSounds.register(modEventBus);
         NRRecipes.register(modEventBus);
+        NRGuide.register(modEventBus);
         Corium.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
@@ -149,6 +150,9 @@ public class NuclearRadiation {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(NRTools.GEIGER_COUNTER);
             event.accept(NRTools.DOSIMETER);
+            if (NRGuide.isLoaded()) {
+                event.accept(NRGuide.GUIDE_BOOK);
+            }
             event.accept(CREATIVE_RAD_SOURCE_ITEM);
         }
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {

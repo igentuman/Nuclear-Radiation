@@ -1,67 +1,95 @@
 # Nuclear Radiation - Mod Developer Guide
 
-Java integration for other NeoForge mods. Mod id `nuclear_radiation`, package root
-`igentuman.nr`, group `igentuman.nr`. The public surface lives under `igentuman.nr.api.*`
-(a few facades sit in `igentuman.nr.events` and `igentuman.nr.radiation.*`).
+Java integration guide for other NeoForge mods.
+
+| Property | Value |
+|---|---|
+| Mod ID | `nuclear_radiation` |
+| Package root | `igentuman.nr` |
+| Maven group | `igentuman.nr` |
+| Public API surface | `igentuman.nr.api.*` (plus facades in `igentuman.nr.events` and `igentuman.nr.radiation.*`) |
 
 Depend on the mod as `compileOnly` and guard your hooks behind a mod-loaded check, or register
 through the [`NREvents`](#7-integration-event-bridge) bridge (recommended - it survives `/reload`).
 
-> **Isotope ids are `nr:`-prefixed** (`nr:u_238`, `nr:cs_137`, …), even though the mod id is
-> `nuclear_radiation`. Constants in `registry/Isotopes.java` (`Isotopes.U_238`, `Isotopes.CS_137`,
-> …). Unknown isotope ids are silently dropped by profile/component builders.
+> **Isotope IDs are `nr:`-prefixed** (`nr:u_238`, `nr:cs_137`, …) even though the mod ID is
+> `nuclear_radiation`. Constants live in `registry/Isotopes.java` (`Isotopes.U_238`,
+> `Isotopes.CS_137`, …). Unknown isotope IDs are silently dropped by profile/component builders.
+
+---
 
 ## Contents
 
-- [Units](#units)
-- [1. Radiation sources](#1-radiation-sources)
-- [2. Radiation profiles](#2-radiation-profiles)
-- [3. Bindings from Java](#3-bindings-from-java)
-- [4. Shielding from Java](#4-shielding-from-java)
-- [5. Isotopes from Java](#5-isotopes-from-java)
-- [6. Reading / sampling radiation](#6-reading--sampling-radiation)
-- [7. Integration event bridge](#7-integration-event-bridge)
+1. [Units](#units)
+2. [Radiation sources](#1-radiation-sources)
+3. [Radiation profiles](#2-radiation-profiles)
+4. [Bindings from Java](#3-bindings-from-java)
+5. [Shielding from Java](#4-shielding-from-java)
+6. [Isotopes from Java](#5-isotopes-from-java)
+7. [Reading / sampling radiation](#6-reading--sampling-radiation)
+8. [Integration event bridge](#7-integration-event-bridge)
+
+---
 
 ## Units
 
-- **Bq** - source activity (decays/s), derived from *atoms* + isotope half-life.
-- **Gy** - absorbed dose, used for shielding/armor attenuation.
-- **Sv** / **Sv/h** - biological dose on entities (career total / rate).
-- Emission fractions and attenuation coefficients are `0..1`. Time is ticks (20/s).
+| Unit | Meaning | Usage |
+|---|---|---|
+| **Bq** | Source activity (decays/s) | Derived from *atoms* + isotope half-life |
+| **Gy** | Absorbed dose | Used for shielding/armor attenuation |
+| **Sv** | Biological dose (career total) | Accumulated on entities |
+| **Sv/h** | Biological dose rate | Current exposure rate on entities |
+
+- Emission fractions and attenuation coefficients are `0..1`.
+- Time is measured in ticks (20/s).
 
 ---
 
 ## 1. Radiation sources
 
-**Interfaces** (`api/`):
-- `api/shielding/IRadiationSource` - `UUID getId()`, `RadiationProfile getProfile()`,
-  `BlockPos getPosition()`, `ResourceKey<Level> getDimension()`, `double activityBq()`,
-  `boolean isActive()`.
-- `api/IPointRadiationSource extends IRadiationSource` - adds `double radius()`,
-  `Vec3 emissionCenter()`, `double xRayBq()`, `alphaBq()`, `betaBq()`, `neutronBq()`.
-- `api/DecayGraph.WorldRadSource extends IPointRadiationSource` - the type the registry accepts.
-  Adds `long spawnedTick()`, `boolean contaminatesArea()`, `default long expiryGameTime()`.
+### Interfaces
 
-**Base class** `api/AbstractWorldRadSource implements DecayGraph.WorldRadSource`:
+All interfaces live under `api/`:
+
+- **`IRadiationSource`** (`api/shielding/`) - base interface:
+  `UUID getId()`, `RadiationProfile getProfile()`, `BlockPos getPosition()`,
+  `ResourceKey<Level> getDimension()`, `double activityBq()`, `boolean isActive()`.
+
+- **`IPointRadiationSource`** (`api/`) - extends `IRadiationSource`, adds:
+  `double radius()`, `Vec3 emissionCenter()`, `double xRayBq()`, `alphaBq()`, `betaBq()`,
+  `neutronBq()`.
+
+- **`DecayGraph.WorldRadSource`** (`api/`) - extends `IPointRadiationSource`, the type the
+  registry accepts. Adds: `long spawnedTick()`, `boolean contaminatesArea()`,
+  `default long expiryGameTime()`.
+
+### Base class
+
+`api/AbstractWorldRadSource` implements `DecayGraph.WorldRadSource`:
 
 ```java
 protected AbstractWorldRadSource(UUID id, ResourceKey<Level> dim, BlockPos pos,
                                  RadiationProfile profile, long spawnedTick)
 ```
 
-Default `radius()` = 32.0; Bq getters derive from the profile. Also public:
-`advanceDecay(long)`, `refresh(RadiationProfile)`, `markDead()`.
+- Default `radius()` = `32.0`.
+- Bq getters derive from the profile.
+- Additional public methods: `advanceDecay(long)`, `refresh(RadiationProfile)`, `markDead()`.
 
-**Concrete sources** (`radiation/source/`):
+### Concrete sources
 
-| Class | Constructor highlights |
-|---|---|
-| `BlockRadSource` | `(id, dim, pos, profile, spawnedTick)` + overload `(…, boolean contaminatesArea)` |
-| `FluidRadSource` | `(id, dim, pos, profile, spawnedTick)` - always contaminates |
-| `ItemEntityRadSource` | `(ItemEntity entity, profile, spawnedTick)` - Bq scaled by `count*10` |
-| `ContainerRadSource` | `(id, dim, pos, profile, spawnedTick, double containerAttenuation)` - attenuates xray/neutron, zeroes α/β |
+Located in `radiation/source/`:
 
-**Registry** `radiation/source/WorldSourceRegistry` (per-`ServerLevel`):
+| Class | Constructor | Notes |
+|---|---|---|
+| `BlockRadSource` | `(id, dim, pos, profile, spawnedTick)` | Overload: `(…, boolean contaminatesArea)` |
+| `FluidRadSource` | `(id, dim, pos, profile, spawnedTick)` | Always contaminates |
+| `ItemEntityRadSource` | `(ItemEntity entity, profile, spawnedTick)` | Bq scaled by `count * 10` |
+| `ContainerRadSource` | `(id, dim, pos, profile, spawnedTick, double containerAttenuation)` | Attenuates x-ray/neutron, zeroes α/β |
+
+### Registry
+
+`radiation/source/WorldSourceRegistry` (per-`ServerLevel`):
 
 ```java
 static WorldSourceRegistry get(ServerLevel level)
@@ -75,8 +103,11 @@ List<DecayGraph.WorldRadSource> queryRadius(Vec3 center, double radius)
 void setChunkRadiation(BlockPos pos, RadiationProfile air, RadiationProfile water, RadiationProfile soil)
 ```
 
-`register(...)` also feeds `RadiationSimulator`. **Register a custom source** - extend
-`AbstractWorldRadSource` (or use `BlockRadSource`) and register:
+`register(...)` also feeds `RadiationSimulator`.
+
+### Registering a custom source
+
+Extend `AbstractWorldRadSource` (or use `BlockRadSource` directly) and register:
 
 ```java
 ServerLevel level = ...;
@@ -94,7 +125,7 @@ WorldSourceRegistry.get(level).register(
 
 ## 2. Radiation profiles
 
-`api/RadiationProfile` - a map of `IsotopeStack` by isotope id:
+`api/RadiationProfile` - a map of `IsotopeStack` keyed by isotope ID:
 
 ```java
 RadiationProfile()                 RadiationProfile(Map<String,IsotopeStack>)   static empty()
@@ -106,7 +137,9 @@ void mergeAtoms(RadiationProfile other, double scale, long timestamp)
 long advanceDecay(long currentTick, double floorBq)     long expiryTick(double floorBq)
 ```
 
-`api/RadiationProfileBuilder` - the ergonomic way to build one:
+### Builder
+
+`api/RadiationProfileBuilder` - the ergonomic way to build a profile:
 
 ```java
 RadiationProfile p = RadiationProfileBuilder.create()
@@ -117,8 +150,10 @@ RadiationProfile p = RadiationProfileBuilder.create()
 double bq = p.totalActivityBq();
 ```
 
-`api/isotope/IsotopeStack(Isotope isotope, double atoms, long timestamp)` - `atoms()`,
-`setAtoms(double)`, `currentActivityBq()`.
+### IsotopeStack
+
+`api/isotope/IsotopeStack(Isotope isotope, double atoms, long timestamp)` - provides:
+`atoms()`, `setAtoms(double)`, `currentActivityBq()`.
 
 ---
 
@@ -126,7 +161,9 @@ double bq = p.totalActivityBq();
 
 Attach a `RadiationProfile` to items/blocks/fluids, or stamp a per-stack component.
 
-`api/binding/Bindings` - static registry (values are `Supplier<RadiationProfile>`):
+### Static binding registry
+
+`api/binding/Bindings` - static registry; values are `Supplier<RadiationProfile>`:
 
 ```java
 putItem(ResourceLocation, Supplier<RadiationProfile>)     putBlock(...)   putFluid(...)
@@ -134,13 +171,17 @@ putItemTag(TagKey<Item>, ...)   putBlockTag(...)   putFluidTag(...)
 removeItem/removeBlock/... ;  getItem/getBlock/getFluid(ResourceLocation) ;  clear()
 ```
 
-`api/binding/RadiationBindings` - resolution facade (component → id → tag):
+### Resolution facade
+
+`api/binding/RadiationBindings` - resolves in order: component → id → tag:
 
 ```java
 static RadiationProfile of(ItemStack)      // RadiationComponent wins, then binding, then tags
 static RadiationProfile of(BlockState)     static RadiationProfile of(FluidState)
 static boolean isRadioactive(ItemStack)    static Optional<RadiationProfile> forItem(ItemStack)
 ```
+
+### Data component
 
 `api/binding/RadiationComponent` - `DataComponent` registered under `nuclear_radiation:radiation`:
 
@@ -151,12 +192,14 @@ RadiationProfile toProfile(long timestamp)
 Map<String,Double> atomsByIsotope()   long lastTick()   boolean isEmpty()
 ```
 
+### Examples
+
 ```java
-// A) bind a profile to an item id (re-run on reload - see NREvents)
+// A) Bind a profile to an item ID (re-run on reload - see NREvents)
 Bindings.putItem(ResourceLocation.parse("yourmod:hot_ingot"),
         () -> RadiationProfileBuilder.create().isotope(Isotopes.CO_60, 1.0e17).build());
 
-// B) stamp a per-stack RadiationComponent
+// B) Stamp a per-stack RadiationComponent
 RadiationProfile p = RadiationProfileBuilder.create().isotope(Isotopes.CS_137, 1e18).build();
 stack.set(RadiationComponent.TYPE.get(),
           RadiationComponent.fromProfile(p, level.getGameTime()));
@@ -166,15 +209,21 @@ stack.set(RadiationComponent.TYPE.get(),
 
 ## 4. Shielding from Java
 
-**Self-declaring blocks/items** - implement the interface, no registration needed:
+### Self-declaring blocks and items
 
-- `api/shielding/IShieldingBlock` (on a `Block`): `double xrayAttenuationCoeff()`,
-  `double neutronAttenuationCoeff()`, `default double gyAbsorbed()`.
-- `api/shielding/IRadiationArmor` (on an `Item`): `xrayProtection()`, `alphaProtection()`,
-  `betaProtection()`, `neutronProtection()`, `boolean gasProtection()`, `EquipmentSlot slot()`.
-  Values `0..1`.
+Implement the interface directly - no registration needed:
 
-**Registries** (for vanilla/other-mod content):
+- **`IShieldingBlock`** (`api/shielding/`, on a `Block`):
+  `double xrayAttenuationCoeff()`, `double neutronAttenuationCoeff()`,
+  `default double gyAbsorbed()`.
+
+- **`IRadiationArmor`** (`api/shielding/`, on an `Item`):
+  `xrayProtection()`, `alphaProtection()`, `betaProtection()`, `neutronProtection()`,
+  `boolean gasProtection()`, `EquipmentSlot slot()`. All values `0..1`.
+
+### Registries
+
+For vanilla or other-mod content that cannot implement the interfaces directly:
 
 ```java
 // radiation/shielding/world/ShieldingRegistry
@@ -190,13 +239,17 @@ static Protection get(ItemStack)                   // honors IRadiationArmor fir
 static Protection summed(LivingEntity)             // multiplicative over armor slots
 ```
 
-**Raycast** `radiation/shielding/world/ShieldingRaycast`:
+### Raycast
+
+`radiation/shielding/world/ShieldingRaycast`:
 
 ```java
 static AttenuationResult cast(Level level, Vec3 from, Vec3 to)
 static AttenuationResult cast(ServerLevel level, Vec3 from, Vec3 to)
 // AttenuationResult(double xrayPass, double neutronPass) - transmitted fractions exp(-Σcoeff)
 ```
+
+### Examples
 
 ```java
 ShieldingRegistry.register(YourBlocks.LEAD.get(), 2.5, 0.4);
@@ -211,8 +264,12 @@ double survivingXrayBq = xrayBq * a.xrayPass();
 
 ## 5. Isotopes from Java
 
-`api/isotope/IsotopeRegistry` - `register(Isotope)`, `get(String id)`, `contains(String)`,
-`remove(String)`, `all()`, `clear()`.
+### Registry
+
+`api/isotope/IsotopeRegistry` - provides:
+`register(Isotope)`, `get(String id)`, `contains(String)`, `remove(String)`, `all()`, `clear()`.
+
+### Builder
 
 `api/isotope/IsotopeBuilder` - builds, registers, and wires decay edges:
 
@@ -228,6 +285,8 @@ Isotope build()                  Isotope register()   // registers + adds DecayG
 > on every datapack reload, then re-applies defaults and fires `NREvents.AFTER_ISOTOPES_RELOAD`.
 > Register custom isotopes **inside that hook**, not once at startup, or they vanish on `/reload`.
 
+### Example
+
 ```java
 NREvents.AFTER_ISOTOPES_RELOAD.add(() ->
     IsotopeBuilder.create("yourmod:custom_137")
@@ -238,14 +297,23 @@ NREvents.AFTER_ISOTOPES_RELOAD.add(() ->
         .register());
 ```
 
-Half-life constants in `registry/DefaultIsotopes`: `TICKS_PER_YEAR=631128000`,
-`TICKS_PER_DAY=24000`, `TICKS_PER_HOUR=1000`.
+### Half-life constants
+
+Defined in `registry/DefaultIsotopes`:
+
+| Constant | Value (ticks) | Real-world equivalent |
+|---|---|---|
+| `TICKS_PER_YEAR` | `631_128_000` | ~1 year |
+| `TICKS_PER_DAY` | `24_000` | 1 Minecraft day |
+| `TICKS_PER_HOUR` | `1_000` | 1 Minecraft hour |
 
 ---
 
 ## 6. Reading / sampling radiation
 
-**Entity dose** - attachment `radiation/storage/EntityRadiationData`, registered as
+### Entity dose
+
+Attachment `radiation/storage/EntityRadiationData`, registered as
 `NRAttachments.ENTITY_RADIATION`:
 
 ```java
@@ -254,22 +322,43 @@ double careerSv  = d.svTotalCareer();
 double svPerHour = d.svPerHour();
 ```
 
-Also: `svPerHourAmbient()`, `protectionFactor()`, `decayMultiplier()`,
-`internalContamination()` (`Map<String,Double>`), `lastDoseStage()`, `addSv(double)`,
-`addInternal(String isotopeId, double atoms)`.
+Additional accessors:
 
-**World Bq sampling** - `radiation/simulation/RadiationSimulator`:
+| Method | Returns |
+|---|---|
+| `svPerHourAmbient()` | Ambient dose rate |
+| `protectionFactor()` | Current protection multiplier |
+| `decayMultiplier()` | Current decay multiplier |
+| `internalContamination()` | `Map<String, Double>` of isotope ID → atoms |
+| `lastDoseStage()` | Last dose stage reached |
+| `addSv(double)` | Add to career total |
+| `addInternal(String isotopeId, double atoms)` | Add internal contamination |
+
+### World Bq sampling
+
+`radiation/simulation/RadiationSimulator`:
 
 ```java
 static RadiationSimulator get()
 SubChunkRadVector getChunkVector(ServerLevel level, ChunkPos pos, int cy)   // null if none
+```
 
+```java
 SubChunkRadVector v = RadiationSimulator.get().getChunkVector(level, chunkPos, blockY >> 4);
 double localXRayBq = v == null ? 0.0 : v.totalXRay();   // also v.totalNeutron(), v.maxBq
 ```
 
-`SubChunkRadVector` - `double[] xRayBq` / `neutronBq` (6 directional bins), `totalXRay()`,
-`totalNeutron()`, `maxBq`, `isEmpty()`, `isExpired(long now)`.
+`SubChunkRadVector` fields and methods:
+
+| Field / Method | Type | Description |
+|---|---|---|
+| `xRayBq` | `double[]` | 6 directional bins |
+| `neutronBq` | `double[]` | 6 directional bins |
+| `totalXRay()` | `double` | Sum of all x-ray bins |
+| `totalNeutron()` | `double` | Sum of all neutron bins |
+| `maxBq` | `double` | Maximum bin value |
+| `isEmpty()` | `boolean` | Whether all bins are zero |
+| `isExpired(long now)` | `boolean` | Whether the vector has expired |
 
 For a simple radius scan, `WorldSourceRegistry.get(level).queryRadius(center, radius)` is the most
 direct query.
@@ -281,21 +370,35 @@ direct query.
 `events/NREvents` (package `igentuman.nr.events`) - the recommended integration entry point. Its
 reload hooks re-apply Java registrations that datapack reloads would otherwise wipe.
 
+### Reload hooks
+
+Public `List<Runnable>` fields - add your re-registration logic:
+
 ```java
-// Re-apply after each reload (public List<Runnable> - add your re-registration):
 NREvents.AFTER_ISOTOPES_RELOAD    NREvents.AFTER_BINDINGS_RELOAD
 NREvents.AFTER_SHIELDING_RELOAD   NREvents.AFTER_ARMOR_RELOAD
+```
 
-// Dose-phase callback (rising edge of dose stage 1..4). Return true to cancel default harm:
-interface DosePhaseListener { boolean onRise(LivingEntity e, int stage, double svPerHour, double svTotalCareer); }
+### Dose-phase callback
+
+Fires on the rising edge of dose stage 1–4. Return `true` to cancel default harm:
+
+```java
+interface DosePhaseListener {
+    boolean onRise(LivingEntity e, int stage, double svPerHour, double svTotalCareer);
+}
 static void addDosePhaseListener(DosePhaseListener l)
 ```
 
+### Examples
+
 ```java
+// Re-apply bindings after each reload
 NREvents.AFTER_BINDINGS_RELOAD.add(() ->
     Bindings.putItem(ResourceLocation.parse("yourmod:hot_ingot"),
         () -> RadiationProfileBuilder.create().isotope(Isotopes.CO_60, 1e17).build()));
 
+// Custom dose-phase handling
 NREvents.addDosePhaseListener((entity, stage, svPerHour, svTotal) -> {
     if (stage >= 3 && hasYourAntidote(entity)) return true;  // cancel mod's default harm
     return false;
@@ -304,7 +407,9 @@ NREvents.addDosePhaseListener((entity, stage, svPerHour, svTotal) -> {
 
 ---
 
-For no-code (datapack / KubeJS / config) configuration, see the
-[Modpacker Guide](Modpackers.md) and the [KubeJS Guide](KubeJS.md).
-Existing mod bridges live in `integration/` (`mekanism`, `nuclear_science`) - good reference
-implementations of `NREvents` usage.
+## See also
+
+- [Modpacker Guide](Modpackers.md) - no-code (datapack / config) configuration
+- [KubeJS Guide](KubeJS.md) - scripting integration
+- `integration/` package - existing mod bridges (`mekanism`, `nuclear_science`) as reference
+  implementations of `NREvents` usage

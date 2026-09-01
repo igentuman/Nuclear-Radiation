@@ -6,6 +6,7 @@ Models radioactive isotopes, decay, contamination, dose, shielding, and medicine
 
 ## Documentation
 
+- **[How to Play](docs/Gameplay.md)**
 - **[Modpacker Guide](docs/Modpackers.md)** - no-code setup (datapack JSON, KubeJS, config). FAQ: make blocks/items radioactive, biome/dimension background, block & armor shielding, isotopes, mutations, block irradiation.
 - **[Mod Developer Guide](docs/ModDevelopers.md)** - Java API: radiation sources, profiles, bindings, shielding, isotopes, dose sampling, and the `NREvents` integration bridge.
 - **[KubeJS Guide](docs/KubeJS.md)** - full scripting reference.
