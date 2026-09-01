@@ -29,6 +29,8 @@ public final class ShieldingBindings {
         }
     }
 
+    private static final Object LOCK = new Object();
+
     private static final Map<ResourceLocation, ShieldEntry> BLOCKS = new LinkedHashMap<>();
     private static final Map<TagKey<Block>, ShieldEntry> BLOCK_TAGS = new LinkedHashMap<>();
     private static final EnumMap<ShieldingTier, Coeffs> TIER_PRESETS = new EnumMap<>(ShieldingTier.class);
@@ -37,9 +39,9 @@ public final class ShieldingBindings {
         seedPresets();
     }
 
-    public static Map<ResourceLocation, ShieldEntry> blocks() { return BLOCKS; }
-    public static Map<TagKey<Block>, ShieldEntry> blockTags() { return BLOCK_TAGS; }
-    public static Map<ShieldingTier, Coeffs> tierPresets() { return TIER_PRESETS; }
+    public static Map<ResourceLocation, ShieldEntry> blocks() { synchronized (LOCK) { return new LinkedHashMap<>(BLOCKS); } }
+    public static Map<TagKey<Block>, ShieldEntry> blockTags() { synchronized (LOCK) { return new LinkedHashMap<>(BLOCK_TAGS); } }
+    public static Map<ShieldingTier, Coeffs> tierPresets() { synchronized (LOCK) { return new EnumMap<>(TIER_PRESETS); } }
 
     private ShieldingBindings() {}
 
@@ -50,35 +52,39 @@ public final class ShieldingBindings {
     }
 
     public static void setTierPreset(ShieldingTier tier, Coeffs coeffs) {
-        TIER_PRESETS.put(tier, coeffs);
+        synchronized (LOCK) { TIER_PRESETS.put(tier, coeffs); }
     }
 
     public static Coeffs tierPreset(ShieldingTier tier) {
-        Coeffs c = TIER_PRESETS.get(tier);
-        return c != null ? c : tier.defaultCoeffs();
+        synchronized (LOCK) {
+            Coeffs c = TIER_PRESETS.get(tier);
+            return c != null ? c : tier.defaultCoeffs();
+        }
     }
 
     public static void putBlock(ResourceLocation id, ShieldEntry entry) {
-        BLOCKS.put(id, entry);
+        synchronized (LOCK) { BLOCKS.put(id, entry); }
     }
 
     public static void putBlockTag(TagKey<Block> tag, ShieldEntry entry) {
-        BLOCK_TAGS.put(tag, entry);
+        synchronized (LOCK) { BLOCK_TAGS.put(tag, entry); }
     }
 
     public static void removeBlock(ResourceLocation id) {
-        BLOCKS.remove(id);
+        synchronized (LOCK) { BLOCKS.remove(id); }
     }
 
     public static void removeBlockTag(TagKey<Block> tag) {
-        BLOCK_TAGS.remove(tag);
+        synchronized (LOCK) { BLOCK_TAGS.remove(tag); }
     }
 
     public static void clear() {
-        BLOCKS.clear();
-        BLOCK_TAGS.clear();
-        TIER_PRESETS.clear();
-        seedPresets();
+        synchronized (LOCK) {
+            BLOCKS.clear();
+            BLOCK_TAGS.clear();
+            TIER_PRESETS.clear();
+            seedPresets();
+        }
     }
 
     /** Resolve attenuation coefficients for a block state. Direct block id binding wins over tag bindings. */
@@ -86,10 +92,19 @@ public final class ShieldingBindings {
     public static Coeffs resolve(BlockState state) {
         Block block = state.getBlock();
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
-        ShieldEntry direct = BLOCKS.get(id);
+        ShieldEntry direct;
+        Map<TagKey<Block>, ShieldEntry> tagsSnapshot;
+        synchronized (LOCK) {
+            direct = BLOCKS.get(id);
+            if (direct == null) {
+                tagsSnapshot = new LinkedHashMap<>(BLOCK_TAGS);
+            } else {
+                tagsSnapshot = null;
+            }
+        }
         if (direct != null) return direct.resolve();
 
-        for (Map.Entry<TagKey<Block>, ShieldEntry> e : BLOCK_TAGS.entrySet()) {
+        for (Map.Entry<TagKey<Block>, ShieldEntry> e : tagsSnapshot.entrySet()) {
             if (state.is(e.getKey())) return e.getValue().resolve();
         }
         return null;
