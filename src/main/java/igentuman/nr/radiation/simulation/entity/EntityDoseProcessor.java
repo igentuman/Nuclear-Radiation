@@ -240,6 +240,7 @@ public final class EntityDoseProcessor {
     private static Dose computeBlockUnderfoot(ServerLevel level, LivingEntity entity,
                                               double gyPerBqSec, double intervalSeconds,
                                               ArmorProtectionRegistry.Protection armor) {
+        if (!RadiationConfig.blockRadiationEnabled()) return new Dose(0.0, 0.0);
         BlockPos pos = entity.blockPosition();
         BlockState state = level.getBlockState(pos);
         RadiationProfile prof = RadiationBindings.of(state);
@@ -279,6 +280,7 @@ public final class EntityDoseProcessor {
     private static Dose computeContamination(ServerLevel level, LivingEntity entity,
                                                double gyPerBqSec, double intervalSeconds,
                                                ArmorProtectionRegistry.Protection armor) {
+        if (!RadiationConfig.chunkContaminationEnabled()) return new Dose(0.0, 0.0);
         ChunkPos cp = entity.chunkPosition();
         LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
         if (chunk == null) return new Dose(0.0, 0.0);
@@ -342,6 +344,7 @@ public final class EntityDoseProcessor {
     private static Dose computeInventory(LivingEntity entity, double gyPerBqSec,
                                            double intervalSeconds, long now,
                                            ArmorProtectionRegistry.Protection armor) {
+        if (!RadiationConfig.inventoryRadiationEnabled()) return new Dose(0.0, 0.0);
         InventoryRadCache cache = InventoryRadCache.get(entity);
         cache.rescan(entity, now);
         double armorBlocks = RadiationConfig.ARMOR_BLOCKS_INVENTORY.get();
@@ -364,6 +367,7 @@ public final class EntityDoseProcessor {
                                                 double gyPerBqSec, double intervalSeconds,
                                                 ArmorProtectionRegistry.Protection armor,
                                                 long now) {
+        if (!RadiationConfig.inventoryRadiationEnabled()) return new Dose(0.0, 0.0);
         double radius = RadiationConfig.MAX_SOURCE_RADIUS_M.get();
         AABB box = self.getBoundingBox().inflate(radius);
         Vec3 selfEye = self.getEyePosition();

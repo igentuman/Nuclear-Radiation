@@ -1,5 +1,6 @@
 package igentuman.nr.events;
 
+import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.radiation.irradiation.BlockIrradiationSimulator;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,6 +22,7 @@ public class BlockIrradiationEvents {
 
     @SubscribeEvent
     public void onLevelTick(LevelTickEvent.Post event) {
+        if (!RadiationConfig.masterEnabled()) return;
         if (event.getLevel() instanceof ServerLevel server) {
             BlockIrradiationSimulator.get().tick(server);
         }

@@ -3,6 +3,7 @@ package igentuman.nr.integration.jei;
 import igentuman.nr.api.isotope.Isotope;
 import igentuman.nr.api.binding.RadiationBindings;
 import igentuman.nr.api.RadiationProfile;
+import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.recipe.BlockIrradiationRecipe;
 import igentuman.nr.recipe.MutationRecipe;
 import igentuman.nr.recipe.NRRecipes;
@@ -41,6 +42,7 @@ public class ModJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
+        if (!GeneralConfig.RADIATION_ENABLED.get()) return;
         IGuiHelper gh = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(
                 new IsotopeStatsCategory(gh),
@@ -55,11 +57,13 @@ public class ModJeiPlugin implements IModPlugin {
 
     @Override
     public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
+        if (!GeneralConfig.RADIATION_ENABLED.get()) return;
         registration.getSmithingCategory().addExtension(ShieldingUpgradeRecipe.class, new ShieldingUpgradeJeiExtension());
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        if (!GeneralConfig.RADIATION_ENABLED.get()) return;
         List<Isotope> isotopes = new ArrayList<>(IsotopeRegistry.all());
         isotopes.sort(Comparator.comparing(Isotope::id));
 

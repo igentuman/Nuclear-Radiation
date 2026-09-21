@@ -40,6 +40,7 @@ public class RadSourceEvents {
     @SubscribeEvent
     public void onEntityJoin(EntityJoinLevelEvent event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
+        if (!RadiationConfig.itemEntityRadiationEnabled()) return;
         Entity entity = event.getEntity();
         if (entity instanceof ItemEntity item) {
             RadiationProfile profile = RadiationBindings.of(item.getItem());
@@ -52,6 +53,7 @@ public class RadSourceEvents {
     @SubscribeEvent
     public void onEntityLeave(EntityLeaveLevelEvent event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
+        if (!RadiationConfig.itemEntityRadiationEnabled()) return;
         Entity entity = event.getEntity();
         if (entity instanceof ItemEntity item) {
             ItemEntityRadSource src = WorldSourceRegistry.get(server).forItemEntity(item.getUUID());
@@ -75,13 +77,17 @@ public class RadSourceEvents {
 
         RadiationProfile blockProfile = RadiationBindings.of(state);
         if (!blockProfile.isEmpty()) {
-            reg.register(new BlockRadSource(UUID.randomUUID(), server.dimension(), pos.immutable(),
-                    blockProfile, server.getGameTime()));
+            if (RadiationConfig.blockRadiationEnabled()) {
+                reg.register(new BlockRadSource(UUID.randomUUID(), server.dimension(), pos.immutable(),
+                        blockProfile, server.getGameTime()));
+            }
             return;
         }
         FluidState fluidState = state.getFluidState();
         if (!fluidState.isEmpty()) {
-            registerFluidSource(server, reg, pos, fluidState);
+            if (RadiationConfig.fluidRadiationEnabled()) {
+                registerFluidSource(server, reg, pos, fluidState);
+            }
             return;
         }
         BlockEntity be = server.getBlockEntity(pos);
@@ -111,7 +117,7 @@ public class RadSourceEvents {
         if (!fluidState.isEmpty()) {
             RadiationProfile p = RadiationBindings.of(fluidState);
             if (!p.isEmpty()) {
-                if (existing == null) {
+                if (existing == null && RadiationConfig.fluidRadiationEnabled()) {
                     registerFluidSource(server, reg, pos, fluidState);
                 }
                 return;
@@ -140,7 +146,7 @@ public class RadSourceEvents {
         if (data.isExpired(now)) {
             data.clearIfExpired(now);
             chunk.setUnsaved(true);
-        } else if (!data.isEmpty()) {
+        } else if (!data.isEmpty() && RadiationConfig.chunkContaminationEnabled()) {
             WorldSourceRegistry.get(server).markChunkContaminated(chunk.getPos());
         }
         scanChunkForSources(server, chunk);
@@ -170,6 +176,7 @@ public class RadSourceEvents {
     @SubscribeEvent
     public void onLevelTick(LevelTickEvent.Post event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
+        if (!RadiationConfig.masterEnabled()) return;
         long now = server.getGameTime();
         MeltdownParticles.getOrCreate(server).spawnTick(server);
         WorldSourceRegistry.get(server).tickSableSync(server);
@@ -178,12 +185,23 @@ public class RadSourceEvents {
         if (now % interval != 0) return;
         WorldSourceRegistry reg = WorldSourceRegistry.get(server);
         reg.tickDecay(now, server);
-        reg.tickChunkDecay(now);
-        if (now % interval*2 != 0) return;
-        reg.spreadContamination(now, interval);
+        if (RadiationConfig.chunkContaminationEnabled()) {
+            reg.tickChunkDecay(now);
+            if (now % interval*2 == 0) reg.spreadContamination(now, interval);
+        }
     }
 
     private void scanChunkForSources(ServerLevel server, LevelChunk chunk) {
+        scanBlocksAndFluids(server, chunk, RadiationConfig.blockRadiationEnabled(), RadiationConfig.fluidRadiationEnabled());
+        for (BlockEntity be : chunk.getBlockEntities().values()) {
+            if (be instanceof CreativeRadSourceBlockEntity creative) {
+                creative.registerSource(server);
+            }
+        }
+    }
+
+    private void scanBlocksAndFluids(ServerLevel server, LevelChunk chunk, boolean blockEnabled, boolean fluidEnabled) {
+        if (!blockEnabled && !fluidEnabled) return;
         ChunkPos cp = chunk.getPos();
         WorldSourceRegistry reg = WorldSourceRegistry.get(server);
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
@@ -200,16 +218,18 @@ public class RadSourceEvents {
                         BlockState state = section.getBlockState(lx, ly, lz);
                         if (state.isAir()) continue;
                         boolean placed = false;
-                        RadiationProfile bp = RadiationBindings.of(state);
-                        if (!bp.isEmpty()) {
-                            cursor.set(cp.getMinBlockX() + lx, baseY + ly, cp.getMinBlockZ() + lz);
-                            if (reg.atBlock(cursor) == null) {
-                                reg.register(new BlockRadSource(UUID.randomUUID(), server.dimension(),
-                                        cursor.immutable(), bp, spawnTick));
+                        if (blockEnabled) {
+                            RadiationProfile bp = RadiationBindings.of(state);
+                            if (!bp.isEmpty()) {
+                                cursor.set(cp.getMinBlockX() + lx, baseY + ly, cp.getMinBlockZ() + lz);
+                                if (reg.atBlock(cursor) == null) {
+                                    reg.register(new BlockRadSource(UUID.randomUUID(), server.dimension(),
+                                            cursor.immutable(), bp, spawnTick));
+                                }
+                                placed = true;
                             }
-                            placed = true;
                         }
-                        if (!placed) {
+                        if (!placed && fluidEnabled) {
                             FluidState fs = state.getFluidState();
                             if (fs.isEmpty()) continue;
                             RadiationProfile fp = RadiationBindings.of(fs);
@@ -222,11 +242,6 @@ public class RadSourceEvents {
                         }
                     }
                 }
-            }
-        }
-        for (BlockEntity be : chunk.getBlockEntities().values()) {
-            if (be instanceof CreativeRadSourceBlockEntity creative) {
-                creative.registerSource(server);
             }
         }
     }

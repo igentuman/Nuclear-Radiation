@@ -14,6 +14,13 @@ public final class RadiationConfig {
 
     public static final ModConfigSpec SPEC;
 
+    public static final ModConfigSpec.BooleanValue CONTAINER_RADIATION_ENABLED;
+    public static final ModConfigSpec.BooleanValue INVENTORY_RADIATION_ENABLED;
+    public static final ModConfigSpec.BooleanValue BLOCK_RADIATION_ENABLED;
+    public static final ModConfigSpec.BooleanValue ITEMENTITY_RADIATION_ENABLED;
+    public static final ModConfigSpec.BooleanValue FLUID_RADIATION_ENABLED;
+    public static final ModConfigSpec.BooleanValue CHUNK_CONTAMINATION_ENABLED;
+
     public static final ModConfigSpec.IntValue WORLD_SIM_INTERVAL_TICKS;
     public static final ModConfigSpec.IntValue ENTITY_SIM_INTERVAL_TICKS;
     public static final ModConfigSpec.IntValue MAX_SOURCE_RADIUS_M;
@@ -71,6 +78,23 @@ public final class RadiationConfig {
 
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
+
+        b.push("features");
+        b.comment("Per-feature simulation toggles. Only checked if GeneralConfig.radiationEnabled is true.",
+                "Disabling a feature stops it from registering/ticking world state, which can improve server performance.");
+        CONTAINER_RADIATION_ENABLED = b.comment("Radioactive items sitting in containers (chests, barrels, etc.) act as world radiation sources")
+                .define("container_radiation", true);
+        INVENTORY_RADIATION_ENABLED = b.comment("Radioactive items carried in an entity's inventory/armor/hands irradiate that entity (and nearby entities)")
+                .define("inventory_radiation", true);
+        BLOCK_RADIATION_ENABLED = b.comment("Placed radioactive blocks act as world radiation sources (including direct contact when stood on)")
+                .define("block_radiation", true);
+        ITEMENTITY_RADIATION_ENABLED = b.comment("Radioactive item entities dropped in the world act as radiation sources")
+                .define("itementity_radiation", true);
+        FLUID_RADIATION_ENABLED = b.comment("Radioactive fluids act as world radiation sources")
+                .define("fluid_radiation", true);
+        CHUNK_CONTAMINATION_ENABLED = b.comment("Radiation sources contaminate the air/water/soil of nearby chunks over time, and contaminated chunks irradiate entities within them")
+                .define("chunk_contamination", true);
+        b.pop();
 
         b.push("radiation");
         WORLD_SIM_INTERVAL_TICKS = b.comment("Chunk vector recompute / source decay / contamination spread interval")
@@ -236,6 +260,34 @@ public final class RadiationConfig {
     }
 
     private RadiationConfig() {}
+
+    public static boolean masterEnabled() {
+        return igentuman.nr.config.GeneralConfig.RADIATION_ENABLED.get();
+    }
+
+    public static boolean containerRadiationEnabled() {
+        return masterEnabled() && CONTAINER_RADIATION_ENABLED.get();
+    }
+
+    public static boolean inventoryRadiationEnabled() {
+        return masterEnabled() && INVENTORY_RADIATION_ENABLED.get();
+    }
+
+    public static boolean blockRadiationEnabled() {
+        return masterEnabled() && BLOCK_RADIATION_ENABLED.get();
+    }
+
+    public static boolean itemEntityRadiationEnabled() {
+        return masterEnabled() && ITEMENTITY_RADIATION_ENABLED.get();
+    }
+
+    public static boolean fluidRadiationEnabled() {
+        return masterEnabled() && FLUID_RADIATION_ENABLED.get();
+    }
+
+    public static boolean chunkContaminationEnabled() {
+        return masterEnabled() && CHUNK_CONTAMINATION_ENABLED.get();
+    }
 
     public static Double levelBackgroundUSvPerHour(ResourceLocation dim) {
         if (dim == null) return null;

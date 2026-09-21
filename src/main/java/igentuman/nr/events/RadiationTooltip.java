@@ -3,6 +3,7 @@ package igentuman.nr.events;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.api.binding.RadiationBindings;
 import igentuman.nr.api.shielding.ArmorProtectionRegistry;
+import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.radiation.shielding.world.ShieldingRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -19,6 +20,7 @@ public class RadiationTooltip {
 
     @SubscribeEvent
     public void onTooltip(ItemTooltipEvent event) {
+        if (!GeneralConfig.RADIATION_ENABLED.get()) return;
         addShieldingTooltip(event);
         addArmorProtectionTooltip(event);
 

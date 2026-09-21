@@ -89,6 +89,10 @@ public class RadiationSimulator implements IRadiationSimulator {
 
     @Override
     public void tick(ServerLevel level) {
+        if (!RadiationConfig.masterEnabled()) {
+            drainMainThreadTasks();
+            return;
+        }
         long t = level.getGameTime();
         if (t % RadiationConfig.WORLD_SIM_INTERVAL_TICKS.get() == 0) {
             pruneDeadSources(level);

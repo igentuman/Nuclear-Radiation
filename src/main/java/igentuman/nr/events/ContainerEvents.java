@@ -1,6 +1,7 @@
 package igentuman.nr.events;
 
 import igentuman.nr.api.RadiationProfile;
+import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.radiation.simulation.containers.ContainerRadiationTicker;
 import igentuman.nr.radiation.simulation.containers.OpenContainerRegistry;
 import igentuman.nr.radiation.simulation.inventory.InventoryRadCache;
@@ -21,6 +22,7 @@ public class ContainerEvents {
     @SubscribeEvent
     public void onLevelTick(LevelTickEvent.Post event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
+        if (!RadiationConfig.containerRadiationEnabled()) return;
         long now = server.getGameTime();
         if (now % ContainerRadiationTicker.RESCAN_INTERVAL_TICKS != 0) return;
         ContainerRadiationTicker.scanLevel(server);
@@ -29,6 +31,7 @@ public class ContainerEvents {
     @SubscribeEvent
     public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
+        if (!RadiationConfig.containerRadiationEnabled()) return;
         BlockEntity be = WorldUtil.getBlockEntity(event.getPos(), server, false);
         if (be == null) return;
         if (isRadiatingCandidate(be)) {
@@ -40,7 +43,9 @@ public class ContainerEvents {
     public void onContainerOpen(PlayerContainerEvent.Open event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         InventoryRadCache.get(player).markDirty();
-        OpenContainerRegistry.open(player, event.getContainer());
+        if (RadiationConfig.containerRadiationEnabled()) {
+            OpenContainerRegistry.open(player, event.getContainer());
+        }
     }
 
     @SubscribeEvent
@@ -60,6 +65,7 @@ public class ContainerEvents {
     public void onChunkLoad(ChunkEvent.Load event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
         if (!(event.getChunk() instanceof LevelChunk chunk)) return;
+        if (!RadiationConfig.containerRadiationEnabled()) return;
         for (BlockEntity be : chunk.getBlockEntities().values()) {
             if (isRadiatingCandidate(be)) {
                 ContainerRadiationTicker.track(server, be.getBlockPos());

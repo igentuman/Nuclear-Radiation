@@ -6,6 +6,7 @@ import dev.emi.emi.api.EmiRegistry;
 import igentuman.nr.api.isotope.Isotope;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.api.binding.RadiationBindings;
+import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.api.shielding.ShieldingUpgradeRegistry;
 import igentuman.nr.integration.jei.ArmorProtectionEntry;
 import igentuman.nr.integration.jei.BlockShieldingEntry;
@@ -37,6 +38,7 @@ public class ModEmiPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
+        if (!GeneralConfig.RADIATION_ENABLED.get()) return;
         registry.addCategory(NREmiCategories.ISOTOPE_STATS);
         registry.addCategory(NREmiCategories.RADIOACTIVE_ITEMS);
         registry.addCategory(NREmiCategories.ARMOR_PROTECTION);

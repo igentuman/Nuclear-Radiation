@@ -21,6 +21,7 @@ public class EntityExposureEvents {
     @SubscribeEvent
     public void onLevelTick(LevelTickEvent.Post event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
+        if (!RadiationConfig.masterEnabled()) return;
         long now = server.getGameTime();
         int interval = RadiationConfig.ENTITY_SIM_INTERVAL_TICKS.get();
         boolean stagger = RadiationConfig.STAGGER_ENTITIES.get() && interval > 1;
