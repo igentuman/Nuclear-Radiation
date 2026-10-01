@@ -3,6 +3,6 @@
   "beta": 1.0,
   "gas_protection": false,
   "neutron": 0.9,
-  "target": "mekanism:mekasuit_bodyarmour",
+  "target": "mekanism:mekasuit_bodyarmor",
   "xray": 0.9
 }
