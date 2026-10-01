@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:pu_239": {
+      "atoms": 4.744444444444444E22
+    },
+    "nr:u_238": {
+      "atoms": 3.795555555555555E23
+    }
+  },
+  "target": "modern_industrialization:le_mox_ingot"
+}

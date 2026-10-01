@@ -1,0 +1,12 @@
+{
+  "type": "block",
+  "isotopes": {
+    "nr:u_235": {
+      "atoms": 2.826E23
+    },
+    "nr:u_238": {
+      "atoms": 3.8430000000000006E26
+    }
+  },
+  "target": "modern_industrialization:uranium_block"
+}

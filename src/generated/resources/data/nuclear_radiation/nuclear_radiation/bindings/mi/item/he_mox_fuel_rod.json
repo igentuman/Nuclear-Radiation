@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:pu_239": {
+      "atoms": 1.281E24
+    },
+    "nr:u_238": {
+      "atoms": 2.562E24
+    }
+  },
+  "target": "modern_industrialization:he_mox_fuel_rod"
+}

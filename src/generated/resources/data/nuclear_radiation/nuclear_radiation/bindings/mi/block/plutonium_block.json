@@ -1,0 +1,9 @@
+{
+  "type": "block",
+  "isotopes": {
+    "nr:pu_239": {
+      "atoms": 3.843E24
+    }
+  },
+  "target": "modern_industrialization:plutonium_block"
+}

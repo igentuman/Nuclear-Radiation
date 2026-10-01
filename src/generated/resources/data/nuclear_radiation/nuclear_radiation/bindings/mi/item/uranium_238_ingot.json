@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:u_238": {
+      "atoms": 4.27E23
+    }
+  },
+  "target": "modern_industrialization:uranium_238_ingot"
+}

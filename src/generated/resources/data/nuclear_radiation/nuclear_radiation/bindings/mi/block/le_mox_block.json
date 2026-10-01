@@ -1,0 +1,12 @@
+{
+  "type": "block",
+  "isotopes": {
+    "nr:pu_239": {
+      "atoms": 4.269999999999999E23
+    },
+    "nr:u_238": {
+      "atoms": 3.4159999999999993E24
+    }
+  },
+  "target": "modern_industrialization:le_mox_block"
+}

@@ -49,6 +49,10 @@ public final class DefaultArmorProtections {
         addCustom(list, "mekanism:mekasuit_bodyarmor", 0.90, 1, 1, 0.90, false);
         addCustom(list, "mekanism:mekasuit_pants", 0.90, 1, 1, 0.90, false);
         addCustom(list, "mekanism:mekasuit_boots", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "modern_industrialization:quantum_helmet", 0.90, 1, 1, 0.90, true);
+        addCustom(list, "modern_industrialization:quantum_chestplate", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "modern_industrialization:quantum_leggings", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "modern_industrialization:quantum_boots", 0.90, 1, 1, 0.90, false);
         addCustom(list, "nuclearcraftneohaul:hazmat_helmet", 0.9, 1, 1, 0.90, true);
         addCustom(list, "nuclearcraftneohaul:hazmat_chestplate", 0.9, 1, 1, 0.90, false);
         addCustom(list, "nuclearcraftneohaul:hazmat_leggings", 0.9, 1, 1, 0.90, false);

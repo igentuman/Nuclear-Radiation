@@ -19,6 +19,20 @@ sourceSets.main.resources {
     exclude("src/generated/**/.cache") // datagen cache files
 }
 
+// Each dev run needs its own mod runtime classpath. Mods placed on the
+// additional runtime classpath are available as libraries but are not discovered.
+sourceSets {
+    portalsDev {
+        runtimeClasspath += main.runtimeClasspath
+    }
+    sableDev {
+        runtimeClasspath += main.runtimeClasspath
+    }
+    sableServerDev {
+        runtimeClasspath += main.runtimeClasspath
+    }
+}
+
 repositories {
     mavenLocal()
     maven {
@@ -85,14 +99,23 @@ neoForge {
     runs {
         client {
             client()
+            sourceSet = sourceSets.portalsDev
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
             programArguments.addAll '--width', '1920', '--height', '1080'
         }
 
+        clientSable {
+            client()
+            sourceSet = sourceSets.sableDev
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            programArguments.addAll '--width', '1920', '--height', '1080'
+        }
+
         server {
             server()
+            sourceSet = sourceSets.sableServerDev
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
@@ -103,7 +126,8 @@ neoForge {
 
         configureEach {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
-            gameDirectory = project.file("run/${name}")
+            gameDirectory = project.file(name == 'client' ? 'run/client-portals' :
+                    name == 'clientSable' ? 'run/client' : "run/${name}")
             logLevel = org.slf4j.event.Level.DEBUG
         }
     }
@@ -126,7 +150,11 @@ dependencies {
 
     compileOnly "curse.maven:hbms-nuclear-tech-ne-1449927:8062359"
 
-    implementation "curse.maven:sable-1312371:8673825"
+    // Sable and Immersive Portals 6.0.7 conflict in Player collision mixins.
+    // Keep them in separate dev runs while retaining Sable on the compile classpath.
+    compileOnly "curse.maven:sable-1312371:8673825"
+    sableDevRuntimeOnly "curse.maven:sable-1312371:8673825"
+    sableServerDevRuntimeOnly "curse.maven:sable-1312371:8673825"
 
     implementation "curse.maven:curios-309927:6529130"
     compileOnly "curse.maven:curios-309927:6529132"
@@ -183,6 +211,10 @@ dependencies {
             prefer(project.sable_companion_version)
         }
     }
+    implementation "curse.maven:modern-industrialization-405388:8863289"
+
+    portalsDevRuntimeOnly "curse.maven:cloth-config-348521:5729127"
+    portalsDevRuntimeOnly "curse.maven:immersive-portals-for-forge-355440:6667779"
 
     testImplementation platform("org.junit:junit-bom:5.10.2")
     testImplementation "org.junit.jupiter:junit-jupiter"

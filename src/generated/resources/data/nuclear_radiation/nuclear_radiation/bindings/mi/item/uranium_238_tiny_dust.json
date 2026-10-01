@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:u_238": {
+      "atoms": 4.744444444444444E22
+    }
+  },
+  "target": "modern_industrialization:uranium_238_tiny_dust"
+}

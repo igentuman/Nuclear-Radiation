@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:u_235": {
+      "atoms": 1.7079999999999997E24
+    },
+    "nr:u_238": {
+      "atoms": 1.3663999999999997E25
+    }
+  },
+  "target": "modern_industrialization:le_uranium_fuel_rod_quad"
+}

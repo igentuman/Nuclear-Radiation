@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:pu_239": {
+      "atoms": 4.744444444444444E22
+    }
+  },
+  "target": "modern_industrialization:plutonium_tiny_dust"
+}

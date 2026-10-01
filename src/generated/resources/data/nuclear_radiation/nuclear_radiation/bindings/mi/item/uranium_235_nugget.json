@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:u_235": {
+      "atoms": 4.744444444444444E22
+    }
+  },
+  "target": "modern_industrialization:uranium_235_nugget"
+}

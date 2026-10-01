@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:pu_239": {
+      "atoms": 5.271604938271604E21
+    },
+    "nr:u_238": {
+      "atoms": 4.2172839506172835E22
+    }
+  },
+  "target": "modern_industrialization:le_mox_tiny_dust"
+}

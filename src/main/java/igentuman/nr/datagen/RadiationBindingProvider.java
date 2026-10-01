@@ -82,6 +82,7 @@ public class RadiationBindingProvider implements DataProvider {
 
         addFissionFuels(list);
         addDepletedFissionFuels(list);
+        ModernIndustrializationBindings.addTo(list);
 
         return list;
     }
