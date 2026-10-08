@@ -178,7 +178,7 @@ dependencies {
     compileOnly "curse.maven:create-industry-693815:8205648"
     compileOnly "curse.maven:formicapi-1282701:8287469"
 
-    compileOnly "curse.maven:createnuclear-989797:9056910"
+    implementation "curse.maven:createnuclear-989797:9056910"
 
     compileOnly "curse.maven:bmnw-1001929:6903872"
 
