@@ -96,6 +96,7 @@ public class RadiationProfile {
     }
 
     public long advanceDecay(long currentTick, double floorBq) {
+        if (isotopes.isEmpty()) return Long.MIN_VALUE;
         long maxExpiry = Long.MIN_VALUE;
         boolean computeExpiry = floorBq > Double.NEGATIVE_INFINITY;
         List<IsotopeStack> snapshot = new ArrayList<>(isotopes.values());

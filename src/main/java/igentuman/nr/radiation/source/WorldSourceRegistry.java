@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 
@@ -75,7 +76,7 @@ public class WorldSourceRegistry {
         if (s instanceof ItemEntityRadSource ie) {
             byItemEntity.remove(ie.entityUuid());
         } else {
-            byBlock.remove(packPos(s.getPosition()));
+            byBlock.remove(packPos(s.getPosition()), s);
         }
         RadiationSimulator.get().removeSource(level, id);
     }
@@ -213,32 +214,42 @@ public class WorldSourceRegistry {
     public void tickChunkDecay(long now) {
         if (contaminatedChunks.isEmpty()) return;
         double floor = RadiationConfig.ACTIVITY_FLOOR_BQ.get();
-        List<ChunkPos> cleared = new ArrayList<>();
-        for (ChunkPos cp : contaminatedChunks) {
+        boolean raining = level.isRaining();
+        // Chunk access can fire load events that mark more chunks contaminated.
+        // Process those on the next decay tick instead of invalidating this iteration.
+        for (ChunkPos cp : new ArrayList<>(contaminatedChunks)) {
             LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
             if (chunk == null) continue;
             ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
             if (data.isEmpty()) {
-                cleared.add(cp);
+                contaminatedChunks.remove(cp);
                 continue;
             }
-            if(level.isRainingAt(chunk.getPos().getWorldPosition())) {
-                data.air().reduceAtoms(1.1111);
-                data.soil().reduceAtoms(0.999);
+            if (raining && (!data.air().isEmpty() || !data.soil().isEmpty())) {
+                int x = cp.getMinBlockX() + 8;
+                int z = cp.getMinBlockZ() + 8;
+                BlockPos surface = new BlockPos(x, chunk.getHeight(Heightmap.Types.MOTION_BLOCKING, 8, 8), z);
+                if (level.canSeeSky(surface)) {
+                    data.air().reduceAtoms(1.1111);
+                    data.soil().reduceAtoms(1.001);
+                }
             }
             data.air().advanceDecay(now, floor);
             data.water().advanceDecay(now, floor);
             data.soil().advanceDecay(now, floor);
             data.setLastDecayTick(now);
             data.markExpiryDirty();
-            if (data.isEmpty()) cleared.add(cp);
+            if (data.isEmpty()) contaminatedChunks.remove(cp);
             chunk.setUnsaved(true);
         }
-        contaminatedChunks.removeAll(cleared);
     }
 
     public void markChunkContaminated(ChunkPos cp) {
         contaminatedChunks.add(cp);
+    }
+
+    public void unmarkChunkContaminated(ChunkPos cp) {
+        contaminatedChunks.remove(cp);
     }
 
     public void setChunkRadiation(ChunkPos cp, RadiationProfile air, RadiationProfile water, RadiationProfile soil) {

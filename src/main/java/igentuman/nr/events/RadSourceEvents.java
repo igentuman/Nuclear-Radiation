@@ -7,6 +7,7 @@ import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.client.particle.MeltdownParticles;
 import igentuman.nr.radiation.source.*;
+import igentuman.nr.integration.projectexplosive.ProjectExplosiveFalloutZones;
 import igentuman.nr.radiation.storage.ChunkRadiationData;
 import igentuman.nr.radiation.storage.NRAttachments;
 import net.minecraft.core.BlockPos;
@@ -20,9 +21,9 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -69,75 +70,6 @@ public class RadSourceEvents {
     }
 
     @SubscribeEvent
-    public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
-        if (!(event.getLevel() instanceof ServerLevel server)) return;
-        BlockState state = event.getPlacedBlock();
-        BlockPos pos = event.getPos();
-        WorldSourceRegistry reg = WorldSourceRegistry.get(server);
-
-        RadiationProfile blockProfile = RadiationBindings.of(state);
-        if (!blockProfile.isEmpty()) {
-            if (RadiationConfig.blockRadiationEnabled()) {
-                reg.register(new BlockRadSource(UUID.randomUUID(), server.dimension(), pos.immutable(),
-                        blockProfile, server.getGameTime()));
-            }
-            return;
-        }
-        FluidState fluidState = state.getFluidState();
-        if (!fluidState.isEmpty()) {
-            if (RadiationConfig.fluidRadiationEnabled()) {
-                registerFluidSource(server, reg, pos, fluidState);
-            }
-            return;
-        }
-        BlockEntity be = server.getBlockEntity(pos);
-        if (be instanceof CreativeRadSourceBlockEntity creative) {
-            creative.registerSource(server);
-        }
-    }
-
-    @SubscribeEvent
-    public void onBlockBreak(BlockEvent.BreakEvent event) {
-        if (!(event.getLevel() instanceof ServerLevel server)) return;
-        WorldSourceRegistry reg = WorldSourceRegistry.get(server);
-        DecayGraph.WorldRadSource src = reg.atBlock(event.getPos());
-        if (src != null) reg.remove(src.getId());
-        if (server.getBlockEntity(event.getPos()) instanceof CreativeRadSourceBlockEntity creative) {
-            creative.removeSource(server);
-        }
-    }
-
-    @SubscribeEvent
-    public void onNeighborNotify(BlockEvent.NeighborNotifyEvent event) {
-        if (!(event.getLevel() instanceof ServerLevel server)) return;
-        BlockPos pos = event.getPos();
-        WorldSourceRegistry reg = WorldSourceRegistry.get(server);
-        FluidState fluidState = server.getFluidState(pos);
-        DecayGraph.WorldRadSource existing = reg.atBlock(pos);
-        if (!fluidState.isEmpty()) {
-            RadiationProfile p = RadiationBindings.of(fluidState);
-            if (!p.isEmpty()) {
-                if (existing == null && RadiationConfig.fluidRadiationEnabled()) {
-                    registerFluidSource(server, reg, pos, fluidState);
-                }
-                return;
-            }
-        }
-        if (existing instanceof FluidRadSource) {
-            reg.remove(existing.getId());
-        }
-    }
-
-    private void registerFluidSource(ServerLevel server, WorldSourceRegistry reg,
-                                     BlockPos pos, FluidState fluidState) {
-        RadiationProfile profile = RadiationBindings.of(fluidState);
-        if (profile.isEmpty()) return;
-        if (reg.atBlock(pos) != null) return;
-        reg.register(new FluidRadSource(UUID.randomUUID(), server.dimension(), pos.immutable(),
-                profile, server.getGameTime()));
-    }
-
-    @SubscribeEvent
     public void onChunkLoad(ChunkEvent.Load event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
         if (!(event.getChunk() instanceof LevelChunk chunk)) return;
@@ -149,6 +81,9 @@ public class RadSourceEvents {
         } else if (!data.isEmpty() && RadiationConfig.chunkContaminationEnabled()) {
             WorldSourceRegistry.get(server).markChunkContaminated(chunk.getPos());
         }
+        if (ModList.get().isLoaded("projectexplosive")) {
+            ProjectExplosiveFalloutZones.onChunkLoad(server, chunk);
+        }
         scanChunkForSources(server, chunk);
     }
 
@@ -158,6 +93,7 @@ public class RadSourceEvents {
         if (!(event.getChunk() instanceof LevelChunk chunk)) return;
         WorldSourceRegistry reg = WorldSourceRegistry.get(server);
         ChunkPos cp = chunk.getPos();
+        reg.unmarkChunkContaminated(cp);
         for (DecayGraph.WorldRadSource s : reg.all()) {
             BlockPos p = s.getPosition();
             if ((p.getX() >> 4) == cp.x && (p.getZ() >> 4) == cp.z) {
@@ -187,7 +123,7 @@ public class RadSourceEvents {
         reg.tickDecay(now, server);
         if (RadiationConfig.chunkContaminationEnabled()) {
             reg.tickChunkDecay(now);
-            if (now % interval*2 == 0) reg.spreadContamination(now, interval);
+            if (now % (interval * 2L) == 0) reg.spreadContamination(now, interval * 2L);
         }
     }
 

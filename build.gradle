@@ -78,6 +78,18 @@ repositories {
             includeGroup("dev.ryanhcode.sable-companion")
         }
     }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        // forRepositories(fg.repository) // Uncomment when using ForgeGradle
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 base {
@@ -211,7 +223,11 @@ dependencies {
             prefer(project.sable_companion_version)
         }
     }
-    implementation "curse.maven:modern-industrialization-405388:8863289"
+    compileOnly "curse.maven:modern-industrialization-405388:8863289"
+
+    dependencies {
+        implementation "maven.modrinth:3rXU9gz8:ZLwuD5gm"
+    }
 
     portalsDevRuntimeOnly "curse.maven:cloth-config-348521:5729127"
     portalsDevRuntimeOnly "curse.maven:immersive-portals-for-forge-355440:6667779"

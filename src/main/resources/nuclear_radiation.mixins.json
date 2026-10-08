@@ -17,13 +17,18 @@
     "CreateNuclearRadiationInfoMixin",
     "FissionReactorMultiblockDataMixin",
     "ItemVoltaicMixin",
+    "LevelChunkBlockChangeMixin",
     "MekRadiationManagerMixin",
     "NCMeltdownMixin",
     "NCRadiationHandlerMixin",
-    "NuclearScienceRadiationManagerMixin"
+    "NuclearScienceRadiationManagerMixin",
+    "ProjectExplosiveConfigMixin",
+    "ProjectExplosiveEnvironmentMixin",
+    "ProjectExplosiveRadiationMixin"
   ],
   "client": [
-    "client.NCTooltipHandlerMixin"
+    "client.NCTooltipHandlerMixin",
+    "client.ProjectExplosiveGeigerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

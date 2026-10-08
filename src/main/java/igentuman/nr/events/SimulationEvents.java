@@ -3,6 +3,7 @@ package igentuman.nr.events;
 import igentuman.nr.radiation.simulation.RadiationSimulator;
 import igentuman.nr.radiation.simulation.containers.ContainerRadiationTicker;
 import igentuman.nr.radiation.source.WorldSourceRegistry;
+import igentuman.nr.radiation.source.BlockSourceChangeProcessor;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -15,10 +16,12 @@ public class SimulationEvents {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         RadiationSimulator.get().startWorker();
+        BlockSourceChangeProcessor.get().startWorker();
     }
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
+        BlockSourceChangeProcessor.get().stopWorker();
         RadiationSimulator.get().stopWorker();
     }
 
@@ -32,6 +35,7 @@ public class SimulationEvents {
     @SubscribeEvent
     public void onLevelUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel server) {
+            BlockSourceChangeProcessor.get().unloadLevel(server);
             WorldSourceRegistry.get(server).saveToLevel();
             WorldSourceRegistry.unload(server);
             ContainerRadiationTicker.unloadLevel(server);
@@ -41,6 +45,7 @@ public class SimulationEvents {
     @SubscribeEvent
     public void onLevelTick(LevelTickEvent.Post event) {
         if (event.getLevel() instanceof ServerLevel server) {
+            BlockSourceChangeProcessor.get().tick(server);
             RadiationSimulator.get().tick(server);
         }
     }
