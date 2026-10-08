@@ -1,14 +1,20 @@
 package igentuman.nr.radiation.simulation.entity;
 
 import igentuman.nr.registry.NREffects;
+import igentuman.nr.registry.Isotopes;
 import igentuman.nr.effects.IsotopeSpecificProtectionEffect;
 import igentuman.nr.radiation.storage.EntityRadiationData;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Map;
 
 public final class MedicineEffectsApplier {
+
+    private static final ResourceLocation CREATE_NUCLEAR_IODINE =
+            ResourceLocation.fromNamespaceAndPath("createnuclear", "iodine");
 
     private MedicineEffectsApplier() {}
 
@@ -26,6 +32,16 @@ public final class MedicineEffectsApplier {
         data.setDecayMultiplier(decay);
 
         applyIsotopeSpecific(entity, data, NREffects.IODINE_PROTECTION, intervalTicks);
+        // Create Nuclear's iodine only boosts its own resistance attribute. Give it
+        // the same I-131 clearance effect as NR iodine while the mod is installed.
+        if (entity.getEffect(NREffects.IODINE_PROTECTION) == null) {
+            for (MobEffectInstance effect : entity.getActiveEffects()) {
+                if (CREATE_NUCLEAR_IODINE.equals(BuiltInRegistries.MOB_EFFECT.getKey(effect.getEffect().value()))) {
+                    drainIsotope(data, Isotopes.I_131, effect.getAmplifier(), intervalTicks);
+                    break;
+                }
+            }
+        }
         applyIsotopeSpecific(entity, data, NREffects.CESIUM_PURGE, intervalTicks);
     }
 
@@ -36,10 +52,14 @@ public final class MedicineEffectsApplier {
         MobEffectInstance inst = entity.getEffect(holder);
         if (inst == null) return;
         String targetId = holder.get().targetIsotopeId();
+        drainIsotope(data, targetId, inst.getAmplifier(), intervalTicks);
+    }
+
+    private static void drainIsotope(EntityRadiationData data, String targetId, int amplifier, int intervalTicks) {
         Map<String, Double> internal = data.internalContamination();
         Double atoms = internal.get(targetId);
         if (atoms == null) return;
-        double drainPerTick = 0.02 * (inst.getAmplifier() + 1);
+        double drainPerTick = 0.02 * (amplifier + 1);
         double remaining = atoms * (1.0 - Math.min(0.9, drainPerTick * intervalTicks));
         if (remaining < 1.0) internal.remove(targetId);
         else internal.put(targetId, remaining);

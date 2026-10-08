@@ -108,6 +108,49 @@ public class RadiationBindingProvider implements DataProvider {
                 .isotope(Isotopes.U_238, 11.72e24)
                 .build());
 
+        list.add(Isotope.BindingDefinition.builder("createnuclear_raw_uranium")
+                .item(rec("createnuclear:raw_uranium"))
+                .isotope(Isotopes.U_238, 1.0e25).isotope(Isotopes.U_235, 7.0e22).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_uranium_powder")
+                .item(rec("createnuclear:uranium_powder"))
+                .isotope(Isotopes.U_238, 1.0e25).isotope(Isotopes.U_235, 7.0e22).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_uranium_rod")
+                .item(rec("createnuclear:uranium_rod"))
+                .isotope(Isotopes.U_238, 2.0e26).isotope(Isotopes.U_235, 1.4e24).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_crushed_uranium")
+                .item(rec("create:crushed_raw_uranium"))
+                .isotope(Isotopes.U_238, 1.0e25).isotope(Isotopes.U_235, 7.0e22).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_uranium_bucket")
+                .item(rec("createnuclear:uranium_bucket"))
+                .isotope(Isotopes.U_238, 2.0e26).isotope(Isotopes.U_235, 1.4e24).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_liquid_uranium")
+                .fluid(rec("createnuclear:uranium"))
+                .isotope(Isotopes.U_238, 2.0e26).isotope(Isotopes.U_235, 1.4e24).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_uranium_ore")
+                .block(rec("createnuclear:uranium_ore"))
+                .isotope(Isotopes.U_238, 1.0e25).isotope(Isotopes.U_235, 7.0e22).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_uranium_ore_item")
+                .item(rec("createnuclear:uranium_ore"))
+                .isotope(Isotopes.U_238, 1.0e25).isotope(Isotopes.U_235, 7.0e22).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_deepslate_uranium_ore")
+                .block(rec("createnuclear:deepslate_uranium_ore"))
+                .isotope(Isotopes.U_238, 1.0e25).isotope(Isotopes.U_235, 7.0e22).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_deepslate_uranium_ore_item")
+                .item(rec("createnuclear:deepslate_uranium_ore"))
+                .isotope(Isotopes.U_238, 1.0e25).isotope(Isotopes.U_235, 7.0e22).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_raw_uranium_block")
+                .block(rec("createnuclear:raw_uranium_block"))
+                .isotope(Isotopes.U_238, 9.0e25).isotope(Isotopes.U_235, 6.3e23).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_raw_uranium_block_item")
+                .item(rec("createnuclear:raw_uranium_block"))
+                .isotope(Isotopes.U_238, 9.0e25).isotope(Isotopes.U_235, 6.3e23).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_enriching_fire")
+                .block(rec("createnuclear:enriching_fire"))
+                .isotope(Isotopes.U_238, 1.0e24).isotope(Isotopes.U_235, 7.0e21).build());
+        list.add(Isotope.BindingDefinition.builder("createnuclear_enriching_campfire")
+                .block(rec("createnuclear:enriching_campfire"))
+                .isotope(Isotopes.U_238, 1.0e24).isotope(Isotopes.U_235, 7.0e21).build());
+
         list.add(Isotope.BindingDefinition.builder("fuel_rods/heuo2")
                 .itemTag(cTag("fuel_rods/heuo2"))
                 .isotope(Isotopes.U_235, 19.72e19)

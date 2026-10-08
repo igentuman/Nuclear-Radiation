@@ -73,15 +73,15 @@ public final class DefaultArmorProtections {
         addCustom(list, "createnucleartech:elite_hazmat_chestplate", 0.90, 1, 1, 0.90, false);
         addCustom(list, "createnucleartech:elite_hazmat_leggings",   0.90, 1, 1, 0.90, false);
         addCustom(list, "createnucleartech:elite_hazmat_boots",      0.90, 1, 1, 0.90, false);
+        addCustom(list, "createnuclear:default_anti_radiation_helmet", 0.85, 1, 1, 0.85, true);
+        addCustom(list, "createnuclear:default_anti_radiation_chestplate", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "createnuclear:default_anti_radiation_leggings", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "createnuclear:default_anti_radiation_boots", 0.85, 1, 1, 0.85, false);
         return list;
     }
 
     public static Map<TagKey<Item>, ArmorProtectionRegistry.Protection> tagDefaults() {
         Map<TagKey<Item>, ArmorProtectionRegistry.Protection> map = new LinkedHashMap<>();
-        addTag(map, "createnuclear:anti_radiation_helmet_dye",     0.85, 1.0, 1.0, 0.85, true);
-        addTag(map, "createnuclear:anti_radiation_chestplate_dye", 0.85, 1.0, 1.0, 0.85, false);
-        addTag(map, "createnuclear:anti_radiation_leggings_dye",   0.85, 1.0, 1.0, 0.85, false);
-        addTag(map, "createnuclear:anti_radiation_boots_dye",      0.85, 1.0, 1.0, 0.85, false);
         return map;
     }
 

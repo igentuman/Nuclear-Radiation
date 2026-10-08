@@ -9,14 +9,18 @@
     "BlockItemVoltaicMixin",
     "CapabilityRadiationRecipientMixin",
     "CreateNTRadiationDataMixin",
+    "CreateNuclearDamageMixin",
+    "CreateNuclearExplosionMixin",
+    "CreateNuclearMeltdownMixin",
+    "CreateNuclearRadiationCapabilityMixin",
+    "CreateNuclearRadiationEffectMixin",
+    "CreateNuclearRadiationInfoMixin",
     "FissionReactorMultiblockDataMixin",
     "ItemVoltaicMixin",
     "MekRadiationManagerMixin",
     "NCMeltdownMixin",
     "NCRadiationHandlerMixin",
-    "NuclearScienceRadiationManagerMixin",
-    "RadiationEffectMixin",
-    "ReactorCoreEntityMixin"
+    "NuclearScienceRadiationManagerMixin"
   ],
   "client": [
     "client.NCTooltipHandlerMixin"

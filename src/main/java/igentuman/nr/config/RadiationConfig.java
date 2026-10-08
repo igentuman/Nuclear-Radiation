@@ -192,6 +192,7 @@ public final class RadiationConfig {
                                 "nuclearcraftneohaul:wasteland=1500.0",
                                 "nuclearcraft:wasteland=1500.0",
                                 "createnucleartech:fallout=1500.0",
+                                "createnuclear:irradiated_land=1500.0",
                                 "minecraft:deep_dark=70.0"
                         ),
                         () -> "minecraft:plains=0.1",
