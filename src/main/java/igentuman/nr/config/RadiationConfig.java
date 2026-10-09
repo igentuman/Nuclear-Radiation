@@ -194,6 +194,9 @@ public final class RadiationConfig {
                                 "createnucleartech:fallout=1500.0",
                                 "createnuclear:irradiated_land=1500.0",
                                 "projectexplosive:nuclear_wasteland=1500.0",
+                                "the_wasteland_reworked:radioactive_wasteland=1500.0",
+                                "the_wasteland_reworked:polluted_ocean=1500.0",
+                                "the_wasteland_reworked:decayed_forest=1500.0",
                                 "minecraft:deep_dark=70.0"
                         ),
                         () -> "minecraft:plains=0.1",

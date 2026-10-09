@@ -228,7 +228,7 @@ dependencies {
     dependencies {
         implementation "maven.modrinth:3rXU9gz8:ZLwuD5gm"
     }
-
+    implementation "curse.maven:thewasteland-1449485:8314798"
     portalsDevRuntimeOnly "curse.maven:cloth-config-348521:5729127"
     portalsDevRuntimeOnly "curse.maven:immersive-portals-for-forge-355440:6667779"
 

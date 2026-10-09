@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import igentuman.nr.NuclearRadiation;
 import igentuman.nr.api.binding.RadiationBindingBuilder;
+import igentuman.nr.api.binding.Bindings;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -28,6 +29,7 @@ public class RadiationBindingsReloadListener extends SimpleJsonResourceReloadLis
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager mgr, ProfilerFiller profiler) {
+        Bindings.clear();
         for (Map.Entry<ResourceLocation, JsonElement> e : map.entrySet()) {
             try {
                 JsonObject obj = e.getValue().getAsJsonObject();
@@ -72,6 +74,7 @@ public class RadiationBindingsReloadListener extends SimpleJsonResourceReloadLis
         }
 
         NREvents.runAfterBindingsReload();
+        Bindings.rebuild();
     }
 
     @SuppressWarnings("unused")

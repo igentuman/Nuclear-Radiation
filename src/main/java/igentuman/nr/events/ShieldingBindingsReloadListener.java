@@ -85,6 +85,7 @@ public class ShieldingBindingsReloadListener extends SimpleJsonResourceReloadLis
         }
 
         NREvents.runAfterShieldingReload();
+        ShieldingBindings.rebuild();
     }
 
     private static double readDouble(JsonObject obj, String key, double fallback) {

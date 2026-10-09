@@ -51,9 +51,9 @@ public class ArmorProtectionReloadListener extends SimpleJsonResourceReloadListe
                     ArmorProtectionRegistry.registerTag(tag, protection);
                 } else {
                     ResourceLocation target = ResourceLocation.parse(targetStr);
-                    Item item = BuiltInRegistries.ITEM.get(target);
+                    Item item = BuiltInRegistries.ITEM.getOptional(target).orElse(null);
                     if (item == null) {
-                        NuclearRadiation.LOGGER.warn("Armor protection target not found: {}", target);
+                        NuclearRadiation.LOGGER.debug("Armor protection target not found: {}", target);
                         continue;
                     }
                     ArmorProtectionRegistry.register(item, protection);
@@ -64,14 +64,12 @@ public class ArmorProtectionReloadListener extends SimpleJsonResourceReloadListe
         }
 
         NREvents.runAfterArmorReload();
+        ArmorProtectionRegistry.rebuild();
     }
 
     private static void applyDefinition(ArmorProtectionDefinition def) {
-        Item item = BuiltInRegistries.ITEM.get(def.target);
-        if (item == null) {
-            NuclearRadiation.LOGGER.warn("Default armor target not found: {}", def.target);
-            return;
-        }
+        Item item = BuiltInRegistries.ITEM.getOptional(def.target).orElse(null);
+        if (item == null) return;
         ArmorProtectionRegistry.register(item,
                 new ArmorProtectionRegistry.Protection(def.xray, def.alpha, def.beta, def.neutron, def.protectsFromGas));
     }

@@ -134,6 +134,10 @@ public record DatapackRegistrySyncPayload(
                 }
             }
 
+            Bindings.rebuild();
+            ArmorProtectionRegistry.rebuild();
+            ShieldingBindings.rebuild();
+
             NuclearRadiation.LOGGER.debug("Successfully synced NR Datapacks from server. Loaded {} isotopes, {} decay edges, {} bindings, {} armors, {} shields.",
                     isotopes().size(), decayGraph().size(), bindings().size(), armors().size(), shieldingBlocks().size());
         });

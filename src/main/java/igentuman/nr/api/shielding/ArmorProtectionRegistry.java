@@ -1,6 +1,8 @@
 package igentuman.nr.api.shielding;
 
+import igentuman.nr.api.binding.ResolvedTagBindings;
 import igentuman.nr.api.shielding.IRadiationArmor;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class ArmorProtectionRegistry {
@@ -19,24 +22,28 @@ public final class ArmorProtectionRegistry {
 
     private static final Map<Item, Protection> BY_ITEM = new HashMap<>();
     private static final Map<TagKey<Item>, Protection> BY_TAG = new HashMap<>();
+    private static volatile Map<Item, Protection> resolved;
 
     private ArmorProtectionRegistry() {}
 
     public static void register(Item item, Protection p) {
-        BY_ITEM.put(item, p);
+        synchronized (BY_ITEM) { BY_ITEM.put(item, p); resolved = null; }
     }
 
     public static void registerTag(TagKey<Item> tag, Protection p) {
-        BY_TAG.put(tag, p);
+        synchronized (BY_ITEM) { BY_TAG.put(tag, p); resolved = null; }
     }
 
     public static void remove(Item item) {
-        BY_ITEM.remove(item);
+        synchronized (BY_ITEM) { BY_ITEM.remove(item); resolved = null; }
     }
 
     public static void clear() {
-        BY_ITEM.clear();
-        BY_TAG.clear();
+        synchronized (BY_ITEM) {
+            BY_ITEM.clear();
+            BY_TAG.clear();
+            resolved = null;
+        }
     }
 
     public static Map<Item, Protection> all() {
@@ -47,18 +54,33 @@ public final class ArmorProtectionRegistry {
         return Collections.unmodifiableMap(BY_TAG);
     }
 
+    public static void rebuild() {
+        synchronized (BY_ITEM) {
+            resolved = compile();
+        }
+    }
+
+    private static Map<Item, Protection> compile() {
+        Map<Item, Protection> protections = new LinkedHashMap<>(
+                ResolvedTagBindings.expand(BuiltInRegistries.ITEM, BY_TAG));
+        protections.putAll(BY_ITEM);
+        return Map.copyOf(protections);
+    }
+
     public static Protection get(ItemStack stack) {
         if (stack.isEmpty()) return Protection.NONE;
         if (stack.getItem() instanceof IRadiationArmor a) {
             return new Protection(a.xrayProtection(), a.alphaProtection(),
                     a.betaProtection(), a.neutronProtection(), a.gasProtection());
         }
-        Protection p = BY_ITEM.get(stack.getItem());
-        if (p != null) return applyUpgrade(stack, p);
-        for (Map.Entry<TagKey<Item>, Protection> e : BY_TAG.entrySet()) {
-            if (stack.is(e.getKey())) return applyUpgrade(stack, e.getValue());
+        Map<Item, Protection> current = resolved;
+        if (current == null) {
+            synchronized (BY_ITEM) {
+                if (resolved == null) resolved = compile();
+                current = resolved;
+            }
         }
-        return applyUpgrade(stack, Protection.NONE);
+        return applyUpgrade(stack, current.getOrDefault(stack.getItem(), Protection.NONE));
     }
 
     private static Protection applyUpgrade(ItemStack stack, Protection base) {

@@ -38,6 +38,18 @@ public final class DefaultShieldingBindings {
         list.add(ShieldingBindingDefinition.tierBinding("shielding_extra_heavy",
                 RadiationTags.BLOCK_SHIELD_EXTRA_HEAVY.location(), true, ShieldingTier.EXTRA_HEAVY));
 
+        // The Wasteland Reworked's lead plating and radiation-proof containment blocks.
+        for (String name : new String[]{"lead_plating", "cut_lead_plating", "cut_lead_plating_slab",
+                "cut_lead_plating_stairs", "rusted_lead_plating", "rusted_cut_lead_plating",
+                "rusted_cut_lead_plating_slab", "rusted_cut_lead_plating_stairs"}) {
+            list.add(ShieldingBindingDefinition.tierBinding("the_wasteland_" + name,
+                    net.minecraft.resources.ResourceLocation.parse("the_wasteland_reworked:" + name),
+                    false, ShieldingTier.EXTRA_HEAVY));
+        }
+        list.add(ShieldingBindingDefinition.tierBinding("the_wasteland_radiation_proof",
+                net.minecraft.resources.ResourceLocation.parse("the_wasteland_reworked:radiation_proof"),
+                true, ShieldingTier.HEAVY));
+
         return list;
     }
 

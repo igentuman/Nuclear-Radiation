@@ -77,6 +77,12 @@ public final class DefaultArmorProtections {
         addCustom(list, "createnuclear:default_anti_radiation_chestplate", 0.85, 1, 1, 0.85, false);
         addCustom(list, "createnuclear:default_anti_radiation_leggings", 0.85, 1, 1, 0.85, false);
         addCustom(list, "createnuclear:default_anti_radiation_boots", 0.85, 1, 1, 0.85, false);
+        // Balance estimates: gas mask filters intake; hazmat pieces match NR's other suits.
+        addCustom(list, "the_wasteland_reworked:gas_mask_helmet", 0.08, 0.9, 0.35, 0.04, true);
+        addCustom(list, "the_wasteland_reworked:hazmat_suit_helmet", 0.85, 1, 1, 0.85, true);
+        addCustom(list, "the_wasteland_reworked:hazmat_suit_chestplate", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "the_wasteland_reworked:hazmat_suit_leggings", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "the_wasteland_reworked:hazmat_suit_boots", 0.85, 1, 1, 0.85, false);
         return list;
     }
 

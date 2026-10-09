@@ -3,21 +3,27 @@ package igentuman.nr.client;
 import igentuman.nr.network.ClientRadiationCache;
 import igentuman.nr.items.DosimeterItem;
 import igentuman.nr.items.GeigerCounterItem;
+import igentuman.nr.integration.thewasteland.TheWastelandGeiger;
 import igentuman.nr.util.TextUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.ModList;
 
 public class RadiationHudLayer implements LayeredDraw.Layer {
 
     private static final int BAR_WIDTH = 120;
     private static final int BAR_HEIGHT = 6;
     private static final double LETHAL_TOTAL_SV = 50.0; // ~LD50 acute whole-body: bar full
+    private static final ResourceLocation WASTELAND_GEIGER =
+            ResourceLocation.parse("the_wasteland_reworked:geiger_counter");
 
     @Override
     public void render(GuiGraphics graphics, DeltaTracker delta) {
@@ -25,7 +31,9 @@ public class RadiationHudLayer implements LayeredDraw.Layer {
         Player p = mc.player;
         if (p == null) return;
 
-        boolean geigerHeld = isHeld(p, GeigerCounterItem.class);
+        boolean geigerHeld = isHeld(p, GeigerCounterItem.class)
+                || isHeldItem(p, WASTELAND_GEIGER)
+                || (ModList.get().isLoaded("the_wasteland_reworked") && TheWastelandGeiger.isEquipped(p));
         boolean dosiPresent = hasInInventory(p, DosimeterItem.class);
         if (!geigerHeld && !dosiPresent) return;
 
@@ -89,6 +97,11 @@ public class RadiationHudLayer implements LayeredDraw.Layer {
 
     private boolean isHeld(Player p, Class<?> cls) {
         return matches(p.getMainHandItem(), cls) || matches(p.getOffhandItem(), cls);
+    }
+
+    private boolean isHeldItem(Player p, ResourceLocation id) {
+        return id.equals(BuiltInRegistries.ITEM.getKey(p.getMainHandItem().getItem()))
+                || id.equals(BuiltInRegistries.ITEM.getKey(p.getOffhandItem().getItem()));
     }
 
     private boolean hasInInventory(Player p, Class<?> cls) {

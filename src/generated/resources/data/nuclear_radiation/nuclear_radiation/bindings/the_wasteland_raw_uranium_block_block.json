@@ -1,0 +1,12 @@
+{
+  "type": "block",
+  "isotopes": {
+    "nr:u_235": {
+      "atoms": 1.66E23
+    },
+    "nr:u_238": {
+      "atoms": 2.26E25
+    }
+  },
+  "target": "the_wasteland_reworked:raw_uranium_block"
+}

@@ -84,6 +84,7 @@ public class RadiationBindingProvider implements DataProvider {
         addDepletedFissionFuels(list);
         ModernIndustrializationBindings.addTo(list);
         ProjectExplosiveBindings.addTo(list);
+        TheWastelandBindings.addTo(list);
 
         return list;
     }

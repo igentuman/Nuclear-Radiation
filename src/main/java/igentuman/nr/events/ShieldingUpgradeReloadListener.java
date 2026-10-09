@@ -37,9 +37,9 @@ public class ShieldingUpgradeReloadListener extends SimpleJsonResourceReloadList
                 double value = obj.get("value").getAsDouble();
 
                 ResourceLocation target = ResourceLocation.parse(targetStr);
-                Item item = BuiltInRegistries.ITEM.get(target);
+                Item item = BuiltInRegistries.ITEM.getOptional(target).orElse(null);
                 if (item == null) {
-                    NuclearRadiation.LOGGER.warn("Shielding upgrade target not found: {}", target);
+                    NuclearRadiation.LOGGER.debug("Shielding upgrade target not found: {}", target);
                     continue;
                 }
                 ShieldingUpgradeRegistry.register(item, value);
@@ -50,11 +50,8 @@ public class ShieldingUpgradeReloadListener extends SimpleJsonResourceReloadList
     }
 
     private static void applyDefinition(ShieldingUpgradeDefinition def) {
-        Item item = BuiltInRegistries.ITEM.get(def.target);
-        if (item == null) {
-            NuclearRadiation.LOGGER.warn("Default shielding upgrade target not found: {}", def.target);
-            return;
-        }
+        Item item = BuiltInRegistries.ITEM.getOptional(def.target).orElse(null);
+        if (item == null) return;
         ShieldingUpgradeRegistry.register(item, def.value);
     }
 }

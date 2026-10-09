@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:cs_137": {
+      "atoms": 8.0E17
+    },
+    "nr:sr_90": {
+      "atoms": 4.0E17
+    }
+  },
+  "target": "the_wasteland_reworked:incrusted_wasteland_moss"
+}

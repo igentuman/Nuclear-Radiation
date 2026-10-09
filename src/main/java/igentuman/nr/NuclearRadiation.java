@@ -3,9 +3,12 @@ package igentuman.nr;
 import igentuman.nr.block.CreativeRadSourceBlock;
 import igentuman.nr.block.FalloutDustBlock;
 import igentuman.nr.block.CreativeRadSourceBlockEntity;
+import igentuman.nr.api.binding.Bindings;
+import igentuman.nr.api.shielding.ArmorProtectionRegistry;
 import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.events.*;
 import igentuman.nr.radiation.source.Corium;
+import igentuman.nr.radiation.shielding.world.ShieldingBindings;
 import igentuman.nr.config.CoriumConfig;
 import igentuman.nr.registry.*;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +50,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -202,6 +206,14 @@ public class NuclearRadiation {
         event.addListener(new ShieldingBindingsReloadListener());
         event.addListener(new ArmorProtectionReloadListener());
         event.addListener(new ShieldingUpgradeReloadListener());
+    }
+
+    @SubscribeEvent
+    public void onTagsUpdated(TagsUpdatedEvent event) {
+        if (!event.shouldUpdateStaticData()) return;
+        Bindings.rebuild();
+        ShieldingBindings.rebuild();
+        ArmorProtectionRegistry.rebuild();
     }
 
     public static ResourceLocation rl(String path) {

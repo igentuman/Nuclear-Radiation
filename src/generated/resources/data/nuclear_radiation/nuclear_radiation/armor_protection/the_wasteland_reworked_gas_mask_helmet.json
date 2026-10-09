@@ -1,0 +1,8 @@
+{
+  "alpha": 0.9,
+  "beta": 0.35,
+  "gas_protection": true,
+  "neutron": 0.04,
+  "target": "the_wasteland_reworked:gas_mask_helmet",
+  "xray": 0.08
+}

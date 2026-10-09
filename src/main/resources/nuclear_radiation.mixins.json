@@ -24,11 +24,19 @@
     "NuclearScienceRadiationManagerMixin",
     "ProjectExplosiveConfigMixin",
     "ProjectExplosiveEnvironmentMixin",
-    "ProjectExplosiveRadiationMixin"
+    "ProjectExplosiveRadiationMixin",
+    "TheWastelandAntiRadMixin",
+    "TheWastelandCreativePillMixin",
+    "TheWastelandDoseMixin",
+    "TheWastelandExposureMixin",
+    "TheWastelandGeigerSoundMixin",
+    "TheWastelandImmunityMixin",
+    "TheWastelandResistanceMixin"
   ],
   "client": [
     "client.NCTooltipHandlerMixin",
-    "client.ProjectExplosiveGeigerMixin"
+    "client.ProjectExplosiveGeigerMixin",
+    "client.TheWastelandGeigerOverlayMixin"
   ],
   "injectors": {
     "defaultRequire": 1

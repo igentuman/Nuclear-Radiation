@@ -1,5 +1,6 @@
 package igentuman.nr.radiation.shielding.world;
 
+import igentuman.nr.api.binding.ResolvedTagBindings;
 import igentuman.nr.api.shielding.ShieldingTier;
 import igentuman.nr.radiation.shielding.world.ShieldingRegistry.Coeffs;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -10,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -34,6 +36,7 @@ public final class ShieldingBindings {
     private static final Map<ResourceLocation, ShieldEntry> BLOCKS = new LinkedHashMap<>();
     private static final Map<TagKey<Block>, ShieldEntry> BLOCK_TAGS = new LinkedHashMap<>();
     private static final EnumMap<ShieldingTier, Coeffs> TIER_PRESETS = new EnumMap<>(ShieldingTier.class);
+    private static volatile Map<Block, Coeffs> resolved;
 
     static {
         seedPresets();
@@ -52,7 +55,7 @@ public final class ShieldingBindings {
     }
 
     public static void setTierPreset(ShieldingTier tier, Coeffs coeffs) {
-        synchronized (LOCK) { TIER_PRESETS.put(tier, coeffs); }
+        synchronized (LOCK) { TIER_PRESETS.put(tier, coeffs); resolved = null; }
     }
 
     public static Coeffs tierPreset(ShieldingTier tier) {
@@ -63,19 +66,19 @@ public final class ShieldingBindings {
     }
 
     public static void putBlock(ResourceLocation id, ShieldEntry entry) {
-        synchronized (LOCK) { BLOCKS.put(id, entry); }
+        synchronized (LOCK) { BLOCKS.put(id, entry); resolved = null; }
     }
 
     public static void putBlockTag(TagKey<Block> tag, ShieldEntry entry) {
-        synchronized (LOCK) { BLOCK_TAGS.put(tag, entry); }
+        synchronized (LOCK) { BLOCK_TAGS.put(tag, entry); resolved = null; }
     }
 
     public static void removeBlock(ResourceLocation id) {
-        synchronized (LOCK) { BLOCKS.remove(id); }
+        synchronized (LOCK) { BLOCKS.remove(id); resolved = null; }
     }
 
     public static void removeBlockTag(TagKey<Block> tag) {
-        synchronized (LOCK) { BLOCK_TAGS.remove(tag); }
+        synchronized (LOCK) { BLOCK_TAGS.remove(tag); resolved = null; }
     }
 
     public static void clear() {
@@ -84,29 +87,40 @@ public final class ShieldingBindings {
             BLOCK_TAGS.clear();
             TIER_PRESETS.clear();
             seedPresets();
+            resolved = null;
         }
+    }
+
+    /** Resolve tags and tier coefficients once after a datapack reload. */
+    public static void rebuild() {
+        synchronized (LOCK) {
+            resolved = compile();
+        }
+    }
+
+    private static Map<Block, Coeffs> compile() {
+        Map<Block, ShieldEntry> entries = ResolvedTagBindings.compile(
+                BuiltInRegistries.BLOCK, BLOCK_TAGS, BLOCKS);
+        Map<Block, Coeffs> coefficients = new HashMap<>();
+        for (Map.Entry<Block, ShieldEntry> entry : entries.entrySet()) {
+            ShieldEntry shield = entry.getValue();
+            Coeffs coeffs = shield.raw() != null ? shield.raw()
+                    : TIER_PRESETS.getOrDefault(shield.tier(), shield.tier().defaultCoeffs());
+            coefficients.put(entry.getKey(), coeffs);
+        }
+        return Map.copyOf(coefficients);
     }
 
     /** Resolve attenuation coefficients for a block state. Direct block id binding wins over tag bindings. */
     @Nullable
     public static Coeffs resolve(BlockState state) {
-        Block block = state.getBlock();
-        ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
-        ShieldEntry direct;
-        Map<TagKey<Block>, ShieldEntry> tagsSnapshot;
-        synchronized (LOCK) {
-            direct = BLOCKS.get(id);
-            if (direct == null) {
-                tagsSnapshot = new LinkedHashMap<>(BLOCK_TAGS);
-            } else {
-                tagsSnapshot = null;
+        Map<Block, Coeffs> current = resolved;
+        if (current == null) {
+            synchronized (LOCK) {
+                if (resolved == null) resolved = compile();
+                current = resolved;
             }
         }
-        if (direct != null) return direct.resolve();
-
-        for (Map.Entry<TagKey<Block>, ShieldEntry> e : tagsSnapshot.entrySet()) {
-            if (state.is(e.getKey())) return e.getValue().resolve();
-        }
-        return null;
+        return current.get(state.getBlock());
     }
 }
