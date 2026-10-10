@@ -1,0 +1,5 @@
+{
+  "type": "nuclear_radiation:shielding_upgrade",
+  "addition": "#nuclear_radiation:shielding_upgrade",
+  "base": "#c:armors"
+}

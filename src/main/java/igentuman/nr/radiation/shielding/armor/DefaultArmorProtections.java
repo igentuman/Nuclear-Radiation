@@ -1,0 +1,131 @@
+package igentuman.nr.radiation.shielding.armor;
+
+import igentuman.nr.api.shielding.ArmorProtectionDefinition;
+import igentuman.nr.api.shielding.ArmorProtectionRegistry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static igentuman.nr.datagen.RadiationBindingProvider.rec;
+
+
+public final class DefaultArmorProtections {
+    private DefaultArmorProtections() {}
+
+    public static List<ArmorProtectionDefinition> defaults() {
+        List<ArmorProtectionDefinition> list = new ArrayList<>();
+
+        addSet(list, "minecraft:iron",      0.03, 0.20, 0.07, 0.01, false);
+        addSet(list, "minecraft:golden",    0.08, 0.22, 0.10, 0.02, false);
+        addSet(list, "minecraft:netherite", 0.10, 0.25, 0.15, 0.04, false);
+        addSet(list, "nuclear_radiation:hazmat", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "creatingspace:basic_spacesuit_helmet", 0.7, 1, 1, 0.7, true);
+        addCustom(list, "creatingspace:copper_oxygen_backtank", 0.42, 1, 1, 0.42, false);
+        addCustom(list, "creatingspace:basic_spacesuit_leggings", 0.7, 1, 1, 0.7, false);
+        addCustom(list, "creatingspace:basic_spacesuit_boots", 0.7, 1, 1, 0.7, false);
+        addCustom(list, "creatingspace:advanced_spacesuit_helmet", 0.85, 1, 1, 0.85, true);
+        addCustom(list, "creatingspace:netherite_oxygen_backtank", 0.55, 1, 1, 0.55, false);
+        addCustom(list, "creatingspace:advanced_spacesuit_leggings", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "creatingspace:advanced_spacesuit_boots", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "nuclearscience:hazmathelmet", 0.9, 1, 1, 0.90, true);
+        addCustom(list, "nuclearscience:hazmatplate", 0.9, 1, 1, 0.90, false);
+        addCustom(list, "nuclearscience:hazmatlegs", 0.9, 1, 1, 0.90, false);
+        addCustom(list, "nuclearscience:hazmatboots", 0.9, 1, 1, 0.90, false);
+        addCustom(list, "nuclearscience:reinforcedhazmathelmet", 0.90, 1, 20, 0.90, true);
+        addCustom(list, "nuclearscience:reinforcedhazmatplate", 0.90, 1, 20, 0.90, false);
+        addCustom(list, "nuclearscience:reinforcedhazmatlegs", 0.90, 1, 20, 0.90, false);
+        addCustom(list, "nuclearscience:reinforcedhazmatboots", 0.90, 1, 20, 0.90, false);
+        addCustom(list, "mekanism:hazmat_mask", 0.9, 1, 1, 0.90, true);
+        addCustom(list, "mekanism:hazmat_gown", 0.9, 1, 1, 0.90, false);
+        addCustom(list, "mekanism:hazmat_pants", 0.9, 1, 1, 0.90, false);
+        addCustom(list, "mekanism:hazmat_boots", 0.9, 1, 1, 0.90, false);
+        addCustom(list, "mekanism:mekasuit_helmet", 0.90, 1, 1, 0.90, true);
+        addCustom(list, "mekanism:mekasuit_bodyarmor", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "mekanism:mekasuit_pants", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "mekanism:mekasuit_boots", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "modern_industrialization:quantum_helmet", 0.90, 1, 1, 0.90, true);
+        addCustom(list, "modern_industrialization:quantum_chestplate", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "modern_industrialization:quantum_leggings", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "modern_industrialization:quantum_boots", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "nuclearcraftneohaul:hazmat_helmet", 0.9, 1, 1, 0.90, true);
+        addCustom(list, "nuclearcraftneohaul:hazmat_chestplate", 0.9, 1, 1, 0.90, false);
+        addCustom(list, "nuclearcraftneohaul:hazmat_leggings", 0.9, 1, 1, 0.90, false);
+        addCustom(list, "nuclearcraftneohaul:hazmat_boots", 0.9, 1, 1, 0.90, false);
+        // MEGATON 1.5.2: four pieces block 92%, 88%, and 100% of its own
+        // radiation respectively. NR composes per-piece protection multiplicatively.
+        // The values below match the complete hazmat/MOPP sets; Juggernaut is
+        // capped below 100% per piece so a single piece is not fully protective.
+        addMegatonSet(list, "hazmat", 0.468, false);
+        addMegatonSet(list, "mopp", 0.411, true);
+        addMegatonSet(list, "juggernaut", 0.527, true);
+        addCustom(list, "createnucleartech:basic_hazmat_helmet",      0.80, 1, 1, 0.80, true);
+        addCustom(list, "createnucleartech:basic_hazmat_chestplate",  0.80, 1, 1, 0.80, false);
+        addCustom(list, "createnucleartech:basic_hazmat_leggings",    0.80, 1, 1, 0.80, false);
+        addCustom(list, "createnucleartech:basic_hazmat_boots",       0.80, 1, 1, 0.80, false);
+        addCustom(list, "createnucleartech:advanced_hazmat_helmet",     0.85, 1, 1, 0.85, true);
+        addCustom(list, "createnucleartech:advanced_hazmat_chestplate", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "createnucleartech:advanced_hazmat_leggings",   0.85, 1, 1, 0.85, false);
+        addCustom(list, "createnucleartech:advanced_hazmat_boots",      0.85, 1, 1, 0.85, false);
+        addCustom(list, "createnucleartech:reinforced_hazmat_helmet",     0.90, 1, 1, 0.90, true);
+        addCustom(list, "createnucleartech:reinforced_hazmat_chestplate", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "createnucleartech:reinforced_hazmat_leggings",   0.90, 1, 1, 0.90, false);
+        addCustom(list, "createnucleartech:reinforced_hazmat_boots",      0.90, 1, 1, 0.90, false);
+        addCustom(list, "createnucleartech:elite_hazmat_helmet",     0.90, 1, 1, 0.90, true);
+        addCustom(list, "createnucleartech:elite_hazmat_chestplate", 0.90, 1, 1, 0.90, false);
+        addCustom(list, "createnucleartech:elite_hazmat_leggings",   0.90, 1, 1, 0.90, false);
+        addCustom(list, "createnucleartech:elite_hazmat_boots",      0.90, 1, 1, 0.90, false);
+        addCustom(list, "createnuclear:default_anti_radiation_helmet", 0.85, 1, 1, 0.85, true);
+        addCustom(list, "createnuclear:default_anti_radiation_chestplate", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "createnuclear:default_anti_radiation_leggings", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "createnuclear:default_anti_radiation_boots", 0.85, 1, 1, 0.85, false);
+        // Balance estimates: gas mask filters intake; hazmat pieces match NR's other suits.
+        addCustom(list, "the_wasteland_reworked:gas_mask_helmet", 0.08, 0.9, 0.35, 0.04, true);
+        addCustom(list, "the_wasteland_reworked:hazmat_suit_helmet", 0.85, 1, 1, 0.85, true);
+        addCustom(list, "the_wasteland_reworked:hazmat_suit_chestplate", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "the_wasteland_reworked:hazmat_suit_leggings", 0.85, 1, 1, 0.85, false);
+        addCustom(list, "the_wasteland_reworked:hazmat_suit_boots", 0.85, 1, 1, 0.85, false);
+        return list;
+    }
+
+    public static Map<TagKey<Item>, ArmorProtectionRegistry.Protection> tagDefaults() {
+        Map<TagKey<Item>, ArmorProtectionRegistry.Protection> map = new LinkedHashMap<>();
+        return map;
+    }
+
+    private static void addTag(Map<TagKey<Item>, ArmorProtectionRegistry.Protection> map, String tag,
+                               double xray, double alpha, double beta, double neutron, boolean protectsFromGas) {
+        TagKey<Item> key = TagKey.create(Registries.ITEM, Identifier.parse(tag));
+        map.put(key, new ArmorProtectionRegistry.Protection(xray, alpha, beta, neutron, protectsFromGas));
+    }
+
+    private static void addMegatonSet(List<ArmorProtectionDefinition> list, String set, double protection, boolean sealed) {
+        for (String piece : new String[]{"helmet", "chestplate", "leggings", "boots"}) {
+            addCustom(list, "nuclearcraft:" + set + "_" + piece,
+                    protection, protection, protection, protection, sealed && piece.equals("helmet"));
+        }
+    }
+
+    private static void addCustom(List<ArmorProtectionDefinition> list, String material,
+                               double xray, double alpha, double beta, double neutron, boolean protectsFromGas) {
+                Identifier loc = rec(material);
+                list.add(new ArmorProtectionDefinition(loc.getNamespace()+"_"+loc.getPath(), loc, xray, alpha, beta, neutron, protectsFromGas));
+    }
+
+    private static void addSet(List<ArmorProtectionDefinition> list, String material,
+                               double xray, double alpha, double beta, double neutron, boolean protectsFromGas) {
+        for (String piece : new String[]{"helmet", "chestplate", "leggings", "boots"}) {
+            String id = material + "_" + piece;
+            if(id.equals("hazmat_helmet")) {
+                protectsFromGas = true;
+            }
+            Identifier loc = rec(id);
+            list.add(new ArmorProtectionDefinition(loc.getNamespace()+"_"+loc.getPath(), loc, xray, alpha, beta, neutron, protectsFromGas));
+        }
+    }
+}

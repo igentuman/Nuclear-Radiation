@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:cf_249": {
+      "atoms": 2.611111111111111E19
+    },
+    "nr:cf_252": {
+      "atoms": 2.7377777777777777E22
+    }
+  },
+  "target": "#c:fission_fuel/californium/lecf_249"
+}

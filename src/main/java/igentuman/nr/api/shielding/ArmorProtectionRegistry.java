@@ -1,0 +1,112 @@
+package igentuman.nr.api.shielding;
+
+import igentuman.nr.api.binding.ResolvedTagBindings;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public final class ArmorProtectionRegistry {
+
+    public record Protection(double xray, double alpha, double beta, double neutron, boolean protectsFromGas) {
+        public static final Protection NONE = new Protection(0, 0, 0, 0, false);
+    }
+
+    private static final Map<Item, Protection> BY_ITEM = new HashMap<>();
+    private static final Map<TagKey<Item>, Protection> BY_TAG = new HashMap<>();
+    private static volatile Map<Item, Protection> resolved;
+
+    private ArmorProtectionRegistry() {}
+
+    public static void register(Item item, Protection p) {
+        synchronized (BY_ITEM) { BY_ITEM.put(item, p); resolved = null; }
+    }
+
+    public static void registerTag(TagKey<Item> tag, Protection p) {
+        synchronized (BY_ITEM) { BY_TAG.put(tag, p); resolved = null; }
+    }
+
+    public static void remove(Item item) {
+        synchronized (BY_ITEM) { BY_ITEM.remove(item); resolved = null; }
+    }
+
+    public static void clear() {
+        synchronized (BY_ITEM) {
+            BY_ITEM.clear();
+            BY_TAG.clear();
+            resolved = null;
+        }
+    }
+
+    public static Map<Item, Protection> all() {
+        return Collections.unmodifiableMap(BY_ITEM);
+    }
+
+    public static Map<TagKey<Item>, Protection> allTags() {
+        return Collections.unmodifiableMap(BY_TAG);
+    }
+
+    public static void rebuild() {
+        synchronized (BY_ITEM) {
+            resolved = compile();
+        }
+    }
+
+    private static Map<Item, Protection> compile() {
+        Map<Item, Protection> protections = new LinkedHashMap<>(
+                ResolvedTagBindings.expand(BuiltInRegistries.ITEM, BY_TAG));
+        protections.putAll(BY_ITEM);
+        return Map.copyOf(protections);
+    }
+
+    public static Protection get(ItemStack stack) {
+        if (stack.isEmpty()) return Protection.NONE;
+        if (stack.getItem() instanceof IRadiationArmor a) {
+            return new Protection(a.xrayProtection(), a.alphaProtection(),
+                    a.betaProtection(), a.neutronProtection(), a.gasProtection());
+        }
+        Map<Item, Protection> current = resolved;
+        if (current == null) {
+            synchronized (BY_ITEM) {
+                if (resolved == null) resolved = compile();
+                current = resolved;
+            }
+        }
+        return applyUpgrade(stack, current.getOrDefault(stack.getItem(), Protection.NONE));
+    }
+
+    private static Protection applyUpgrade(ItemStack stack, Protection base) {
+        Double upgrade = stack.get(ShieldingUpgradeComponent.TYPE);
+        if (upgrade == null || upgrade <= 0.0) return base;
+        return new Protection(
+                Math.min(1.0, base.xray()    + upgrade),
+                Math.min(1.0, base.alpha()   + upgrade),
+                Math.min(1.0, base.beta()    + upgrade),
+                Math.min(1.0, base.neutron() + upgrade),
+                base.protectsFromGas()
+        );
+    }
+
+    public static Protection summed(LivingEntity entity) {
+        double mxX = 0, mxA = 0, mxB = 0, mxN = 0;
+        boolean gasProtection = false;
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (!slot.isArmor()) continue;
+            ItemStack stack = entity.getItemBySlot(slot);
+            Protection p = get(stack);
+            mxX = Math.min(1.0, 1.0 - (1.0 - mxX) * (1.0 - p.xray()));
+            mxA = Math.min(1.0, 1.0 - (1.0 - mxA) * (1.0 - p.alpha()));
+            mxB = Math.min(1.0, 1.0 - (1.0 - mxB) * (1.0 - p.beta()));
+            mxN = Math.min(1.0, 1.0 - (1.0 - mxN) * (1.0 - p.neutron()));
+            if (slot == EquipmentSlot.HEAD) gasProtection = p.protectsFromGas();
+        }
+        return new Protection(mxX, mxA, mxB, mxN, gasProtection);
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "parent": "nuclear_radiation:item/geiger_counter",
+    "textures": {
+        "1": "nuclear_radiation:item/geiger_counter_screen_4"
+    }
+}

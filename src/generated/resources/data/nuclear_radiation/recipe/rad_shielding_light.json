@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:copper_ingot",
+    "C": "minecraft:clay_ball",
+    "I": "minecraft:iron_nugget",
+    "L": "minecraft:leather"
+  },
+  "pattern": [
+    "BLB",
+    "ICI",
+    "BLB"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nuclear_radiation:rad_shielding_light"
+  }
+}

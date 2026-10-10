@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "level=0": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=1": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=2": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=3": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=4": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=5": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=6": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=7": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=8": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=9": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=10": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=11": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=12": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=13": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=14": { "model": "nuclear_radiation:block/molten_corium_block" },
+    "level=15": { "model": "nuclear_radiation:block/molten_corium_block" }
+  }
+}

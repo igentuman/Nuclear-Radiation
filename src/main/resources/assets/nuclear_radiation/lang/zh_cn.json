@@ -1,0 +1,115 @@
+{
+  "itemGroup.nuclear_radiation": "核辐射",
+  "death.attack.nuclear_radiation.lung_cancer": "%1$s死于肺癌",
+  "death.attack.nuclear_radiation.lung_cancer.player": "%1$s在与%2$s战斗时死于肺癌",
+  "death.attack.nuclear_radiation.radiation": "%1$s死于辐射中毒",
+  "death.attack.nuclear_radiation.radiation.player": "%1$s在与%2$s战斗时死于辐射中毒",
+  "subtitles.nuclear_radiation.vomit": "呕吐声",
+  "subtitles.nuclear_radiation.inject": "注射声",
+  "subtitles.nuclear_radiation.cough": "咳嗽声",
+
+  "item.nuclear_radiation.geiger_counter": "盖革计数器",
+  "item.nuclear_radiation.dosimeter": "剂量计",
+
+  "item.nuclear_radiation.hazmat_helmet": "防护头盔",
+  "item.nuclear_radiation.hazmat_chestplate": "防护服",
+  "item.nuclear_radiation.hazmat_leggings": "防化护腿",
+  "item.nuclear_radiation.hazmat_boots": "防化靴",
+
+  "item.nuclear_radiation.iodine_pill": "碘片",
+  "item.nuclear_radiation.prussian_blue": "普鲁士蓝",
+  "item.nuclear_radiation.rad_protection_potion": "抗辐射药水",
+  "item.nuclear_radiation.rad_protection_potion_2": "抗辐射药水 II",
+  "item.nuclear_radiation.anti_rad_injection": "抗辐射注射剂",
+  "item.nuclear_radiation.radaway": "抗辐射药",
+
+  "item.nuclear_radiation.rad_shielding_light": "轻型辐射屏蔽",
+  "item.nuclear_radiation.rad_shielding_medium": "中型辐射屏蔽",
+  "item.nuclear_radiation.rad_shielding_heavy": "重型辐射屏蔽",
+  "item.nuclear_radiation.rad_shielding_dps": "致密辐射屏蔽",
+
+  "effect.nuclear_radiation.radiation_protection": "辐射防护",
+  "effect.nuclear_radiation.radiation_purge": "辐射清除",
+  "effect.nuclear_radiation.iodine_protection": "碘屏障",
+  "effect.nuclear_radiation.cesium_purge": "铯清除",
+
+  "nuclear_radiation.configuration.title": "核辐射设置",
+
+  "jei.nuclear_radiation.category.isotope_stats": "同位素统计",
+  "jei.nuclear_radiation.category.radioactive_items": "放射性物品",
+  "jei.nuclear_radiation.category.decay_graph": "衰减图",
+  "jei.nuclear_radiation.category.armor_protection": "盔甲辐射防护",
+  "jei.nuclear_radiation.category.block_shielding": "方块辐射屏蔽",
+  "jei.nuclear_radiation.category.mutation": "放射性突变",
+  "jei.nuclear_radiation.category.block_irradiation": "方块照射",
+  "jei.nuclear_radiation.category.shielding_upgrade": "盔甲屏蔽升级",
+
+  "jei.nuclear_radiation.block_irradiation.min_bq": "最小活度：%s",
+  "jei.nuclear_radiation.block_irradiation.chance": "几率：%s",
+
+  "jei.nuclear_radiation.mutation.dose": "总剂量：%s",
+  "jei.nuclear_radiation.mutation.rate": "暴露速率：",
+  "jei.nuclear_radiation.mutation.min_rate": "最小速率：%s",
+  "jei.nuclear_radiation.mutation.max_rate": "最大速率：%s",
+  "jei.nuclear_radiation.mutation.chance": "几率：%s",
+
+  "jei.nuclear_radiation.armor_protection.xray": "Ɣ射线：%s",
+  "jei.nuclear_radiation.armor_protection.alpha": "ɑ射线：%s",
+  "jei.nuclear_radiation.armor_protection.beta": "ꞵ射线：%s",
+  "jei.nuclear_radiation.armor_protection.neutron": "中子射线：%s",
+
+  "jei.nuclear_radiation.block_shielding.xray": "Ɣ射线衰减系数：%s cm⁻¹",
+  "jei.nuclear_radiation.block_shielding.neutron": "中子射线衰减系数：%s cm⁻¹",
+
+  "jei.nuclear_radiation.shielding_upgrade.value": "屏蔽值：%s",
+
+  "jei.nuclear_radiation.isotope_stats.id": "ID：%s",
+  "jei.nuclear_radiation.isotope_stats.half_life": "半衰期：%s",
+  "jei.nuclear_radiation.isotope_stats.dose_mix": "剂量组成：",
+  "jei.nuclear_radiation.isotope_stats.alpha": " ɑ射线：     %s",
+  "jei.nuclear_radiation.isotope_stats.beta": " ꞵ射线：      %s",
+  "jei.nuclear_radiation.isotope_stats.x_gamma": " Ɣ射线：   %s",
+  "jei.nuclear_radiation.isotope_stats.neutron": " 中子射线：   %s",
+  "jei.nuclear_radiation.isotope_stats.decays_to": "衰变为：%s",
+
+  "jei.nuclear_radiation.radioactive_items.total": "总量：%s",
+  "jei.nuclear_radiation.radioactive_items.radiation_mix": "辐射组成：",
+  "jei.nuclear_radiation.radioactive_items.alpha": " ɑ射线：%s",
+  "jei.nuclear_radiation.radioactive_items.beta": " ꞵ射线：%s",
+  "jei.nuclear_radiation.radioactive_items.gamma": " Ɣ射线：%s",
+  "jei.nuclear_radiation.radioactive_items.neutron": " 中子射线：%s",
+  "jei.nuclear_radiation.radioactive_items.isotopes": "同位素：",
+  "jei.nuclear_radiation.radioactive_items.isotope_entry": " %s  %s",
+
+  "tooltip.nuclear_radiation.isotope": "同位素：%s",
+  "tooltip.nuclear_radiation.half_life": "半衰期：%s",
+
+  "tooltip.nuclear_radiation.block_shielding": "辐射屏蔽",
+  "tooltip.nuclear_radiation.armor_protection": "辐射防护",
+  "tooltip.nuclear_radiation.armor.xray": " Ɣ射线：%s",
+  "tooltip.nuclear_radiation.armor.alpha": " ɑ射线：%s",
+  "tooltip.nuclear_radiation.armor.beta": " ꞵ射线：%s",
+  "tooltip.nuclear_radiation.armor.neutron": " 中子射线：%s",
+
+  "isotope.nuclear_radiation.u_238": "铀238",
+  "isotope.nuclear_radiation.u_235": "铀235",
+  "isotope.nuclear_radiation.pu_239": "钚239",
+  "isotope.nuclear_radiation.cs_137": "铯137",
+  "isotope.nuclear_radiation.i_131": "碘131",
+  "isotope.nuclear_radiation.sr_90": "锶90",
+  "isotope.nuclear_radiation.co_60": "钴60",
+  "isotope.nuclear_radiation.cf_252": "锎252",
+
+  "block.nuclear_radiation.creative_rad_source": "创造辐射源",
+  "block.nuclear_radiation.corium_block": "堆芯熔融物方块",
+  "block.nuclear_radiation.fallout_dust_block": "放射性粉尘方块",
+  "item.nuclear_radiation.fallout_dust": "放射性粉尘",
+  "fluid_type.nuclear_radiation.molten_corium": "熔融堆芯",
+  "item.nuclear_radiation.molten_corium_bucket": "熔融堆芯桶",
+
+  "gui.nuclear_radiation.creative_rad_source.apply": "应用",
+  "gui.nuclear_radiation.creative_rad_source.alpha": "ɑ射线 MBq：",
+  "gui.nuclear_radiation.creative_rad_source.beta": "ꞵ射线 MBq：",
+  "gui.nuclear_radiation.creative_rad_source.xray": "X射线 MBq：",
+  "gui.nuclear_radiation.creative_rad_source.neutron": "中子射线 MBq："
+}

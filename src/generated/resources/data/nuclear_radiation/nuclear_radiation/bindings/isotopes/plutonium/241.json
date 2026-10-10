@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:pu_241": {
+      "atoms": 5.95E18
+    }
+  },
+  "target": "#c:isotopes/plutonium/241"
+}

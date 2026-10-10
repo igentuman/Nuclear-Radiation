@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "nuclear_radiation:item/creative_rad_source"
+  }
+}

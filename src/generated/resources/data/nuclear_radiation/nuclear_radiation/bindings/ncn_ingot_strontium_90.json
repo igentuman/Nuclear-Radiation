@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:sr_90": {
+      "atoms": 3.0E20
+    }
+  },
+  "target": "#c:ingots/strontium_90"
+}

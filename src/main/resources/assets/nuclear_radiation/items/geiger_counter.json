@@ -1,0 +1,54 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "nuclear_radiation:radiation",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "nuclear_radiation:item/geiger_counter_0"
+    },
+    "entries": [
+      {
+        "threshold": 0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "nuclear_radiation:item/geiger_counter_0"
+        }
+      },
+      {
+        "threshold": 1,
+        "model": {
+          "type": "minecraft:model",
+          "model": "nuclear_radiation:item/geiger_counter_1"
+        }
+      },
+      {
+        "threshold": 2,
+        "model": {
+          "type": "minecraft:model",
+          "model": "nuclear_radiation:item/geiger_counter_2"
+        }
+      },
+      {
+        "threshold": 3,
+        "model": {
+          "type": "minecraft:model",
+          "model": "nuclear_radiation:item/geiger_counter_3"
+        }
+      },
+      {
+        "threshold": 4,
+        "model": {
+          "type": "minecraft:model",
+          "model": "nuclear_radiation:item/geiger_counter_4"
+        }
+      },
+      {
+        "threshold": 5,
+        "model": {
+          "type": "minecraft:model",
+          "model": "nuclear_radiation:item/geiger_counter_5"
+        }
+      }
+    ]
+  }
+}

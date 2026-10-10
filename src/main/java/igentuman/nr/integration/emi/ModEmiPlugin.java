@@ -1,0 +1,132 @@
+package igentuman.nr.integration.emi;
+
+import dev.emi.emi.api.EmiEntrypoint;
+import dev.emi.emi.api.EmiPlugin;
+import dev.emi.emi.api.EmiRegistry;
+import igentuman.nr.api.RadiationProfile;
+import igentuman.nr.api.binding.RadiationBindings;
+import igentuman.nr.api.isotope.Isotope;
+import igentuman.nr.api.isotope.IsotopeRegistry;
+import igentuman.nr.api.shielding.ArmorProtectionRegistry;
+import igentuman.nr.api.shielding.ShieldingUpgradeRegistry;
+import igentuman.nr.config.GeneralConfig;
+import igentuman.nr.integration.jei.ArmorProtectionEntry;
+import igentuman.nr.integration.jei.BlockShieldingEntry;
+import igentuman.nr.integration.jei.RadioactiveItemEntry;
+import igentuman.nr.integration.jei.ShieldingUpgradeEntry;
+import igentuman.nr.radiation.shielding.world.ShieldingRegistry;
+import igentuman.nr.recipe.BlockIrradiationRecipe;
+import igentuman.nr.recipe.MutationRecipe;
+import igentuman.nr.recipe.NRRecipes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Block;
+
+import java.util.*;
+
+@EmiEntrypoint
+public class ModEmiPlugin implements EmiPlugin {
+
+    @Override
+    public void register(EmiRegistry registry) {
+        if (!GeneralConfig.RADIATION_ENABLED.get()) return;
+        registry.addCategory(NREmiCategories.ISOTOPE_STATS);
+        registry.addCategory(NREmiCategories.RADIOACTIVE_ITEMS);
+        registry.addCategory(NREmiCategories.ARMOR_PROTECTION);
+        registry.addCategory(NREmiCategories.BLOCK_SHIELDING);
+        registry.addCategory(NREmiCategories.MUTATION);
+        registry.addCategory(NREmiCategories.BLOCK_IRRADIATION);
+
+        List<Isotope> isotopes = new ArrayList<>(IsotopeRegistry.all());
+        isotopes.sort(Comparator.comparing(Isotope::id));
+        for (Isotope iso : isotopes) {
+            registry.addRecipe(new IsotopeStatsEmiRecipe(iso));
+        }
+
+        for (RadioactiveItemEntry e : collectRadioactiveItems()) {
+            registry.addRecipe(new RadioactiveItemEmiRecipe(e));
+        }
+        for (ArmorProtectionEntry e : collectArmorProtection()) {
+            registry.addRecipe(new ArmorProtectionEmiRecipe(e));
+        }
+        for (BlockShieldingEntry e : collectBlockShielding()) {
+            registry.addRecipe(new BlockShieldingEmiRecipe(e));
+        }
+
+        for (RecipeHolder<MutationRecipe> holder : registry.getRecipeManager().getAllRecipesFor(NRRecipes.MUTATION_TYPE.get())) {
+            registry.addRecipe(new MutationEmiRecipe(holder.id(), holder.value()));
+        }
+        for (RecipeHolder<BlockIrradiationRecipe> holder : registry.getRecipeManager().getAllRecipesFor(NRRecipes.BLOCK_IRRADIATION_TYPE.get())) {
+            registry.addRecipe(new BlockIrradiationEmiRecipe(holder.id(), holder.value()));
+        }
+
+        for (Map.Entry<Item, Double> e : ShieldingUpgradeRegistry.all().entrySet()) {
+            ItemStack stack = new ItemStack(e.getKey());
+            if (stack.isEmpty()) continue;
+            registry.addRecipe(new ShieldingUpgradeEmiRecipe(new ShieldingUpgradeEntry(stack, e.getValue())));
+        }
+    }
+
+    private static List<ArmorProtectionEntry> collectArmorProtection() {
+        List<ArmorProtectionEntry> out = new ArrayList<>();
+        Set<Item> seen = new HashSet<>();
+
+        for (Map.Entry<Item, ArmorProtectionRegistry.Protection> e : ArmorProtectionRegistry.all().entrySet()) {
+            ArmorProtectionRegistry.Protection p = e.getValue();
+            if (p.xray() <= 0 && p.alpha() <= 0 && p.beta() <= 0 && p.neutron() <= 0) continue;
+            if (seen.add(e.getKey())) {
+                out.add(new ArmorProtectionEntry(new ItemStack(e.getKey()), p));
+            }
+        }
+
+        if (!ArmorProtectionRegistry.allTags().isEmpty()) {
+            for (Item item : BuiltInRegistries.ITEM) {
+                if (!seen.add(item)) continue;
+                ItemStack stack = new ItemStack(item);
+                if (stack.isEmpty()) continue;
+                ArmorProtectionRegistry.Protection p = ArmorProtectionRegistry.get(stack);
+                if (p == ArmorProtectionRegistry.Protection.NONE) continue;
+                if (p.xray() <= 0 && p.alpha() <= 0 && p.beta() <= 0 && p.neutron() <= 0) continue;
+                out.add(new ArmorProtectionEntry(stack, p));
+            }
+        }
+
+        out.sort(Comparator.comparing(en -> BuiltInRegistries.ITEM.getKey(en.stack().getItem()).toString()));
+        return out;
+    }
+
+    private static List<BlockShieldingEntry> collectBlockShielding() {
+        List<BlockShieldingEntry> out = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        for (Block block : BuiltInRegistries.BLOCK) {
+            ShieldingRegistry.Coeffs coeffs = ShieldingRegistry.get(block.defaultBlockState());
+            if (coeffs == null) continue;
+            Identifier id = BuiltInRegistries.BLOCK.getKey(block);
+            if (id == null || !seen.add(id.toString())) continue;
+            Item item = block.asItem();
+            if (item == Items.AIR) continue;
+            out.add(new BlockShieldingEntry(new ItemStack(item), coeffs));
+        }
+        out.sort(Comparator.comparing(en -> BuiltInRegistries.ITEM.getKey(en.stack().getItem()).toString()));
+        return out;
+    }
+
+    private static List<RadioactiveItemEntry> collectRadioactiveItems() {
+        List<RadioactiveItemEntry> out = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        for (Item item : BuiltInRegistries.ITEM) {
+            ItemStack stack = new ItemStack(item);
+            if (stack.isEmpty()) continue;
+            RadiationProfile profile = RadiationBindings.of(stack);
+            if (profile.isEmpty()) continue;
+            Identifier id = BuiltInRegistries.ITEM.getKey(item);
+            if (id == null || !seen.add(id.toString())) continue;
+            out.add(new RadioactiveItemEntry(stack, profile));
+        }
+        return out;
+    }
+}

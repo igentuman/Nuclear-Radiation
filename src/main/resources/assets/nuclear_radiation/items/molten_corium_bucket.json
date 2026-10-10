@@ -1,0 +1,13 @@
+{
+  "model": {
+    "type": "neoforge:fluid_container",
+    "textures": {
+      "particle": "minecraft:item/bucket",
+      "base": "minecraft:item/bucket",
+      "fluid": "neoforge:item/mask/bucket_fluid",
+      "cover": "neoforge:item/mask/bucket_fluid_cover"
+    },
+    "fluid": "nuclear_radiation:molten_corium",
+    "flip_gas": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:am_242": {
+      "atoms": 5.1666666666666664E16
+    },
+    "nr:am_243": {
+      "atoms": 1.2777777777777777E18
+    },
+    "nr:cm_243": {
+      "atoms": 3.233333333333333E20
+    },
+    "nr:pu_241": {
+      "atoms": 6.611111111111112E20
+    }
+  },
+  "target": "#c:fission_fuel/depleted_plutonium/hep_239"
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "nuclear_radiation:rad_protection_potion",
+    "minecraft:glowstone_dust"
+  ],
+  "result": {
+    "id": "nuclear_radiation:rad_protection_potion_2"
+  }
+}

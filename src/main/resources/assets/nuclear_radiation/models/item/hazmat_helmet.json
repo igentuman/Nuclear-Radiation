@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "nuclear_radiation:item/armor/hazmat_helmet"
+  }
+}

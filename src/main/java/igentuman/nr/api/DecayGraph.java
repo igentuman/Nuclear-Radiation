@@ -1,0 +1,34 @@
+package igentuman.nr.api;
+
+import java.util.*;
+
+public final class DecayGraph {
+
+    private static final Map<String, List<DecayEdge>> EDGES = new HashMap<>();
+
+    private DecayGraph() {}
+
+    public static void addEdge(String fromIsotopeId, DecayEdge edge) {
+        EDGES.computeIfAbsent(fromIsotopeId, k -> new ArrayList<>()).add(edge);
+    }
+
+    public static List<DecayEdge> outputs(String fromIsotopeId) {
+        return EDGES.getOrDefault(fromIsotopeId, Collections.emptyList());
+    }
+
+    public static void remove(String fromIsotopeId) { EDGES.remove(fromIsotopeId); }
+
+    public static void clear() { EDGES.clear(); }
+
+    public static interface WorldRadSource extends IPointRadiationSource {
+
+        long spawnedTick();
+
+        @Override
+        RadiationProfile getProfile();
+
+        boolean contaminatesArea();
+
+        default long expiryGameTime() { return Long.MAX_VALUE; }
+    }
+}

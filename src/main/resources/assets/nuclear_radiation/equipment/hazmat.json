@@ -1,0 +1,6 @@
+{
+  "layers": {
+    "humanoid": [{ "texture": "nuclear_radiation:hazmat" }],
+    "humanoid_leggings": [{ "texture": "nuclear_radiation:hazmat" }]
+  }
+}

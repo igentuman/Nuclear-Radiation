@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 2
+            }
+          ],
+          "name": "nuclear_radiation:fallout_dust"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "nuclear_radiation:blocks/fallout_dust_block"
+}

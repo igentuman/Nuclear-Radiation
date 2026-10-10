@@ -1,0 +1,87 @@
+{
+  "targets": {
+    "glow_source": {},
+    "glow_horizontal": {},
+    "glow_blurred": {},
+    "glow_final": {},
+    "outline_edges": {},
+    "outline_horizontal": {},
+    "outline_blurred": {}
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "nuclear_radiation:post/ionization_glow_extract",
+      "inputs": [
+        {"sampler_name": "In", "target": "minecraft:entity_outline"},
+        {"sampler_name": "ItemDepth", "target": "minecraft:entity_outline", "use_depth_buffer": true},
+        {"sampler_name": "SceneDepth", "target": "minecraft:main", "use_depth_buffer": true}
+      ],
+      "output": "glow_source"
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "nuclear_radiation:post/ionization_glow_blur",
+      "inputs": [{"sampler_name": "In", "target": "glow_source", "bilinear": true}],
+      "output": "glow_horizontal",
+      "uniforms": {"BlurConfig": [
+        {"name": "BlurDir", "type": "vec2", "value": [1.0, 0.0]},
+        {"name": "Radius", "type": "float", "value": 30.0}
+      ]}
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "nuclear_radiation:post/ionization_glow_blur",
+      "inputs": [{"sampler_name": "In", "target": "glow_horizontal", "bilinear": true}],
+      "output": "glow_blurred",
+      "uniforms": {"BlurConfig": [
+        {"name": "BlurDir", "type": "vec2", "value": [0.0, 1.0]},
+        {"name": "Radius", "type": "float", "value": 30.0}
+      ]}
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "nuclear_radiation:post/ionization_glow_composite",
+      "inputs": [
+        {"sampler_name": "Glow", "target": "glow_blurred", "bilinear": true},
+        {"sampler_name": "Mask", "target": "glow_source"}
+      ],
+      "output": "glow_final"
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/entity_sobel",
+      "inputs": [{"sampler_name": "In", "target": "minecraft:entity_outline"}],
+      "output": "outline_edges"
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/entity_outline_box_blur",
+      "inputs": [{"sampler_name": "In", "target": "outline_edges", "bilinear": true}],
+      "output": "outline_horizontal",
+      "uniforms": {"BlurConfig": [
+        {"name": "BlurDir", "type": "vec2", "value": [1.0, 0.0]},
+        {"name": "Radius", "type": "float", "value": 2.0}
+      ]}
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/entity_outline_box_blur",
+      "inputs": [{"sampler_name": "In", "target": "outline_horizontal", "bilinear": true}],
+      "output": "outline_blurred",
+      "uniforms": {"BlurConfig": [
+        {"name": "BlurDir", "type": "vec2", "value": [0.0, 1.0]},
+        {"name": "Radius", "type": "float", "value": 2.0}
+      ]}
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "nuclear_radiation:post/ionization_glow_merge",
+      "inputs": [
+        {"sampler_name": "Outline", "target": "outline_blurred"},
+        {"sampler_name": "Glow", "target": "glow_final"}
+      ],
+      "output": "minecraft:entity_outline"
+    }
+  ]
+}

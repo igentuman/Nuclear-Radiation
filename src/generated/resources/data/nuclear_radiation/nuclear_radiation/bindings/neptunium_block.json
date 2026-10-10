@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:np_236": {
+      "atoms": 5.66E17
+    },
+    "nr:np_237": {
+      "atoms": 5.66E18
+    }
+  },
+  "target": "#c:storage_blocks/neptunium"
+}

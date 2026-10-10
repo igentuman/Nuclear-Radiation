@@ -1,0 +1,26 @@
+{
+  "vomit": {
+    "subtitle": "subtitles.nuclear_radiation.vomit",
+    "sounds": [
+      "nuclear_radiation:vomit"
+    ]
+  },
+  "cough": {
+    "subtitle": "subtitles.nuclear_radiation.cough",
+    "sounds": [
+      "nuclear_radiation:cough"
+    ]
+  },
+  "inject": {
+    "subtitle": "subtitles.nuclear_radiation.inject",
+    "sounds": [
+      "nuclear_radiation:inject"
+    ]
+  },
+  "geiger_tick": {
+    "subtitle": "subtitles.nuclear_radiation.geiger_tick",
+    "sounds": [
+      "nuclear_radiation:geiger_tick"
+    ]
+  }
+}

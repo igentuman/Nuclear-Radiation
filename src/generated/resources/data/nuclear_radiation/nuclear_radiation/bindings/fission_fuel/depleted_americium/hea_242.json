@@ -1,0 +1,18 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:am_243": {
+      "atoms": 3.8333333333333335E18
+    },
+    "nr:bk_247": {
+      "atoms": 6.7E18
+    },
+    "nr:cm_243": {
+      "atoms": 3.233333333333333E20
+    },
+    "nr:cm_246": {
+      "atoms": 3.9333333333333335E18
+    }
+  },
+  "target": "#c:fission_fuel/depleted_americium/hea_242"
+}

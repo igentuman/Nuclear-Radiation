@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "minecraft:diamond",
+    "N": "minecraft:netherite_ingot"
+  },
+  "pattern": [
+    "DDD",
+    "DND",
+    "DDD"
+  ],
+  "result": {
+    "id": "nuclear_radiation:rad_shielding_dps"
+  }
+}

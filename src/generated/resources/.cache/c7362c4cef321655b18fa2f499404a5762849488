@@ -1,0 +1,6 @@
+// 26.1.2	2026-10-10T15:10:23.410859533	Tags for minecraft:item mod id nuclear_radiation
+236e70eef41c66fceaa474a6f94439a491778d4d data/c/tags/item/storage_blocks.json
+236e70eef41c66fceaa474a6f94439a491778d4d data/c/tags/item/storage_blocks/corium.json
+723265046de04591ca49adcc7293ad344678e7be data/nuclear_radiation/tags/item/airborne_contaminant.json
+69ab97f01d6b58f10f3c9bb12590f614ad782cf2 data/nuclear_radiation/tags/item/radioactive/spent_fuel.json
+d78446f8036fe5a3e32cfd4549dbd0e7875c8825 data/nuclear_radiation/tags/item/shielding_upgrade.json

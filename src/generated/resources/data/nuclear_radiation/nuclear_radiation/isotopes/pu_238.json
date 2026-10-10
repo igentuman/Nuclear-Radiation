@@ -1,0 +1,19 @@
+{
+  "alpha": 0.93,
+  "beta": 0.0,
+  "branches": [
+    {
+      "probability": 1.0,
+      "target": "nr:u_234"
+    }
+  ],
+  "half_life_ticks": 55349925600,
+  "neutron": 0.05,
+  "quality": {
+    "alpha": 20.0,
+    "beta": 1.0,
+    "neutron": 10.0,
+    "xray": 1.0
+  },
+  "xray": 0.02
+}

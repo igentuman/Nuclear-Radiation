@@ -1,0 +1,8 @@
+{
+  "alpha": 0.22,
+  "beta": 0.1,
+  "gas_protection": false,
+  "neutron": 0.02,
+  "target": "minecraft:golden_leggings",
+  "xray": 0.08
+}

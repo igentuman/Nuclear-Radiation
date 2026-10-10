@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:glass_bottle",
+    "minecraft:iron_nugget",
+    "minecraft:ghast_tear",
+    "nuclear_radiation:prussian_blue"
+  ],
+  "result": {
+    "id": "nuclear_radiation:anti_rad_injection"
+  }
+}

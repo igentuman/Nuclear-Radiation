@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:bk_247": {
+      "atoms": 5.36E19
+    },
+    "nr:bk_248": {
+      "atoms": 3.066666666666667E19
+    }
+  },
+  "target": "#c:fission_fuel/berkelium/leb_248"
+}

@@ -1,0 +1,9 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:pu_239": {
+      "atoms": 3.57E21
+    }
+  },
+  "target": "#c:ingots/plutonium"
+}

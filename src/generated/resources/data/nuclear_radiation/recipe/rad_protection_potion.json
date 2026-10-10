@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:glass_bottle",
+    "nuclear_radiation:iodine_pill",
+    "nuclear_radiation:prussian_blue"
+  ],
+  "result": {
+    "id": "nuclear_radiation:rad_protection_potion"
+  }
+}

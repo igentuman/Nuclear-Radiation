@@ -1,0 +1,14 @@
+{
+  "values": [
+    "nuclear_radiation:fallout_dust",
+    "nuclear_radiation:fallout_dust_block",
+    {
+      "id": "#c:dusts/uranium",
+      "required": false
+    },
+    {
+      "id": "#c:dusts/plutonium",
+      "required": false
+    }
+  ]
+}

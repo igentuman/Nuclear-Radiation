@@ -1,0 +1,12 @@
+{
+  "type": "item",
+  "isotopes": {
+    "nr:cm_246": {
+      "atoms": 2.35E21
+    },
+    "nr:cm_247": {
+      "atoms": 5.34E17
+    }
+  },
+  "target": "#c:storage_blocks/curium"
+}

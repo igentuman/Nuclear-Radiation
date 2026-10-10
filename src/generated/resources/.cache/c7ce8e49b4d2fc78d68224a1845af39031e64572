@@ -1,0 +1,11 @@
+// 26.1.2	2026-10-10T15:10:23.411047278	Tags for minecraft:block mod id nuclear_radiation
+236e70eef41c66fceaa474a6f94439a491778d4d data/c/tags/block/storage_blocks.json
+236e70eef41c66fceaa474a6f94439a491778d4d data/c/tags/block/storage_blocks/corium.json
+236e70eef41c66fceaa474a6f94439a491778d4d data/minecraft/tags/block/mineable/pickaxe.json
+236e70eef41c66fceaa474a6f94439a491778d4d data/minecraft/tags/block/needs_iron_tool.json
+20b4e51f0fc9871bd976b55b608788ec92a9e77f data/nuclear_radiation/tags/block/radioactive/high.json
+3452ed7c6847e2bd1adfc133e1efc33f47a20fd7 data/nuclear_radiation/tags/block/radioactive/medium.json
+619e05dea1ac534875123d8c112c8556cf455f05 data/nuclear_radiation/tags/block/shielding/extra_heavy.json
+d52eb3d9d06fe086cab8104a131c0a3b2ca78ad8 data/nuclear_radiation/tags/block/shielding/heavy.json
+b8679554d74b9bfa8f0365431a301418421d2adb data/nuclear_radiation/tags/block/shielding/light.json
+5553b84eca22b64503b8274cf19a2d54ea201a3e data/nuclear_radiation/tags/block/shielding/mid.json

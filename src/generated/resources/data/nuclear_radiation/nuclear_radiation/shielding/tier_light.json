@@ -1,0 +1,5 @@
+{
+  "neutron": 0.3,
+  "tier_preset": "light",
+  "xray": 0.1
+}
