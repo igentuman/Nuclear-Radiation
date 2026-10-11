@@ -70,13 +70,13 @@ public final class RadiationEffects {
             addEffect(entity, MobEffects.MINING_FATIGUE, 2000, 1);
             addEffect(entity, MobEffects.SLOWNESS, 2000, 1);
         }
-        if (stage >= 3) {
-            addEffect(entity, MobEffects.BLINDNESS, 2000, 0);
-            entity.hurt(radiation, 1.5f);
-        }
         if (stage >= 4) {
+            addEffect(entity, MobEffects.BLINDNESS, 2000, 0);
             addEffect(entity, MobEffects.WITHER, 10, 0);
             entity.hurt(radiation, 20.0f);
+        } else if (stage >= 3) {
+            addEffect(entity, MobEffects.BLINDNESS, 2000, 0);
+            entity.hurt(radiation, 1.5f);
         }
 
         triggerVomit(entity, stage);

@@ -15,7 +15,7 @@ public class CreativeRadSourceScreen extends Screen {
     private static final int PANEL_H = 160;
     private static final int FIELD_W = 120;
     private static final int FIELD_H = 20;
-    private static final int LABEL_COLOR = 0xE0E0E0;
+    private static final int LABEL_COLOR = 0xFFE0E0E0;
 
     private final BlockPos blockPos;
     private final double initialAlpha;
@@ -107,7 +107,7 @@ public class CreativeRadSourceScreen extends Screen {
 
         gfx.centeredText(font,
                 Component.translatable("block.nuclear_radiation.creative_rad_source"),
-                width / 2, top + 8, 0xFFFFFF);
+                width / 2, top + 8, 0xFFFFFFFF);
 
         int labelX = left + 10;
         int row0 = top + 36;

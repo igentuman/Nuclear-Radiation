@@ -220,7 +220,7 @@ public final class RadiationConfig {
         BLOCK_IRRADIATION_RADIUS = b.comment("Max ray length (blocks) cast from each source")
                 .defineInRange("radius", 8, 1, 128);
         BLOCK_IRRADIATION_RAYS = b.comment("Random rays cast per source per interval; each ray irradiates the first solid block it hits (occlusion-aware)")
-                .defineInRange("rays_per_source", 10, 1, 1000);
+                .defineInRange("rays_per_source", 64, 1, 1000);
         BLOCK_IRRADIATION_MAX_SOURCES = b.comment("Cap on sources sampled per interval to prevent oversized jobs")
                 .defineInRange("max_sources_per_job", 64, 1, 200);
         BLOCK_IRRADIATION_MAX_TRANSFORMS = b.comment("Safety cap on setBlock calls per drain")
