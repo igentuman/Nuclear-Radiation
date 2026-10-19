@@ -3,6 +3,7 @@ package igentuman.nr.command;
 import com.mojang.brigadier.CommandDispatcher;
 import igentuman.nr.radiation.storage.EntityRadiationData;
 import igentuman.nr.radiation.storage.NRAttachments;
+import igentuman.nr.radiation.source.WorldSourceRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -17,6 +18,26 @@ public final class NRCommands {
         dispatcher.register(
             Commands.literal("nr")
                 .requires(src -> src.hasPermission(2))
+                .then(Commands.literal("cleanup_fallout_dust")
+                    .executes(ctx -> {
+                        int queued = WorldSourceRegistry.get(ctx.getSource().getLevel())
+                                .queueFalloutDustCleanup();
+                        ctx.getSource().sendSuccess(
+                                () -> Component.literal("Queued " + queued
+                                        + " fallout dust blocks in loaded chunks for gradual removal"),
+                                true);
+                        return queued;
+                    }))
+                .then(Commands.literal("cleanup_uranium_leftovers")
+                    .executes(ctx -> {
+                        int removed = WorldSourceRegistry.get(ctx.getSource().getLevel())
+                                .cleanupUraniumLeftovers();
+                        ctx.getSource().sendSuccess(
+                                () -> Component.literal("Removed " + removed
+                                        + " uranium leftover radiation sources in this dimension"),
+                                true);
+                        return removed;
+                    }))
                 .then(Commands.literal("clear")
                     .then(Commands.argument("player", EntityArgument.player())
                         .executes(ctx -> {

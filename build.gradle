@@ -162,11 +162,7 @@ dependencies {
 
     compileOnly "curse.maven:hbms-nuclear-tech-ne-1449927:8062359"
 
-    // Sable and Immersive Portals 6.0.7 conflict in Player collision mixins.
-    // Keep them in separate dev runs while retaining Sable on the compile classpath.
-    compileOnly "curse.maven:sable-1312371:8673825"
-    sableDevRuntimeOnly "curse.maven:sable-1312371:8673825"
-    sableServerDevRuntimeOnly "curse.maven:sable-1312371:8673825"
+    implementation "curse.maven:sable-1312371:8263584"
 
     implementation "curse.maven:curios-309927:6529130"
     compileOnly "curse.maven:curios-309927:6529132"
@@ -228,9 +224,11 @@ dependencies {
     dependencies {
         implementation "maven.modrinth:3rXU9gz8:ZLwuD5gm"
     }
+    implementation "curse.maven:sable-immersive-portals-compat-1622922:8502597"
+
     implementation "curse.maven:thewasteland-1449485:8314798"
-    portalsDevRuntimeOnly "curse.maven:cloth-config-348521:5729127"
-    portalsDevRuntimeOnly "curse.maven:immersive-portals-for-forge-355440:6667779"
+    implementation "curse.maven:cloth-config-348521:5729127"
+    implementation "curse.maven:immersive-portals-for-forge-355440:6667779"
 
     testImplementation platform("org.junit:junit-bom:5.10.2")
     testImplementation "org.junit.jupiter:junit-jupiter"

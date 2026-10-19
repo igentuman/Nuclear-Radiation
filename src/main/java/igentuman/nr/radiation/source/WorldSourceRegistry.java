@@ -4,8 +4,10 @@ import igentuman.nr.NuclearRadiation;
 import igentuman.nr.api.AbstractWorldRadSource;
 import igentuman.nr.api.DecayGraph;
 import igentuman.nr.api.RadiationProfile;
+import igentuman.nr.api.binding.RadiationBindings;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.radiation.simulation.GasClouds;
+import igentuman.nr.registry.Isotopes;
 import igentuman.nr.radiation.storage.ChunkRadiationData;
 import igentuman.nr.radiation.storage.LevelRadiationData;
 import igentuman.nr.radiation.storage.NRAttachments;
@@ -21,6 +23,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,7 +49,9 @@ public class WorldSourceRegistry {
     private final Map<UUID, DecayGraph.WorldRadSource> byId = new HashMap<>();
     private final Map<Long, DecayGraph.WorldRadSource> byBlock = new HashMap<>();
     private final Map<UUID, ItemEntityRadSource> byItemEntity = new HashMap<>();
+    private final Map<UUID, DecayGraph.WorldRadSource> gasEmitters = new HashMap<>();
     private final Set<ChunkPos> contaminatedChunks = new HashSet<>();
+    private final ArrayDeque<UUID> falloutCleanup = new ArrayDeque<>();
 
     private WorldSourceRegistry(ServerLevel level) {
         this.level = level;
@@ -56,9 +61,13 @@ public class WorldSourceRegistry {
         if (s == null) return;
         if (Math.abs(s.activityBq()) < RadiationConfig.WORLD_SOURCE_MIN_BQ.get()) return;
         long pkey = packPos(s.getPosition());
-        if (s instanceof LeftOverRadSource && byBlock.get(pkey) instanceof LeftOverRadSource old) {
-            old.refresh(s.getProfile());
-            return;
+        if (s instanceof LeftOverRadSource incoming && byBlock.get(pkey) instanceof LeftOverRadSource old) {
+            if (!incoming.isItemResidue() && !old.isItemResidue()) {
+                old.refresh(s.getProfile());
+                updateGasEmitter(old);
+                return;
+            }
+            remove(old.getId());
         }
         byId.put(s.getId(), s);
         if (s instanceof ItemEntityRadSource ie) {
@@ -66,6 +75,7 @@ public class WorldSourceRegistry {
         } else {
             byBlock.put(pkey, s);
         }
+        updateGasEmitter(s);
         Vec3 globalPos = SableIntegration.projectPosition(level, s.emissionCenter());
         RadiationSimulator.get().addSource(level, s, globalPos);
     }
@@ -73,6 +83,7 @@ public class WorldSourceRegistry {
     public synchronized void remove(UUID id) {
         DecayGraph.WorldRadSource s = byId.remove(id);
         if (s == null) return;
+        gasEmitters.remove(id);
         if (s instanceof ItemEntityRadSource ie) {
             byItemEntity.remove(ie.entityUuid());
         } else {
@@ -104,6 +115,50 @@ public class WorldSourceRegistry {
 
     public synchronized int size() { return byId.size(); }
 
+    /** Removes uranium-only leftovers saved before item residues had a lifetime. */
+    public synchronized int cleanupUraniumLeftovers() {
+        List<UUID> uranium = new ArrayList<>();
+        for (DecayGraph.WorldRadSource source : byId.values()) {
+            if (source instanceof LeftOverRadSource
+                    && !source.getProfile().isEmpty()
+                    && source.getProfile().isotopes().keySet().stream()
+                        .allMatch(id -> id.equals(Isotopes.U_238) || id.equals(Isotopes.U_235))) {
+                uranium.add(source.getId());
+            }
+        }
+        for (UUID id : uranium) remove(id);
+        if (!uranium.isEmpty()) saveToLevel();
+        return uranium.size();
+    }
+
+    /** Queues fallout dust in loaded chunks for bounded removal on subsequent level ticks. */
+    public synchronized int queueFalloutDustCleanup() {
+        falloutCleanup.clear();
+        for (DecayGraph.WorldRadSource source : byId.values()) {
+            if (source instanceof BlockRadSource
+                    && level.getBlockState(source.getPosition()).is(NuclearRadiation.FALLOUT_DUST_BLOCK.get())) {
+                falloutCleanup.add(source.getId());
+            }
+        }
+        return falloutCleanup.size();
+    }
+
+    public void tickFalloutDustCleanup() {
+        for (int n = 0; n < 64; n++) {
+            UUID id;
+            DecayGraph.WorldRadSource source;
+            synchronized (this) {
+                id = falloutCleanup.poll();
+                if (id == null) return;
+                source = byId.get(id);
+            }
+            if (!(source instanceof BlockRadSource)) continue;
+            BlockPos pos = source.getPosition();
+            if (!level.getBlockState(pos).is(NuclearRadiation.FALLOUT_DUST_BLOCK.get())) continue;
+            if (level.removeBlock(pos, false)) remove(id);
+        }
+    }
+
     public synchronized List<DecayGraph.WorldRadSource> queryRadius(Vec3 center, double radius) {
         if (byId.isEmpty()) return List.of();
         List<DecayGraph.WorldRadSource> out = new ArrayList<>();
@@ -119,8 +174,8 @@ public class WorldSourceRegistry {
     }
 
     public synchronized boolean inGasCloud(Vec3 pos) {
-        if (byId.isEmpty()) return false;
-        for (DecayGraph.WorldRadSource s : byId.values()) {
+        if (gasEmitters.isEmpty()) return false;
+        for (DecayGraph.WorldRadSource s : gasEmitters.values()) {
             if (!GasClouds.isGasEmitting(s)) continue;
             double r = GasClouds.radius(s);
             if (r <= 0) continue;
@@ -135,9 +190,9 @@ public class WorldSourceRegistry {
     private static final int MAX_GAS_EMITTERS = 12;
 
     public synchronized void emitGasParticles() {
-        if (byId.isEmpty()) return;
+        if (gasEmitters.isEmpty()) return;
         int emitted = 0;
-        for (DecayGraph.WorldRadSource s : byId.values()) {
+        for (DecayGraph.WorldRadSource s : gasEmitters.values()) {
             if (emitted >= MAX_GAS_EMITTERS) break;
             if (!GasClouds.isGasEmitting(s)) continue;
             double r = GasClouds.radius(s);
@@ -163,16 +218,41 @@ public class WorldSourceRegistry {
                 dead.add(s.getId());
                 continue;
             }
-            if (now % (interval * 100L) == 0 && server.getRandom().nextFloat() > 0.90) {
+            if (now % (interval * 100L) == 0 && canDepositFalloutDust(s)
+                    && server.getRandom().nextFloat() > 0.90) {
                 decayFalloutDust(s);
             }
             if (s instanceof AbstractWorldRadSource a) a.advanceDecay(now);
             if (!s.isActive() || Math.abs(s.activityBq()) < floor) {
                 dead.add(s.getId());
+            } else {
+                updateGasEmitter(s);
             }
         }
         if (dead.isEmpty()) return;
         for (UUID id : dead) remove(id);
+    }
+
+    private void updateGasEmitter(DecayGraph.WorldRadSource source) {
+        if (GasClouds.isGasEmitting(source)) gasEmitters.put(source.getId(), source);
+        else gasEmitters.remove(source.getId());
+    }
+
+    private boolean canDepositFalloutDust(DecayGraph.WorldRadSource source) {
+        if (!source.contaminatesArea() || !source.isActive()
+                || source.activityBq() < RadiationConfig.FALLOUT_DUST_SOURCE_MIN_BQ.get()) return false;
+        return !isFalloutDustSource(source);
+    }
+
+    private boolean isFalloutDustSource(DecayGraph.WorldRadSource source) {
+        if (source instanceof BlockRadSource) {
+            return level.getBlockState(source.getPosition()).is(NuclearRadiation.FALLOUT_DUST_BLOCK.get());
+        }
+        if (source instanceof ItemEntityRadSource itemSource && itemSource.entity() != null) {
+            return itemSource.entity().getItem().is(NuclearRadiation.FALLOUT_DUST_BLOCK_ITEM.get())
+                    || itemSource.entity().getItem().is(NuclearRadiation.FALLOUT_DUST.get());
+        }
+        return false;
     }
 
     private void decayFalloutDust(DecayGraph.WorldRadSource s) {
@@ -181,11 +261,15 @@ public class WorldSourceRegistry {
         LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
         if (chunk == null) return;
         ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
-        if (data.air().isEmpty()) return;
+        double dustActivity = RadiationBindings.of(NuclearRadiation.FALLOUT_DUST_BLOCK.get().defaultBlockState())
+                .totalActivityBq();
+        double airActivity = data.air().totalActivityBq();
+        if (dustActivity <= 0.0 || airActivity < Math.max(dustActivity,
+                RadiationConfig.FALLOUT_DUST_AIR_MIN_BQ.get())) return;
         BlockPos target = findFalloutDustPos(globalPos);
         if (target == null) return;
-        level.setBlockAndUpdate(target, NuclearRadiation.FALLOUT_DUST_BLOCK.get().defaultBlockState());
-        data.air().reduceAtoms(1.25);
+        if (!level.setBlockAndUpdate(target, NuclearRadiation.FALLOUT_DUST_BLOCK.get().defaultBlockState())) return;
+        data.air().reduceAtoms(airActivity / (airActivity - dustActivity));
         data.markExpiryDirty();
         chunk.setUnsaved(true);
     }
@@ -273,6 +357,7 @@ public class WorldSourceRegistry {
         if (base <= 0.0) return;
         for (DecayGraph.WorldRadSource s : all()) {
             if (!s.contaminatesArea() || !s.isActive()) continue;
+            if (isFalloutDustSource(s)) continue;
             ChunkPos cp = SableIntegration.projectChunkPos(level, s.getPosition());
             LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
             if (chunk == null) continue;
@@ -310,8 +395,8 @@ public class WorldSourceRegistry {
             // moved — leftovers there are re-scanned from blocks when the sub-level chunk loads.
             if (SableIntegration.isInSubLevel(level, s.getPosition())) continue;
             String type;
-            if (s instanceof LeftOverRadSource) {
-                type = "leftover";
+            if (s instanceof LeftOverRadSource leftover) {
+                type = leftover.isItemResidue() ? "item_leftover" : "leftover";
             } else {
                 continue;
             }
@@ -329,9 +414,11 @@ public class WorldSourceRegistry {
             DecayGraph.WorldRadSource src = switch (e.type()) {
                 case "leftover" -> new LeftOverRadSource(e.id(), e.dimension(), e.pos(),
                         e.profile(), e.spawnedTick(), e.contaminatesArea());
+                case "item_leftover" -> new LeftOverRadSource(e.id(), e.dimension(), e.pos(),
+                        e.profile(), e.spawnedTick(), e.contaminatesArea(), true);
                 default -> null;
             };
-            if (src != null) register(src);
+            if (src != null && level.getGameTime() < src.expiryGameTime()) register(src);
         }
     }
 

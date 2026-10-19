@@ -30,6 +30,8 @@ public final class RadiationConfig {
     public static final ModConfigSpec.BooleanValue IGNORE_SPECTATOR;
     public static final ModConfigSpec.DoubleValue ACTIVITY_FLOOR_BQ;
     public static final ModConfigSpec.DoubleValue WORLD_SOURCE_MIN_BQ;
+    public static final ModConfigSpec.DoubleValue FALLOUT_DUST_SOURCE_MIN_BQ;
+    public static final ModConfigSpec.DoubleValue FALLOUT_DUST_AIR_MIN_BQ;
     public static final ModConfigSpec.DoubleValue STATIC_HALF_LIFE_YEARS;
     public static final ModConfigSpec.DoubleValue CONTAMINATION_SPREAD_FACTOR;
     public static final ModConfigSpec.ConfigValue<List<? extends String>> IGNORED_ENTITIES;
@@ -212,6 +214,10 @@ public final class RadiationConfig {
         ACTIVITY_FLOOR_BQ = b.defineInRange("activity_floor_bq", 1.0, 0.0, 1.0e30);
         WORLD_SOURCE_MIN_BQ = b.comment("Minimum activity (Bq) for an item/block/fluid to register as a world radiation source. Below this, the source is ignored by the in-world simulation (block placement, item entities on ground, container contents). Inventory exposure still counts all items regardless of this threshold. Default 1.0e6 (1 MBq).")
                 .defineInRange("world_source_min_bq", 5.0e9, 0.0, 1.0e30);
+        FALLOUT_DUST_SOURCE_MIN_BQ = b.comment("Minimum source activity (Bq) to deposit fallout dust. Intended for nuclear releases, not uranium mining. Fallout dust cannot seed more dust.")
+                .defineInRange("fallout_dust_source_min_bq", 5.0e10, 0.0, 1.0e30);
+        FALLOUT_DUST_AIR_MIN_BQ = b.comment("Minimum airborne chunk activity (Bq) before a strong source can deposit fallout dust. Each block consumes its activity from the air.")
+                .defineInRange("fallout_dust_air_min_bq", 1.0e9, 0.0, 1.0e30);
         CONTAMINATION_SPREAD_FACTOR = b.defineInRange("contamination_spread_factor", 0.001, 0.0, 1.0);
         STATIC_HALF_LIFE_YEARS = b.comment("Isotopes with effective half-life (after isotopeDecayMultiplier) above this many IRL years are treated as static: no decay math, no daughter ingrowth, no expiry. Activity Bq is still computed and shown. Default 1000 yr captures U-238/U-235/Pu-239.")
                 .defineInRange("static_half_life_years", 1000.0, 0.0, 1.0e15);
