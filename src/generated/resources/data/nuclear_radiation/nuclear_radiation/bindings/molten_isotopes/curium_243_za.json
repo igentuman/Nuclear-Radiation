@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:cm_243": {
+      "atoms": 2.91E20
+    }
+  },
+  "target": "nuclearcraft:molten_curium_243_za"
+}

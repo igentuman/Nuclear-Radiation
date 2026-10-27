@@ -1,0 +1,24 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:cs_137": {
+      "atoms": 4.8888888888888885E19
+    },
+    "nr:np_236": {
+      "atoms": 6.288888888888889E18
+    },
+    "nr:np_237": {
+      "atoms": 4.5E18
+    },
+    "nr:sr_90": {
+      "atoms": 3.333333333333333E19
+    },
+    "nr:u_233": {
+      "atoms": 6.155555555555556E19
+    },
+    "nr:u_238": {
+      "atoms": 1.0722222222222222E14
+    }
+  },
+  "target": "nuclearcraft:molten_depleted_fuel_thorium_tbu_ox"
+}

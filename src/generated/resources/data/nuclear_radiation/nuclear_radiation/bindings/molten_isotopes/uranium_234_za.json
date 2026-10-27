@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:u_234": {
+      "atoms": 3.58E17
+    }
+  },
+  "target": "nuclearcraft:molten_uranium_234_za"
+}

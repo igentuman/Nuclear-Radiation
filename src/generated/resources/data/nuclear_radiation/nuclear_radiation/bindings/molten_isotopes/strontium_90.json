@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:sr_90": {
+      "atoms": 3.72E19
+    }
+  },
+  "target": "nuclearcraft:molten_strontium_90"
+}

@@ -11,6 +11,8 @@ import net.minecraft.world.item.BlockItem;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
+import java.util.List;
+
 import static igentuman.nr.util.TextUtils.__;
 import static igentuman.nr.util.TextUtils.numberFormat;
 import static net.minecraft.ChatFormatting.DARK_GRAY;
@@ -24,7 +26,10 @@ public class RadiationTooltip {
         addShieldingTooltip(event);
         addArmorProtectionTooltip(event);
 
-        RadiationProfile p = RadiationBindings.of(event.getItemStack());
+        addRadiationTooltip(event.getToolTip(), RadiationBindings.of(event.getItemStack()), event.getItemStack().getCount());
+    }
+
+    public static void addRadiationTooltip(List<Component> tooltip, RadiationProfile p, int count) {
         if (p.isEmpty()) return;
 
         double bq = p.totalActivityBq();
@@ -33,25 +38,25 @@ public class RadiationTooltip {
         double neutron = p.neutronActivityBq();
         double gamma = p.xRayActivityBq();
 
-        event.getToolTip().add(Component.literal("☢ ")
+        tooltip.add(Component.literal("☢ ")
                 .append(Component.literal(formatActivity(bq)))
                 .withStyle(colorForBq(bq)));
-        if (event.getItemStack().getCount() > 1) {
-            event.getToolTip().add(Component.literal("☢ Stack ")
-                    .append(Component.literal(formatActivity(bq*event.getItemStack().getCount())))
-                    .withStyle(colorForBq(bq*event.getItemStack().getCount())));
+        if (count > 1) {
+            tooltip.add(Component.literal("☢ Stack ")
+                    .append(Component.literal(formatActivity(bq*count)))
+                    .withStyle(colorForBq(bq*count)));
         }
         if (alpha > 0) {
-            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.alpha", numberFormat(alpha/bq * 100) + "%").withStyle(DARK_GRAY));
+            tooltip.add(__("jei.nuclear_radiation.radioactive_items.alpha", numberFormat(alpha/bq * 100) + "%").withStyle(DARK_GRAY));
         }
         if (beta > 0) {
-            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.beta", numberFormat(beta/bq * 100) + "%").withStyle(DARK_GRAY));
+            tooltip.add(__("jei.nuclear_radiation.radioactive_items.beta", numberFormat(beta/bq * 100) + "%").withStyle(DARK_GRAY));
         }
         if (gamma > 0) {
-            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.gamma", numberFormat(gamma/bq * 100) + "%").withStyle(DARK_GRAY));
+            tooltip.add(__("jei.nuclear_radiation.radioactive_items.gamma", numberFormat(gamma/bq * 100) + "%").withStyle(DARK_GRAY));
         }
         if (neutron > 0) {
-            event.getToolTip().add(__("jei.nuclear_radiation.radioactive_items.neutron", numberFormat(neutron/bq * 100) + "%").withStyle(DARK_GRAY));
+            tooltip.add(__("jei.nuclear_radiation.radioactive_items.neutron", numberFormat(neutron/bq * 100) + "%").withStyle(DARK_GRAY));
         }
     }
 

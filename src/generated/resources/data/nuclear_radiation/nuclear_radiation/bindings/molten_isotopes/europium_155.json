@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:eu_155": {
+      "atoms": 1.89E19
+    }
+  },
+  "target": "nuclearcraft:molten_europium_155"
+}

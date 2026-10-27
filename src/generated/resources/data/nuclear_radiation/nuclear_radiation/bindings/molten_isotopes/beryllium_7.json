@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:be_7": {
+      "atoms": 2.02E25
+    }
+  },
+  "target": "nuclearcraft:molten_beryllium_7"
+}

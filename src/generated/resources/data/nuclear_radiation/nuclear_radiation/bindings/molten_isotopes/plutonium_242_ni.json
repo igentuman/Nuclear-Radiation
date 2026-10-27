@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:pu_242": {
+      "atoms": 2.27E19
+    }
+  },
+  "target": "nuclearcraft:molten_plutonium_242_ni"
+}

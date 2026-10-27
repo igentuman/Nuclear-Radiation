@@ -1,0 +1,12 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:u_235": {
+      "atoms": 4.133333333333333E17
+    },
+    "nr:u_238": {
+      "atoms": 1.7155555555555556E14
+    }
+  },
+  "target": "nuclearcraft:molten_fuel_uranium_leu_235_ox"
+}

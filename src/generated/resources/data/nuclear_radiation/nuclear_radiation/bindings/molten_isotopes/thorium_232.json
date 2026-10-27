@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:th_232": {
+      "atoms": 6.31E12
+    }
+  },
+  "target": "nuclearcraft:molten_thorium_232"
+}

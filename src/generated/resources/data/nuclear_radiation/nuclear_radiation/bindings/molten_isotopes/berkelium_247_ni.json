@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:bk_247": {
+      "atoms": 6.03E19
+    }
+  },
+  "target": "nuclearcraft:molten_berkelium_247_ni"
+}

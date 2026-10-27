@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:cs_137": {
+      "atoms": 1.84E19
+    }
+  },
+  "target": "nuclearcraft:molten_caesium_137"
+}

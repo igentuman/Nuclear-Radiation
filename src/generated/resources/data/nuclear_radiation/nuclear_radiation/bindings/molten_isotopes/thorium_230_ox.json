@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:th_230": {
+      "atoms": 1.19E18
+    }
+  },
+  "target": "nuclearcraft:molten_thorium_230_ox"
+}

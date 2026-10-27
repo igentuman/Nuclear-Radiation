@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:am_242": {
+      "atoms": 4.65E14
+    }
+  },
+  "target": "nuclearcraft:molten_americium_242"
+}

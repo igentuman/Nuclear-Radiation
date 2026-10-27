@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:ca_48": {
+      "atoms": 6700.0
+    }
+  },
+  "target": "nuclearcraft:molten_calcium_48"
+}

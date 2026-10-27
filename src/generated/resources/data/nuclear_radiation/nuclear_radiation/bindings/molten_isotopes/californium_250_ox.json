@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:cf_250": {
+      "atoms": 6.29E21
+    }
+  },
+  "target": "nuclearcraft:molten_californium_250_ox"
+}

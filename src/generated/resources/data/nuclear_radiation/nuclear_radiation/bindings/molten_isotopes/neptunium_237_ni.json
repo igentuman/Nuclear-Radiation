@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:np_237": {
+      "atoms": 4.05E21
+    }
+  },
+  "target": "nuclearcraft:molten_neptunium_237_ni"
+}

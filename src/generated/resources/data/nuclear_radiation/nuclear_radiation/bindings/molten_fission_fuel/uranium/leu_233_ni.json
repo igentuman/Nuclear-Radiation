@@ -1,0 +1,12 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:u_233": {
+      "atoms": 1.8466666666666666E20
+    },
+    "nr:u_238": {
+      "atoms": 1.7155555555555556E14
+    }
+  },
+  "target": "nuclearcraft:molten_fuel_uranium_leu_233_ni"
+}

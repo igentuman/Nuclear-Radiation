@@ -1,0 +1,12 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:cf_252": {
+      "atoms": 2.3955555555555555E22
+    },
+    "nr:eu_155": {
+      "atoms": 6.988888888888888E20
+    }
+  },
+  "target": "nuclearcraft:molten_depleted_fuel_californium_hecf_251_za"
+}

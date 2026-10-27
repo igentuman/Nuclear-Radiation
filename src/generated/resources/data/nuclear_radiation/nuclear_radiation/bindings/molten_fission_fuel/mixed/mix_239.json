@@ -1,0 +1,12 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:pu_239": {
+      "atoms": 7.933333333333334E20
+    },
+    "nr:u_238": {
+      "atoms": 1.7155555555555556E14
+    }
+  },
+  "target": "nuclearcraft:molten_fuel_mixed_mix_239"
+}

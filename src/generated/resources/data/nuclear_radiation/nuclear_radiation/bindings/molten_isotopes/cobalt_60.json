@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:co_60": {
+      "atoms": 6.5E22
+    }
+  },
+  "target": "nuclearcraft:molten_cobalt_60"
+}

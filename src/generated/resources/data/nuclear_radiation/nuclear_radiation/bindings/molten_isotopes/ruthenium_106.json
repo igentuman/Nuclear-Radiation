@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:ru_106": {
+      "atoms": 1.72E19
+    }
+  },
+  "target": "nuclearcraft:molten_ruthenium_106"
+}

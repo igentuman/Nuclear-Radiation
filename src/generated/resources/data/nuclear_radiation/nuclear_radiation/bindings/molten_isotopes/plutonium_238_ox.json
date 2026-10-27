@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:pu_238": {
+      "atoms": 1.85E18
+    }
+  },
+  "target": "nuclearcraft:molten_plutonium_238_ox"
+}

@@ -224,11 +224,11 @@ dependencies {
     dependencies {
         implementation "maven.modrinth:3rXU9gz8:ZLwuD5gm"
     }
-    implementation "curse.maven:sable-immersive-portals-compat-1622922:8502597"
+    compileOnly "curse.maven:sable-immersive-portals-compat-1622922:8502597"
 
     implementation "curse.maven:thewasteland-1449485:8314798"
     implementation "curse.maven:cloth-config-348521:5729127"
-    implementation "curse.maven:immersive-portals-for-forge-355440:6667779"
+    compileOnly "curse.maven:immersive-portals-for-forge-355440:6667779"
 
     testImplementation platform("org.junit:junit-bom:5.10.2")
     testImplementation "org.junit.jupiter:junit-jupiter"

@@ -1,0 +1,12 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:cf_251": {
+      "atoms": 3.04E19
+    },
+    "nr:cf_252": {
+      "atoms": 2.0533333333333336E22
+    }
+  },
+  "target": "nuclearcraft:molten_fuel_californium_hecf_251_ni"
+}

@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:pm_147": {
+      "atoms": 3.72E19
+    }
+  },
+  "target": "nuclearcraft:molten_promethium_147"
+}

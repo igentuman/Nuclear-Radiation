@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:na_22": {
+      "atoms": 3.59E23
+    }
+  },
+  "target": "nuclearcraft:molten_sodium_22"
+}

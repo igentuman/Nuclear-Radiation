@@ -19,8 +19,10 @@ import net.minecraft.world.level.material.Fluid;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nr.util.TagUtil.*;
@@ -43,6 +45,7 @@ public class RadiationBindingProvider implements DataProvider {
         this.output = output;
         this.bindings = bindings;
         this.bindings.addAll(getAdditionalBindings());
+        addMoltenIsotopeFluids(this.bindings);
     }
 
     public List<Isotope.BindingDefinition> getAdditionalBindings() {
@@ -866,11 +869,10 @@ public class RadiationBindingProvider implements DataProvider {
         fuel(list, "californium/hecf_249", p(Isotopes.CF_249, A_CF249, 3), p(Isotopes.CF_252, A_CF252, 6));
         fuel(list, "californium/lecf_249", p(Isotopes.CF_249, A_CF249, 1), p(Isotopes.CF_252, A_CF252, 8));
         fuel(list, "californium/hecf_251", p(Isotopes.CF_251, A_CF251, 3), p(Isotopes.CF_252, A_CF252, 6));
-        fuel(list, "californium/hecm_243", p(Isotopes.CM_243, A_CM243, 3), p(Isotopes.CM_246, A_CM246, 6));
-        fuel(list, "californium/lecm_243", p(Isotopes.CM_243, A_CM243, 1), p(Isotopes.CM_246, A_CM246, 8));
+        fuel(list, "californium/lecf_251", p(Isotopes.CF_251, A_CF251, 1), p(Isotopes.CF_252, A_CF252, 8));
 
-        fuel(list, "curium/lecm_243", p(Isotopes.CM_243, A_CM243, 3), p(Isotopes.CM_246, A_CM246, 1));
-        fuel(list, "curium/hecm_245", p(Isotopes.CM_245, A_CM245, 3), p(Isotopes.CM_246, A_CM246, 6));
+        fuel(list, "curium/hecm_243", p(Isotopes.CM_243, A_CM243, 3), p(Isotopes.CM_246, A_CM246, 6));
+        fuel(list, "curium/lecm_243", p(Isotopes.CM_243, A_CM243, 1), p(Isotopes.CM_246, A_CM246, 8));
         fuel(list, "curium/hecm_245", p(Isotopes.CM_245, A_CM245, 3), p(Isotopes.CM_246, A_CM246, 6));
         fuel(list, "curium/lecm_245", p(Isotopes.CM_245, A_CM245, 1), p(Isotopes.CM_246, A_CM246, 8));
         fuel(list, "curium/hecm_247", p(Isotopes.CM_247, A_CM247, 3), p(Isotopes.CM_246, A_CM246, 6));
@@ -880,7 +882,7 @@ public class RadiationBindingProvider implements DataProvider {
         fuel(list, "neptunium/len_236", p(Isotopes.NP_236, A_NP236, 1), p(Isotopes.NP_237, A_NP237, 8));
 
         fuel(list, "plutonium/hep_239", p(Isotopes.PU_239, A_PU239, 3), p(Isotopes.PU_242, A_PU242, 6));
-        fuel(list, "neptunium/lep_239", p(Isotopes.PU_239, A_PU239, 1), p(Isotopes.PU_242, A_PU242, 8));
+        fuel(list, "plutonium/lep_239", p(Isotopes.PU_239, A_PU239, 1), p(Isotopes.PU_242, A_PU242, 8));
         fuel(list, "plutonium/hep_241", p(Isotopes.PU_241, A_PU241, 3), p(Isotopes.PU_242, A_PU242, 4));
         fuel(list, "plutonium/lep_241", p(Isotopes.PU_241, A_PU241, 1), p(Isotopes.PU_242, A_PU242, 8));
 
@@ -942,7 +944,54 @@ public class RadiationBindingProvider implements DataProvider {
         for (Part part : parts) {
             b.isotope(part.isotope(), part.base() * part.parts() / 9.0);
         }
-        list.add(b.build());
+        Isotope.BindingDefinition definition = b.build();
+        list.add(definition);
+
+        String stem = path.replace('/', '_');
+        String fluidStem = stem.startsWith("depleted_")
+                ? "molten_depleted_fuel_" + stem.substring("depleted_".length())
+                : "molten_fuel_" + stem;
+        addMoltenVariants(list, "molten_fission_fuel/" + path, fluidStem, definition.isotopes, true);
+    }
+
+    private static void addMoltenIsotopeFluids(List<Isotope.BindingDefinition> list) {
+        // NuclearCraft registers one source fluid per isotope variant. Its fluid tags also
+        // contain the flowing counterpart, which must not become a separate world source.
+        Map<String, Isotope.BindingDefinition> sources = new LinkedHashMap<>();
+        Map<String, String> dustOnly = Map.of(
+                "caesium_137_dust", "caesium_137",
+                "europium_155_dust", "europium_155",
+                "dust_promethium", "promethium_147",
+                "dust_ruthenium", "ruthenium_106",
+                "dust_strontium", "strontium_90");
+        for (Isotope.BindingDefinition definition : List.copyOf(list)) {
+            if (definition.type.equals(Isotope.BindingDefinition.TYPE_ITEM) && definition.tag
+                    && definition.target.getNamespace().equals("c")
+                    && definition.target.getPath().startsWith("isotopes/")) {
+                sources.put(definition.target.getPath().substring("isotopes/".length()).replace('/', '_'), definition);
+            }
+            String dustIsotope = dustOnly.get(definition.fileId);
+            if (dustIsotope != null) sources.put(dustIsotope, definition);
+        }
+
+        Set<String> baseOnly = Set.of("beryllium_7", "calcium_48", "cobalt_60", "iridium_192", "sodium_22",
+                "caesium_137", "europium_155", "promethium_147", "ruthenium_106", "strontium_90");
+        for (Map.Entry<String, Isotope.BindingDefinition> entry : sources.entrySet()) {
+            String isotope = entry.getKey();
+            if (isotope.equals("actinium_225")) continue; // NuclearCraft has no molten actinium fluid.
+            addMoltenVariants(list, "molten_isotopes/" + isotope, "molten_" + isotope,
+                    entry.getValue().isotopes, !baseOnly.contains(isotope));
+        }
+    }
+
+    private static void addMoltenVariants(List<Isotope.BindingDefinition> list, String fileId,
+                                          String fluidStem, Map<String, Double> isotopes, boolean variants) {
+        for (String suffix : variants ? List.of("", "_za", "_ox", "_ni") : List.of("")) {
+            Isotope.BindingDefinition.Builder b = Isotope.BindingDefinition.builder(fileId + suffix)
+                    .fluid(rec("nuclearcraft:" + fluidStem + suffix));
+            isotopes.forEach(b::isotope);
+            list.add(b.build());
+        }
     }
 
     @Override

@@ -1,0 +1,12 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:pu_239": {
+      "atoms": 1.19E21
+    },
+    "nr:pu_242": {
+      "atoms": 1.5133333333333334E17
+    }
+  },
+  "target": "nuclearcraft:molten_fuel_plutonium_hep_239_ni"
+}

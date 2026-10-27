@@ -1,0 +1,12 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:cm_245": {
+      "atoms": 3.4E18
+    },
+    "nr:cm_246": {
+      "atoms": 1.18E19
+    }
+  },
+  "target": "nuclearcraft:molten_fuel_curium_hecm_245_za"
+}

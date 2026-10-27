@@ -1,0 +1,9 @@
+{
+  "type": "fluid",
+  "isotopes": {
+    "nr:np_236": {
+      "atoms": 5.66E20
+    }
+  },
+  "target": "nuclearcraft:molten_neptunium_236_za"
+}
