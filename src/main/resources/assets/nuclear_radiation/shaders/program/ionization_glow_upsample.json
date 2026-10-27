@@ -1,0 +1,15 @@
+{
+    "blend": { "func": "add", "srcrgb": "one", "dstrgb": "zero" },
+    "vertex": "blit",
+    "fragment": "nuclear_radiation:ionization_glow_upsample",
+    "attributes": [ "Position" ],
+    "samplers": [
+        {"name": "DiffuseSampler"},
+        {"name": "DetailSampler"}
+    ],
+    "uniforms": [
+        {"name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]},
+        {"name": "OutSize", "type": "float", "count": 2, "values": [1.0, 1.0]},
+        {"name": "InSize", "type": "float", "count": 2, "values": [1.0, 1.0]}
+    ]
+}

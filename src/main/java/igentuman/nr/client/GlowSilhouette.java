@@ -59,9 +59,9 @@ public final class GlowSilhouette {
     }
 
     /** Routes all incoming item geometry into a single flat-colored silhouette buffer. */
-    public static final class Buffers implements MultiBufferSource {
-        private final MultiBufferSource.BufferSource delegate =
-                MultiBufferSource.immediate(new ByteBufferBuilder(1536));
+    public static final class Buffers implements MultiBufferSource, AutoCloseable {
+        private final ByteBufferBuilder storage = new ByteBufferBuilder(1536);
+        private final MultiBufferSource.BufferSource delegate = MultiBufferSource.immediate(storage);
         private int color = 0xFFFFFFFF;
 
         public void setColor(int red, int green, int blue, int alpha) {
@@ -70,13 +70,40 @@ public final class GlowSilhouette {
 
         @Override
         public VertexConsumer getBuffer(RenderType renderType) {
+            // Glint UVs and name-tag UVs address other textures. Replaying those over the block
+            // atlas would punch unrelated patterns into the silhouette (and duplicate item geometry).
+            VertexFormat format = renderType.format();
+            if (renderType.mode() != VertexFormat.Mode.QUADS
+                    || format == DefaultVertexFormat.POSITION_TEX
+                    || format == DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP
+                    || format == DefaultVertexFormat.POSITION_COLOR_LIGHTMAP) return DISCARD;
             return new ColorForcer(delegate.getBuffer(RENDER_TYPE), color);
         }
 
         public void endBatch() {
             delegate.endBatch();
         }
+
+        @Override
+        public void close() {
+            storage.close();
+        }
     }
+
+    private static final VertexConsumer DISCARD = new VertexConsumer() {
+        @Override
+        public VertexConsumer addVertex(float x, float y, float z) { return this; }
+        @Override
+        public VertexConsumer setColor(int red, int green, int blue, int alpha) { return this; }
+        @Override
+        public VertexConsumer setUv(float u, float v) { return this; }
+        @Override
+        public VertexConsumer setUv1(int u, int v) { return this; }
+        @Override
+        public VertexConsumer setUv2(int u, int v) { return this; }
+        @Override
+        public VertexConsumer setNormal(float x, float y, float z) { return this; }
+    };
 
     // Forces a flat color and drops the entity-format attributes the silhouette format lacks.
     private record ColorForcer(VertexConsumer delegate, int color) implements VertexConsumer {
