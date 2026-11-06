@@ -57,6 +57,10 @@ public final class DefaultArmorProtections {
         addCustom(list, "nuclearcraftneohaul:hazmat_chestplate", 0.9, 1, 1, 0.90, false);
         addCustom(list, "nuclearcraftneohaul:hazmat_leggings", 0.9, 1, 1, 0.90, false);
         addCustom(list, "nuclearcraftneohaul:hazmat_boots", 0.9, 1, 1, 0.90, false);
+        addCustom(list, "nuclearcraft:tough_helmet", 0.10, 0.25, 0.20, 0.05, false);
+        addCustom(list, "nuclearcraft:tough_chestplate", 0.10, 0.25, 0.20, 0.05, false);
+        addCustom(list, "nuclearcraft:tough_leggings", 0.10, 0.25, 0.20, 0.05, false);
+        addCustom(list, "nuclearcraft:tough_boots", 0.10, 0.25, 0.20, 0.05, false);
         addCustom(list, "createnucleartech:basic_hazmat_helmet",      0.80, 1, 1, 0.80, true);
         addCustom(list, "createnucleartech:basic_hazmat_chestplate",  0.80, 1, 1, 0.80, false);
         addCustom(list, "createnucleartech:basic_hazmat_leggings",    0.80, 1, 1, 0.80, false);
