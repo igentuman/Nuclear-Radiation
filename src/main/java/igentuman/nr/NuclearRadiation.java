@@ -167,6 +167,7 @@ public class NuclearRadiation {
             event.accept(FALLOUT_DUST);
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(NRArmorItems.HAZMAT_FIBER);
             event.accept(Corium.MOLTEN_CORIUM_BUCKET);
         }
         if (event.getTabKey() == CreativeModeTabs.COMBAT) {

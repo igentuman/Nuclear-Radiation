@@ -7,7 +7,6 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -25,6 +24,9 @@ public final class NRArmorItems {
     public static final DeferredRegister.Items ITEMS =
             DeferredRegister.createItems(NuclearRadiation.MODID);
 
+    public static final DeferredItem<Item> HAZMAT_FIBER = ITEMS.register("hazmat_fiber",
+            () -> new Item(new Item.Properties()));
+
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> HAZMAT_MATERIAL =
             ARMOR_MATERIALS.register("hazmat", () -> new ArmorMaterial(
                     Map.of(
@@ -35,7 +37,7 @@ public final class NRArmorItems {
                     ),
                     10,
                     SoundEvents.ARMOR_EQUIP_GENERIC,
-                    () -> Ingredient.of(Items.PHANTOM_MEMBRANE),
+                    () -> Ingredient.of(HAZMAT_FIBER),
                     List.of(new ArmorMaterial.Layer(
                             ResourceLocation.fromNamespaceAndPath(NuclearRadiation.MODID, "hazmat")
                     )),

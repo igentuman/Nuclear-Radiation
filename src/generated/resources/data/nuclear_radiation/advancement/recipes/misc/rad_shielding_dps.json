@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "minecraft:netherite_ingot"
+            "items": "nuclear_radiation:rad_shielding_heavy"
           }
         ]
       },

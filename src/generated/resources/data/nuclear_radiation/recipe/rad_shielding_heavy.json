@@ -9,7 +9,7 @@
       "item": "minecraft:obsidian"
     },
     "P": {
-      "item": "minecraft:prismarine"
+      "item": "nuclear_radiation:rad_shielding_medium"
     }
   },
   "pattern": [

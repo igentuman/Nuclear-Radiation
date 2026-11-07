@@ -26,7 +26,7 @@ public final class RadiationEffects {
      */
     public static int computeStage(double svPerHour, double svTotalCareer) {
         // Acute: current dose rate (Sv/h) vs rate thresholds.
-        int acute = band(svPerHour,
+        int acute = band(svPerHour/1000D,
                 RadiationConfig.THRESHOLD_MILD.get(),
                 RadiationConfig.THRESHOLD_MODERATE.get(),
                 RadiationConfig.THRESHOLD_SEVERE.get(),

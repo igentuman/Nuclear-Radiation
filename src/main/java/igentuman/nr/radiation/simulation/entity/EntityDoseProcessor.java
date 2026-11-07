@@ -441,7 +441,7 @@ public final class EntityDoseProcessor {
             return;
         }
         double dtHours = intervalSeconds / Units.SECONDS_PER_HOUR;
-        double mult = Math.max(0.0, data.decayMultiplier()) * GeneralConfig.ENTITY_DECAY_MULTIPLIER.get();
+        double mult = Math.max(0.0, data.decayMultiplier()) * GeneralConfig.ENTITY_DECAY_MULTIPLIER.get() / 5;
         double kept = Math.exp(-CAREER_DECAY_LN2_PER_HOUR * mult * dtHours);
         double absolute = RadiationConfig.BASE_DECAY_SV_PER_HOUR.get() * mult * dtHours;
         data.setSvTotalCareer(Math.max(0.0, career * kept - absolute));

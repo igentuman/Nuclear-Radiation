@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "D": {
-      "item": "minecraft:diamond"
+      "item": "minecraft:netherite_ingot"
     },
     "N": {
-      "item": "minecraft:netherite_ingot"
+      "item": "nuclear_radiation:rad_shielding_heavy"
     }
   },
   "pattern": [

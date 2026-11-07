@@ -3,16 +3,12 @@
   "category": "equipment",
   "key": {
     "H": {
-      "item": "minecraft:phantom_membrane"
-    },
-    "X": {
-      "item": "minecraft:leather_boots"
+      "item": "nuclear_radiation:hazmat_fiber"
     }
   },
   "pattern": [
-    "   ",
-    "   ",
-    "HXH"
+    "H H",
+    "H H"
   ],
   "result": {
     "count": 1,

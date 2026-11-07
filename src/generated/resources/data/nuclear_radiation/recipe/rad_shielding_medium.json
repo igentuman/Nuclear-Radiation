@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "G": {
-      "item": "minecraft:gold_block"
+      "item": "nuclear_radiation:rad_shielding_light"
     },
     "I": {
       "item": "minecraft:iron_ingot"

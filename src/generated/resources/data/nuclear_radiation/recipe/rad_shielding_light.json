@@ -6,19 +6,16 @@
       "item": "minecraft:copper_ingot"
     },
     "C": {
-      "item": "minecraft:clay_ball"
+      "item": "nuclear_radiation:hazmat_fiber"
     },
     "I": {
       "item": "minecraft:iron_nugget"
-    },
-    "L": {
-      "item": "minecraft:leather"
     }
   },
   "pattern": [
-    "BLB",
+    "BBB",
     "ICI",
-    "BLB"
+    "BBB"
   ],
   "result": {
     "count": 4,

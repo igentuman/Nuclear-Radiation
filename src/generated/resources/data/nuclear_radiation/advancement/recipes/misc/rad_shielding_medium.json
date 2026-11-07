@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_lapis": {
+    "has_light_shielding": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:lapis_lazuli"
+            "items": "nuclear_radiation:rad_shielding_light"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_lapis"
+      "has_light_shielding"
     ]
   ],
   "rewards": {

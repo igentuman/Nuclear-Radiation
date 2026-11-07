@@ -103,40 +103,45 @@ public class NRRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_ghast_tear", has(Items.GHAST_TEAR))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NRArmorItems.HAZMAT_HELMET)
-                .pattern("HXH")
-                .pattern("H H")
-                .pattern("   ")
-                .define('X', Items.LEATHER_HELMET)
-                .define('H', Items.PHANTOM_MEMBRANE)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NRArmorItems.HAZMAT_FIBER, 2)
+                .pattern("YSY")
+                .pattern(" P ")
+                .pattern("LSL")
+                .define('S', Items.STRING)
+                .define('Y', Items.YELLOW_DYE)
+                .define('L', Items.LEATHER)
+                .define('P', Items.PHANTOM_MEMBRANE)
                 .unlockedBy("has_phantom_membrane", has(Items.PHANTOM_MEMBRANE))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NRArmorItems.HAZMAT_HELMET)
+                .pattern("HHH")
+                .pattern("H H")
+                .define('H', NRArmorItems.HAZMAT_FIBER)
+                .unlockedBy("has_hazmat_fiber", has(NRArmorItems.HAZMAT_FIBER))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NRArmorItems.HAZMAT_CHESTPLATE)
                 .pattern("H H")
-                .pattern("HXH")
                 .pattern("HHH")
-                .define('X', Items.LEATHER_CHESTPLATE)
-                .define('H', Items.PHANTOM_MEMBRANE)
-                .unlockedBy("has_phantom_membrane", has(Items.PHANTOM_MEMBRANE))
+                .pattern("HHH")
+                .define('H', NRArmorItems.HAZMAT_FIBER)
+                .unlockedBy("has_hazmat_fiber", has(NRArmorItems.HAZMAT_FIBER))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NRArmorItems.HAZMAT_LEGGINGS)
-                .pattern("HXH")
+                .pattern("HHH")
                 .pattern("H H")
                 .pattern("H H")
-                .define('X', Items.LEATHER_LEGGINGS)
-                .define('H', Items.PHANTOM_MEMBRANE)
-                .unlockedBy("has_phantom_membrane", has(Items.PHANTOM_MEMBRANE))
+                .define('H', NRArmorItems.HAZMAT_FIBER)
+                .unlockedBy("has_hazmat_fiber", has(NRArmorItems.HAZMAT_FIBER))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, NRArmorItems.HAZMAT_BOOTS)
-                .pattern("   ")
-                .pattern("   ")
-                .pattern("HXH")
-                .define('X', Items.LEATHER_BOOTS)
-                .define('H', Items.PHANTOM_MEMBRANE)
-                .unlockedBy("has_phantom_membrane", has(Items.PHANTOM_MEMBRANE))
+                .pattern("H H")
+                .pattern("H H")
+                .define('H', NRArmorItems.HAZMAT_FIBER)
+                .unlockedBy("has_hazmat_fiber", has(NRArmorItems.HAZMAT_FIBER))
                 .save(recipeOutput);
 
         buildShieldingItems(recipeOutput);
@@ -147,43 +152,42 @@ public class NRRecipeProvider extends RecipeProvider {
 
     private void buildShieldingItems(RecipeOutput recipeOutput) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NRShieldingItems.RAD_SHIELDING_LIGHT.get(), 4)
-                .pattern("BLB")
+                .pattern("BBB")
                 .pattern("ICI")
-                .pattern("BLB")
-                .define('L', Items.LEATHER)
+                .pattern("BBB")
                 .define('I', Items.IRON_NUGGET)
-                .define('C', Items.CLAY_BALL)
+                .define('C', NRArmorItems.HAZMAT_FIBER)
                 .define('B', Items.COPPER_INGOT)
-                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
+                .unlockedBy("has_hazmat_fiber", has(NRArmorItems.HAZMAT_FIBER))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NRShieldingItems.RAD_SHIELDING_MEDIUM.get(), 2)
                 .pattern("ILI")
                 .pattern("LGL")
                 .pattern("ILI")
-                .define('G', Items.GOLD_BLOCK)
+                .define('G', NRShieldingItems.RAD_SHIELDING_LIGHT)
                 .define('I', Items.IRON_INGOT)
                 .define('L', Items.LAPIS_LAZULI)
-                .unlockedBy("has_lapis", has(Items.LAPIS_LAZULI))
+                .unlockedBy("has_light_shielding", has(NRShieldingItems.RAD_SHIELDING_LIGHT))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NRShieldingItems.RAD_SHIELDING_HEAVY.get())
                 .pattern("OGO")
                 .pattern("GPG")
                 .pattern("OGO")
-                .define('P', Items.PRISMARINE)
+                .define('P', NRShieldingItems.RAD_SHIELDING_MEDIUM)
                 .define('O', Items.OBSIDIAN)
                 .define('G', Items.GOLD_INGOT)
-                .unlockedBy("has_obsidian", has(Items.OBSIDIAN))
+                .unlockedBy("has_medium_shielding", has(NRShieldingItems.RAD_SHIELDING_MEDIUM))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NRShieldingItems.RAD_SHIELDING_DPS.get())
                 .pattern("DDD")
                 .pattern("DND")
                 .pattern("DDD")
-                .define('D', Items.DIAMOND)
-                .define('N', Items.NETHERITE_INGOT)
-                .unlockedBy("has_netherite_ingot", has(Items.NETHERITE_INGOT))
+                .define('D', Items.NETHERITE_INGOT)
+                .define('N', NRShieldingItems.RAD_SHIELDING_HEAVY)
+                .unlockedBy("has_netherite_ingot", has(NRShieldingItems.RAD_SHIELDING_HEAVY))
                 .save(recipeOutput);
     }
 
