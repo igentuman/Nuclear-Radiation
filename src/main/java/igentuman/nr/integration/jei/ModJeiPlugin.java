@@ -17,6 +17,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +35,18 @@ import java.util.Set;
 
 @JeiPlugin
 public class ModJeiPlugin implements IModPlugin {
+
+    private final JeiFluidTooltip fluidTooltip = new JeiFluidTooltip();
+
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
+        fluidTooltip.register(jeiRuntime);
+    }
+
+    @Override
+    public void onRuntimeUnavailable() {
+        fluidTooltip.clearRuntime();
+    }
 
     @Override
     public ResourceLocation getPluginUid() {

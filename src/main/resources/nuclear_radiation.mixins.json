@@ -34,7 +34,6 @@
     "TheWastelandResistanceMixin"
   ],
   "client": [
-    "client.JeiFluidTooltipMixin",
     "client.NCTooltipHandlerMixin",
     "client.ProjectExplosiveGeigerMixin",
     "client.TheWastelandGeigerOverlayMixin"
