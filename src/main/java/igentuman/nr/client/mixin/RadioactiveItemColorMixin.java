@@ -14,7 +14,7 @@ public abstract class RadioactiveItemColorMixin {
     @Inject(method = "getTeamColor", at = @At("HEAD"), cancellable = true)
     private void nr$glowMaskColor(CallbackInfoReturnable<Integer> cir) {
         if ((Object)this instanceof ItemEntity item && IonizationGlowRenderer.shouldGlow(item)) {
-            cir.setReturnValue(IonizationGlowRenderer.MASK_COLOR);
+            cir.setReturnValue(IonizationGlowRenderer.maskColor(item));
         }
     }
 }

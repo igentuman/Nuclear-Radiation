@@ -18,7 +18,7 @@ public class NRClientConfig {
                 .comment("Minimum total activity (Bq) of a dropped stack for its glow. Default 1e7 (10 MBq) includes a single fallout dust item.")
                 .defineInRange("threshold_bq", 1.0e7, 0.0, 1.0e30);
         GLOW_INTENSITY = BUILDER
-                .comment("Zero disables the ionization glow; nonzero values enable its current fixed brightness.")
+                .comment("Brightness of the ionization glow. Zero disables the effect.")
                 .defineInRange("intensity", 0.5, 0.0, 1.0);
         BUILDER.pop();
     }

@@ -1,27 +1,23 @@
 #version 330
 
+#moj_import <nuclear_radiation:ionization_bloom.glsl>
+
 layout(std140) uniform SamplerInfo {
     vec2 OutSize;
     vec2 InSize;
-};
-
-layout(std140) uniform BlurConfig {
-    vec2 BlurDir;
-    float Radius;
 };
 
 uniform sampler2D InSampler;
 in vec2 texCoord;
 out vec4 fragColor;
 
+// Five fixed taps on successively halved color targets replace the wide full-screen loops.
 void main() {
-    vec2 stepSize = BlurDir / InSize;
-    vec4 sum = vec4(0.0);
-    float weightSum = 0.0;
-    for (float offset = -Radius; offset <= Radius; offset += 2.0) {
-        float weight = 1.0 - abs(offset) / (Radius + 1.0);
-        sum += texture(InSampler, texCoord + stepSize * offset) * weight;
-        weightSum += weight;
-    }
-    fragColor = sum / weightSum;
+    vec2 stepSize = 1.0 / InSize;
+    vec3 sum = sampleBloom(InSampler, texCoord) * 4.0;
+    sum += sampleBloom(InSampler, texCoord + vec2(-stepSize.x, -stepSize.y));
+    sum += sampleBloom(InSampler, texCoord + vec2( stepSize.x, -stepSize.y));
+    sum += sampleBloom(InSampler, texCoord + vec2(-stepSize.x,  stepSize.y));
+    sum += sampleBloom(InSampler, texCoord + vec2( stepSize.x,  stepSize.y));
+    fragColor = encodeBloom(sum * 0.125);
 }
