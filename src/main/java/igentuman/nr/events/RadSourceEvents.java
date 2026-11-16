@@ -156,8 +156,8 @@ public class RadSourceEvents {
                             if (!bp.isEmpty()) {
                                 cursor.set(cp.getMinBlockX() + lx, baseY + ly, cp.getMinBlockZ() + lz);
                                 if (reg.atBlock(cursor) == null) {
-                                    reg.register(new BlockRadSource(UUID.randomUUID(), server.dimension(),
-                                            cursor.immutable(), bp, spawnTick));
+                                    reg.register(BlockRadSource.forState(UUID.randomUUID(), server.dimension(),
+                                            cursor.immutable(), state, bp, spawnTick));
                                 }
                                 placed = true;
                             }

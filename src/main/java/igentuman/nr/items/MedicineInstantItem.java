@@ -59,6 +59,7 @@ public class MedicineInstantItem extends Item {
             if (instantSvRemoved > 0.0) {
                 EntityRadiationData data = entity.getData(NRAttachments.ENTITY_RADIATION.get());
                 data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() - instantSvRemoved));
+                igentuman.nr.compat.ntm.NtmCompatibility.clearTimedContamination(entity);
             }
             entity.addEffect(new MobEffectInstance(NREffects.PROTECTION, durationTicks, amplifier, true, true, true));
             entity.addEffect(new MobEffectInstance(NREffects.PURGE, durationTicks, amplifier, true, true, true));

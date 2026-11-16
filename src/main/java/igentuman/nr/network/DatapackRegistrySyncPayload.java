@@ -134,6 +134,7 @@ public record DatapackRegistrySyncPayload(
                 }
             }
 
+            igentuman.nr.compat.ntm.NtmCompatibility.invalidateItemProfiles();
             Bindings.rebuild();
             ArmorProtectionRegistry.rebuild();
             ShieldingBindings.rebuild();

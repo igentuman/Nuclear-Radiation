@@ -9,11 +9,13 @@ import igentuman.nr.api.shielding.ArmorProtectionRegistry;
 import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.compat.megaton.MegatonRadiationBridge;
+import igentuman.nr.compat.ntm.NtmCompatibility;
 import igentuman.nr.events.NREvents;
 import igentuman.nr.network.*;
 import igentuman.nr.radiation.shielding.world.AttenuationResult;
 import igentuman.nr.radiation.shielding.world.ShieldingRaycast;
 import igentuman.nr.radiation.simulation.RadiationSimulator;
+import igentuman.nr.radiation.simulation.RadiationFieldSampler;
 import igentuman.nr.radiation.simulation.SubChunkRadVector;
 import igentuman.nr.radiation.simulation.inventory.InventoryRadCache;
 import igentuman.nr.radiation.storage.ChunkRadiationData;
@@ -43,7 +45,7 @@ public final class EntityDoseProcessor {
 
     private static final RadiationQuality DEFAULT_Q = RadiationQuality.DEFAULT;
     private static final double EMA_ALPHA = 0.2;
-    private static final double RATE_GAIN = 72.0;
+    public static final double RATE_GAIN = 72.0;
     private static final double CAREER_DECAY_LN2_PER_HOUR = 0.6931471805599453;
 
     public static void tick(ServerLevel level, LivingEntity entity, long now, int intervalTicks) {
@@ -64,6 +66,9 @@ public final class EntityDoseProcessor {
         Dose nearby = computeNearbyEntities(level, entity, gyPerBqSec, intervalSeconds, armor, now);
         Dose contamination = computeContamination(level, entity, gyPerBqSec, intervalSeconds, armor);
         Dose background = backgroundRadiation(level, entity, intervalSeconds, armor);
+        var ntmRate = RadiationFieldSampler.profile(NtmCompatibility.worldProfile(level, entity.blockPosition()));
+        Dose ntmWorld = new Dose(NtmCompatibility.worldExposureAllowed(entity)
+                ? ntmRate.protectedRate(armor) * intervalSeconds : 0.0, ntmRate.total() * intervalSeconds);
         double megatonRadPerSecond = MegatonRadiationBridge.zoneRate(level, entity.position());
         double megatonAmbientSv = megatonRadPerSecond * MegatonRadiationBridge.falloutSvPerGameRad() * intervalSeconds;
         Dose megatonFallout = new Dose(megatonAmbientSv * (1.0 - armor.xray()), megatonAmbientSv);
@@ -72,19 +77,27 @@ public final class EntityDoseProcessor {
         double physical = 1.0 - protection;   // real attenuated dose fraction (no display gain)
 
         double svThisTick = (ext.sv() + svInternal + inventory.sv() + nearby.sv()
-                + contamination.sv() + background.sv() + megatonFallout.sv()) * physical;
+                + contamination.sv() + background.sv() + megatonFallout.sv() + ntmWorld.sv()) * physical;
+
+        boolean ntmImmune = NtmCompatibility.radiationImmune(entity);
+        if (ntmImmune) svThisTick = 0.0;
 
         double svThisTickAmbient = (ext.svAmbient() + svInternal + inventory.svAmbient() + nearby.svAmbient()
-                + contamination.svAmbient() + background.svAmbient() + megatonFallout.svAmbient()) * physical;
+                + contamination.svAmbient() + background.svAmbient() + megatonFallout.svAmbient() + ntmWorld.svAmbient()) * physical;
 
         data.addSv(svThisTick);
+        // NTM irradiation events covered world intake and carried items (now NR inventory exposure).
+        if (!ntmImmune) NtmCompatibility.observeWorldExposure(entity, ntmWorld.svAmbient() + inventory.svAmbient(),
+                (ntmWorld.sv() + inventory.sv()) * physical);
 
-        double svPerHourInstant = (svThisTick * RATE_GAIN / intervalSeconds) * Units.SECONDS_PER_HOUR;
+        double nativeExposureSv = NtmCompatibility.drainExposure(entity);
+        double nativeAmbientSv = NtmCompatibility.drainAmbientExposure(entity);
+        double svPerHourInstant = ((svThisTick + nativeExposureSv) * RATE_GAIN / intervalSeconds) * Units.SECONDS_PER_HOUR;
         double prev = data.svPerHour();
         double rolling = prev + EMA_ALPHA * (svPerHourInstant - prev);
         data.setSvPerHour(Math.max(0.0, rolling));
 
-        double svPerHourInstantAmbient = (svThisTickAmbient * RATE_GAIN / intervalSeconds) * Units.SECONDS_PER_HOUR;
+        double svPerHourInstantAmbient = ((svThisTickAmbient + nativeAmbientSv) * RATE_GAIN / intervalSeconds) * Units.SECONDS_PER_HOUR;
         double prevAmbient = data.svPerHourAmbient();
         data.setSvPerHourAmbient(Math.max(0.0, prevAmbient + EMA_ALPHA * (svPerHourInstantAmbient - prevAmbient)));
 
@@ -96,7 +109,7 @@ public final class EntityDoseProcessor {
             cancelled = NREvents.fireDosePhaseRise(entity, stage, data.svPerHour(), data.svTotalCareer());
         }
         data.setLastDoseStage(stage);
-        if (!cancelled) {
+        if (!cancelled && !ntmImmune) {
             RadiationEffects.apply(entity, data.svPerHour(), data.svTotalCareer());
         }
 

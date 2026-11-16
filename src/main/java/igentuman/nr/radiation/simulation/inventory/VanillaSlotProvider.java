@@ -18,7 +18,8 @@ public class VanillaSlotProvider implements IInventoryRadSlotProvider {
         List<RadiatedSlot> out = new ArrayList<>();
 
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (!slot.isArmor()) continue;
+            // isArmor() covers humanoid armor and animal BODY armor; SADDLE is worn equipment too.
+            if (!slot.isArmor() && slot.getType() != EquipmentSlot.Type.SADDLE) continue;
             ItemStack stack = entity.getItemBySlot(slot);
             if (!stack.isEmpty()) out.add(new RadiatedSlot(stack, SlotFactors.WORN_ARMOR, true));
         }

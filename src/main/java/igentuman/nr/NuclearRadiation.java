@@ -9,9 +9,11 @@ import igentuman.nr.block.CreativeRadSourceBlock;
 import igentuman.nr.block.CreativeRadSourceBlockEntity;
 import igentuman.nr.block.FalloutDustBlock;
 import igentuman.nr.command.NRCommands;
+import igentuman.nr.compat.ntm.NtmCompatibility;
 import igentuman.nr.config.CoriumConfig;
 import igentuman.nr.config.GeneralConfig;
 import igentuman.nr.config.NRClientConfig;
+import igentuman.nr.config.NtmCompatConfig;
 import igentuman.nr.config.RadiationConfig;
 import igentuman.nr.events.*;
 import igentuman.nr.radiation.shielding.world.ShieldingBindings;
@@ -129,6 +131,7 @@ public class NuclearRadiation {
 
         modContainer.registerConfig(ModConfig.Type.COMMON, GeneralConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.COMMON, RadiationConfig.SPEC, "nuclear_radiation-radiation.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, NtmCompatConfig.SPEC, "nuclear_radiation-ntm.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, CoriumConfig.SPEC, "nuclear_radiation-corium.toml");
         modContainer.registerConfig(ModConfig.Type.CLIENT, NRClientConfig.SPEC, "nuclear_radiation-client.toml");
 
@@ -198,6 +201,7 @@ public class NuclearRadiation {
     @SubscribeEvent
     public void onTagsUpdated(TagsUpdatedEvent event) {
         if (!event.shouldUpdateStaticData()) return;
+        NtmCompatibility.itemTagsUpdated();
         Bindings.rebuild();
         ShieldingBindings.rebuild();
         ArmorProtectionRegistry.rebuild();

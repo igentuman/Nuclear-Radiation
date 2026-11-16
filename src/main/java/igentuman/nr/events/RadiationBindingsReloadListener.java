@@ -75,6 +75,7 @@ public class RadiationBindingsReloadListener extends SimpleJsonResourceReloadLis
         }
 
         NREvents.runAfterBindingsReload();
+        igentuman.nr.compat.ntm.NtmCompatibility.invalidateItemProfiles();
         Bindings.rebuild();
     }
 

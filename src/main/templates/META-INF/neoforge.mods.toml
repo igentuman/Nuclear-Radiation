@@ -39,7 +39,25 @@ description = '''${mod_description}'''
 config = "${mod_id}.mixins.json"
 
 [[mixins]]
+config = "${mod_id}.core.mixins.json"
+
+[[mixins]]
 config = "${mod_id}.client.mixins.json"
+
+[[mixins]]
+config = "${mod_id}.ntm.mixins.json"
+
+[[dependencies."${mod_id}"]]
+modId = "hbm"
+type = "optional"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "ntmspace"
+type = "optional"
+ordering = "AFTER"
+side = "BOTH"
 
 # The [[accessTransformers]] block allows you to declare where your AT file is.
 # If this block is omitted, a fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg

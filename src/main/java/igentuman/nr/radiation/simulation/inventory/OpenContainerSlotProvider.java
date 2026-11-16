@@ -1,6 +1,7 @@
 package igentuman.nr.radiation.simulation.inventory;
 
 import igentuman.nr.api.IInventoryRadSlotProvider;
+import igentuman.nr.compat.ntm.NtmCompatibility;
 import igentuman.nr.radiation.simulation.containers.OpenContainerRegistry;
 import igentuman.nr.util.GuiFilter;
 import net.minecraft.world.Container;
@@ -23,6 +24,8 @@ public class OpenContainerSlotProvider implements IInventoryRadSlotProvider {
 
         AbstractContainerMenu menu = OpenContainerRegistry.current(player.getUUID());
         if (menu == null || GuiFilter.isMenuIgnored(menu)) return Stream.empty();
+        // A held NTM container item already carries these contents in its own imported level.
+        if (NtmCompatibility.carriedItemMenu(menu)) return Stream.empty();
 
         Inventory inv = player.getInventory();
         List<RadiatedSlot> out = new ArrayList<>();

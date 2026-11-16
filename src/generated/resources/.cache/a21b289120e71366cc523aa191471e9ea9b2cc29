@@ -1,4 +1,4 @@
-// 26.1.2	2026-11-16T12:26:28.438527339	Nuclear Radiation Bindings
+// 26.1.2	2026-11-16T15:38:14.333500655	Nuclear Radiation Bindings
 fc43ebe76f57fdac8e80d9a50983bd0564237d6b data/nuclear_radiation/nuclear_radiation/bindings/actinium_225.json
 d6f323c778f8ddf09403680df39309f0bdf76814 data/nuclear_radiation/nuclear_radiation/bindings/americium_241.json
 13749f2cff166dd833d1addf9550c67d777a97d9 data/nuclear_radiation/nuclear_radiation/bindings/americium_242.json
@@ -160,6 +160,7 @@ b63866df125851989ae81d41af34769db9b3cbf6 data/nuclear_radiation/nuclear_radiatio
 20e93782dc73e549a60ae7ba84ddf214e598ea8f data/nuclear_radiation/nuclear_radiation/bindings/radioactive_low_item.json
 a221cf3f25f821a4d33320b07b68a3b08b78d27e data/nuclear_radiation/nuclear_radiation/bindings/radioactive_medium_block.json
 b1037ac5a1a803b99fee67e2303d9f9a0b49885f data/nuclear_radiation/nuclear_radiation/bindings/radioactive_medium_item.json
+e0b1d7e0c5e958fc5ce74c51e99337505ac9d27e data/nuclear_radiation/nuclear_radiation/bindings/raw_thorium.json
 d71684c787fbb33e8a8dabe508f9737f39f55833 data/nuclear_radiation/nuclear_radiation/bindings/raw_thorium_block.json
 ae70a5b472c03344a0c956a546e593504434081d data/nuclear_radiation/nuclear_radiation/bindings/raw_uranium.json
 aafa83a5d629a7e3ea22074331b3f9c7d30ea30c data/nuclear_radiation/nuclear_radiation/bindings/raw_uranium_block.json

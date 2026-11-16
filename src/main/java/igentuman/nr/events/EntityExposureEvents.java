@@ -60,5 +60,6 @@ public class EntityExposureEvents {
         if (event.isEndConquered()) return;
         EntityRadiationData data = event.getEntity().getData(NRAttachments.ENTITY_RADIATION.get());
         data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() / 2.0));
+        igentuman.nr.compat.ntm.NtmCompatibility.clearTimedContamination(event.getEntity());
     }
 }

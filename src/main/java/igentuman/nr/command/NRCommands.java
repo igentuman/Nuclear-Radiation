@@ -49,6 +49,7 @@ public final class NRCommands {
                             data.setProtectionFactor(0.0);
                             data.setDecayMultiplier(1.0);
                             data.internalContamination().clear();
+                            igentuman.nr.compat.ntm.NtmCompatibility.clearTimedContamination(player);
                             ctx.getSource().sendSuccess(
                                 () -> Component.literal("Cleared radiation dose for " + player.getName().getString()),
                                 true

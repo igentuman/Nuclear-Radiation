@@ -539,7 +539,7 @@ public class RadiationBindingProvider implements DataProvider {
                 .isotope(Isotopes.PA_91, 6.31e20)
                 .build());
 
-        list.add(Isotope.BindingDefinition.builder("dusts_thorium")
+        list.add(Isotope.BindingDefinition.builder("raw_thorium")
                 .itemTag(rawTag("thorium"))
                 .isotope(Isotopes.TH_232, 6.31e19)
                 .isotope(Isotopes.TH_230, 6.31e14)

@@ -6,6 +6,7 @@ import igentuman.nr.api.IPointRadiationSource;
 import igentuman.nr.api.shielding.IRadiationSimulator;
 import igentuman.nr.api.shielding.IRadiationSource;
 import igentuman.nr.config.RadiationConfig;
+import igentuman.nr.compat.ntm.NtmCompatibility;
 import igentuman.nr.radiation.simulation.entity.EntityIgnoreFilter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -89,6 +90,7 @@ public class RadiationSimulator implements IRadiationSimulator {
         }
         long t = level.getGameTime();
         if (t % RadiationConfig.WORLD_SIM_INTERVAL_TICKS.get() == 0) {
+            NtmCompatibility.tickWorld(level);
             pruneDeadSources(level);
             tickWorld(level);
         }

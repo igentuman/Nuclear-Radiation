@@ -92,6 +92,9 @@ public final class BlockSourceChangeProcessor {
     }
 
     private void markChanged(ServerLevel level, long packedPos) {
+        // Accept changes for the whole server lifetime (including startup, before the worker starts);
+        // MinecraftServer.isRunning() turns false at halt, so no level is retained past shutdown.
+        if (!level.getServer().isRunning()) return;
         if (!level.getServer().isSameThread()) {
             level.getServer().execute(() -> markChanged(level, packedPos));
             return;
@@ -227,8 +230,8 @@ public final class BlockSourceChangeProcessor {
             creative.registerSource(level);
         } else if (!activeContainer && registry.atBlock(pos) == null && change.profile() != null) {
             if (change.kind() == Kind.BLOCK) {
-                registry.register(new BlockRadSource(UUID.randomUUID(), level.dimension(), pos,
-                        change.profile(), level.getGameTime()));
+                registry.register(BlockRadSource.forState(UUID.randomUUID(), level.dimension(), pos,
+                        change.state(), change.profile(), level.getGameTime()));
             } else if (change.kind() == Kind.FLUID) {
                 registry.register(new FluidRadSource(UUID.randomUUID(), level.dimension(), pos,
                         change.profile(), level.getGameTime()));

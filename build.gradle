@@ -108,6 +108,9 @@ neoForge {
 
         // applies to all the run configs above
         configureEach {
+            if (providers.gradleProperty('nrRunDirectory').isPresent()) {
+                gameDirectory = file(providers.gradleProperty('nrRunDirectory').get())
+            }
             // "REGISTRYDUMP": For getting the contents of all registries.
             systemProperty 'forge.logging.markers', 'REGISTRIES'
 
@@ -124,8 +127,19 @@ neoForge {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+// These unit tests exercise codecs and the optional mixin gate without booting
+// Minecraft; ModDev attaches game/API libraries to main's compile classpath.
+sourceSets.test.compileClasspath += sourceSets.main.compileClasspath
+sourceSets.test.runtimeClasspath += sourceSets.main.compileClasspath
+
+configurations {
+    localRuntime
+    runtimeClasspath.extendsFrom(localRuntime)
+}
 
 dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
     implementation "curse.maven:jei-238222:9384706"
 
     implementation "curse.maven:kubejs-238086:9396057"
@@ -140,6 +154,26 @@ dependencies {
 
     implementation "curse.maven:megaton-nuclear-warfare-pro-edition-1713281:9072435"
 
+    // Compile adapters without making NTM a required runtime dependency. Select
+    // the development runtime with -PntmRuntime=none|core|space (default: space).
+    compileOnly "curse.maven:ntm-continuum-1719328:9524061"
+    compileOnly "curse.maven:ntm-continuum-space-1754149:9524268"
+    compileOnly "curse.maven:golem-core-1719361:9523853"
+    def ntmRuntime = providers.gradleProperty('ntmRuntime').getOrElse('space')
+    if (!(ntmRuntime in ['none', 'core', 'space'])) {
+        throw new GradleException('ntmRuntime must be none, core, or space')
+    }
+    if (ntmRuntime != 'none') {
+        localRuntime "curse.maven:ntm-continuum-1719328:9524061"
+        localRuntime "curse.maven:golem-core-1719361:9523853"
+    }
+    if (ntmRuntime == 'space') {
+        localRuntime "curse.maven:ntm-continuum-space-1754149:9524268"
+    }
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
 }
 
 sourceSets.main.java {
@@ -155,11 +189,6 @@ sourceSets.main.java {
     exclude 'igentuman/nr/mixin/**'
     exclude 'igentuman/nr/registry/NRGuide.java'
     exclude 'igentuman/nr/items/GuideBookItem.java'
-}
-
-configurations {
-    localRuntime
-    runtimeClasspath.extendsFrom(localRuntime)
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

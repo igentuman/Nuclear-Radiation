@@ -1,6 +1,7 @@
 package igentuman.nr.api.shielding;
 
 import igentuman.nr.api.binding.ResolvedTagBindings;
+import igentuman.nr.compat.ntm.NtmCompatibility;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -69,8 +70,8 @@ public final class ArmorProtectionRegistry {
     public static Protection get(ItemStack stack) {
         if (stack.isEmpty()) return Protection.NONE;
         if (stack.getItem() instanceof IRadiationArmor a) {
-            return new Protection(a.xrayProtection(), a.alphaProtection(),
-                    a.betaProtection(), a.neutronProtection(), a.gasProtection());
+            return applyCladding(stack, new Protection(a.xrayProtection(), a.alphaProtection(),
+                    a.betaProtection(), a.neutronProtection(), a.gasProtection()));
         }
         Map<Item, Protection> current = resolved;
         if (current == null) {
@@ -79,7 +80,19 @@ public final class ArmorProtectionRegistry {
                 current = resolved;
             }
         }
-        return applyUpgrade(stack, current.getOrDefault(stack.getItem(), Protection.NONE));
+        Protection base = current.get(stack.getItem());
+        if (base == null) base = NtmCompatibility.armorProtection(stack);
+        else base = applyCladding(stack, base);
+        return applyUpgrade(stack, base);
+    }
+
+    private static Protection applyCladding(ItemStack stack, Protection base) {
+        double cladding = NtmCompatibility.claddingProtection(stack);
+        if (cladding <= 0.0) return base;
+        return new Protection(1.0 - (1.0 - base.xray()) * (1.0 - cladding),
+                1.0 - (1.0 - base.alpha()) * (1.0 - cladding),
+                1.0 - (1.0 - base.beta()) * (1.0 - cladding),
+                1.0 - (1.0 - base.neutron()) * (1.0 - cladding), base.protectsFromGas());
     }
 
     private static Protection applyUpgrade(ItemStack stack, Protection base) {
@@ -107,6 +120,11 @@ public final class ArmorProtectionRegistry {
             mxN = Math.min(1.0, 1.0 - (1.0 - mxN) * (1.0 - p.neutron()));
             if (slot == EquipmentSlot.HEAD) gasProtection = p.protectsFromGas();
         }
-        return new Protection(mxX, mxA, mxB, mxN, gasProtection);
+        double extra = NtmCompatibility.additionalProtection(entity);
+        if (extra <= 0.0) return new Protection(mxX, mxA, mxB, mxN, gasProtection);
+        return new Protection(1.0 - (1.0 - mxX) * (1.0 - extra),
+                1.0 - (1.0 - mxA) * (1.0 - extra),
+                1.0 - (1.0 - mxB) * (1.0 - extra),
+                1.0 - (1.0 - mxN) * (1.0 - extra), gasProtection);
     }
 }

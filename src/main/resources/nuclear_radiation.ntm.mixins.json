@@ -1,0 +1,27 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "igentuman.nr.compat.ntm.mixin",
+  "plugin": "igentuman.nr.compat.ntm.NtmMixinPlugin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "HbmLivingPropsMixin",
+    "EntityHbmPropsMixin",
+    "EntityEffectHandlerMixin",
+    "ContaminationUtilMixin",
+    "ModEventHandlerMobsMixin",
+    "WorldRadiationDataMixin",
+    "RadiationSystemNTMixin",
+    "RadiationWorldHandlerMixin",
+    "HazardTypeRadiationMixin",
+    "HazardSystemMixin",
+    "NativeItemContactMixin",
+    "ArmorModEventsMixin",
+    "BlockHazardMixin",
+    "BlockHazardFallingMixin",
+    "StorageDrumMixin",
+    "HeldCrateMenuAccessor",
+    "CrateBaseMenuAccessor"
+  ],
+  "injectors": { "defaultRequire": 1 }
+}

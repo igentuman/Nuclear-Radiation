@@ -213,6 +213,10 @@ public class WorldSourceRegistry {
                     && server.getRandom().nextFloat() > 0.90) {
                 decayFalloutDust(s);
             }
+            if (s instanceof BlockRadSource block && block.sustained() && !sustainedBlockPresent(block)) {
+                dead.add(s.getId());
+                continue;
+            }
             if (s instanceof AbstractWorldRadSource a) a.advanceDecay(now);
             if (!s.isActive() || Math.abs(s.activityBq()) < floor) {
                 dead.add(s.getId());
@@ -222,6 +226,14 @@ public class WorldSourceRegistry {
         }
         if (dead.isEmpty()) return;
         for (UUID id : dead) remove(id);
+    }
+
+    /** Sustained sources never expire: drop them once their loaded block no longer imports radiation. */
+    private boolean sustainedBlockPresent(BlockRadSource source) {
+        BlockPos pos = source.getPosition();
+        LevelChunk chunk = level.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
+        if (chunk == null) return true;
+        return RadiationBindings.imported(chunk.getBlockState(pos));
     }
 
     private void updateGasEmitter(DecayGraph.WorldRadSource source) {

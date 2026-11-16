@@ -42,6 +42,7 @@ public class RadawayItem extends Item {
         if (!level.isClientSide()) {
             EntityRadiationData data = entity.getData(NRAttachments.ENTITY_RADIATION.get());
             data.setSvTotalCareer(Math.max(0.0, data.svTotalCareer() - INSTANT_SV_REMOVED));
+            igentuman.nr.compat.ntm.NtmCompatibility.clearTimedContamination(entity);
             entity.addEffect(new MobEffectInstance(NREffects.PROTECTION, 6000, 0, true, true, true));
             entity.addEffect(new MobEffectInstance(NREffects.PURGE, 6000, 1, true, true, true));
         }

@@ -5,6 +5,7 @@ import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.api.RadiationQuality;
 import igentuman.nr.api.binding.RadiationBindings;
 import igentuman.nr.api.binding.RadiationComponent;
+import igentuman.nr.compat.ntm.NtmCompatibility;
 import igentuman.nr.api.isotope.IsotopeRegistry;
 import igentuman.nr.api.isotope.IsotopeStack;
 import igentuman.nr.util.Units;
@@ -59,6 +60,7 @@ public class InventoryRadCache {
 
         double bqX = 0.0, bqA = 0.0, bqB = 0.0, bqN = 0.0;
         double qX = 0.0, qA = 0.0, qB = 0.0, qN = 0.0;
+        boolean reacher = NtmCompatibility.hasReacher(entity);
         for (IInventoryRadSlotProvider provider : SlotProviders.all()) {
             for (var iter = provider.slots(entity).iterator(); iter.hasNext(); ) {
                 RadiatedSlot slot = iter.next();
@@ -71,6 +73,7 @@ public class InventoryRadCache {
                 if (p.isEmpty()) continue;
                 double count = stack.getCount();
                 double f = slot.slotFactor();
+                if (reacher) f *= NtmCompatibility.reacherScale(stack);
                 for (IsotopeStack s : p.stacks()) {
                     double bq = s.currentActivityBq() * count * f;
                     if (bq == 0.0) continue;
@@ -126,7 +129,11 @@ public class InventoryRadCache {
             for (var iter = provider.slots(entity).iterator(); iter.hasNext(); ) {
                 RadiatedSlot slot = iter.next();
                 ItemStack s = slot.stack();
-                h = 31 * h + (s.isEmpty() ? 0 : (s.getItem().hashCode() * 31 + s.getCount()));
+                if (s.isEmpty()) { h = 31 * h; continue; }
+                h = 31 * h + (s.getItem().hashCode() * 31 + s.getCount());
+                // Imported profiles depend on stack data (fuel depletion, contents, activation).
+                // NR's own component is excluded: its decay rewrite must not force a rescan every tick.
+                if (!s.has(RadiationComponent.TYPE.get())) h = 31 * h + s.getComponentsPatch().hashCode();
             }
         }
         return h;

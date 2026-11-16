@@ -3,6 +3,7 @@ package igentuman.nr.registry;
 import igentuman.nr.api.DecayEdge;
 import igentuman.nr.api.IChunkRadiation;
 import igentuman.nr.api.isotope.IsotopeBuilder;
+import igentuman.nr.compat.ntm.NtmEmissionProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -330,6 +331,7 @@ public final class DefaultIsotopes {
                 .quality(1.0f, 1.0f, 20.0f, 10.0f)
                 .build());
 
+        list.addAll(NtmEmissionProfiles.defaults());
         return list;
     }
 

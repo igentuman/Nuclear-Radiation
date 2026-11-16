@@ -1,4 +1,4 @@
-// 26.1.2	2026-11-16T12:21:48.199606798	Nuclear Radiation Isotopes
+// 26.1.2	2026-11-16T15:36:43.427333577	Nuclear Radiation Isotopes
 85295471a4f20aea3ef78843ddaa74d1c111fbf3 data/nuclear_radiation/nuclear_radiation/isotopes/ac_225.json
 368b3bcd0bbaac3a677e64e28624ea222543f337 data/nuclear_radiation/nuclear_radiation/isotopes/am_241.json
 7fae1e1b1fd61c4b348e9ae9f6f18023158bf562 data/nuclear_radiation/nuclear_radiation/isotopes/am_242.json
@@ -27,6 +27,10 @@ ea2b9eb61f9e22d6e3a188cbbac1f25f67eef026 data/nuclear_radiation/nuclear_radiatio
 a1dc0850410906a93defde177c1a9a8eb9174f32 data/nuclear_radiation/nuclear_radiation/isotopes/na_22.json
 7b8ff45b3dc97da638a8732b140f6de24d113545 data/nuclear_radiation/nuclear_radiation/isotopes/np_236.json
 373150ddd012b75f9cced2e935ebc379a237f947 data/nuclear_radiation/nuclear_radiation/isotopes/np_237.json
+a039f644ec12e00b3dc8f11e0c0dd0795a6346af data/nuclear_radiation/nuclear_radiation/isotopes/ntm_balefire.json
+c991567a04b646757b4628a6aa28e0b89abf787a data/nuclear_radiation/nuclear_radiation/isotopes/ntm_fallout.json
+99f227f6a341edeb7d59c7d3c48fd0d8dc38b0e9 data/nuclear_radiation/nuclear_radiation/isotopes/ntm_schrabidium.json
+7e3d04481b4f761a833eed9ec5ed2ab09f4ac540 data/nuclear_radiation/nuclear_radiation/isotopes/ntm_solinium.json
 5e2bbf85f956739cd3c44b5de45705a36b53e278 data/nuclear_radiation/nuclear_radiation/isotopes/pa_233.json
 95ec7add24b45ef241a05a8777fe64ba4c78ee9f data/nuclear_radiation/nuclear_radiation/isotopes/pa_91.json
 aab207e2cd051ecf2e55c6364e64d074827275ae data/nuclear_radiation/nuclear_radiation/isotopes/pm_147.json

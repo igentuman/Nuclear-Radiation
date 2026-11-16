@@ -1,6 +1,9 @@
 package igentuman.nr.radiation.storage;
 
 import igentuman.nr.NuclearRadiation;
+import igentuman.nr.compat.ntm.NtmEntityState;
+import igentuman.nr.compat.ntm.NtmWorldField;
+import igentuman.nr.compat.ntm.NtmWorldState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -33,10 +36,29 @@ public final class NRAttachments {
                             .copyOnDeath()
                             .build());
 
+    public static final Supplier<AttachmentType<NtmEntityState>> NTM_ENTITY_STATE =
+            ATTACHMENTS.register("ntm_entity_state",
+                    () -> AttachmentType.builder(NtmEntityState::new)
+                            .serialize(NtmEntityState.CODEC.fieldOf("data"))
+                            .copyOnDeath()
+                            .build());
+
     public static final Supplier<AttachmentType<LevelRadiationData>> LEVEL_SOURCES =
             ATTACHMENTS.register("level_sources",
                     () -> AttachmentType.<LevelRadiationData>builder(() -> new LevelRadiationData())
                             .serialize(LevelRadiationData.CODEC.fieldOf("data"))
+                            .build());
+
+    public static final Supplier<AttachmentType<NtmWorldField>> NTM_WORLD_FIELD =
+            ATTACHMENTS.register("ntm_world_field",
+                    () -> AttachmentType.builder(NtmWorldField::new)
+                            .serialize(NtmWorldField.CODEC.fieldOf("data"))
+                            .build());
+
+    public static final Supplier<AttachmentType<NtmWorldState>> NTM_WORLD_STATE =
+            ATTACHMENTS.register("ntm_world_state",
+                    () -> AttachmentType.builder(NtmWorldState::new)
+                            .serialize(NtmWorldState.CODEC.fieldOf("data"))
                             .build());
 
     private NRAttachments() {}
