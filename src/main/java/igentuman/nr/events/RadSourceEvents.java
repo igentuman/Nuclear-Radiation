@@ -58,11 +58,12 @@ public class RadSourceEvents {
             ItemEntityRadSource src = WorldSourceRegistry.get(server).forItemEntity(item.getUUID());
             if (src != null) {
                 WorldSourceRegistry.get(server).remove(src.getId());
+                if (item.getRemovalReason() == null || !item.getRemovalReason().shouldDestroy()) return;
                 long now = server.getGameTime();
                 RadiationProfile leftOver = src.getProfile().copy(now);
                 leftOver.reduceAtoms(2.0);
                 WorldSourceRegistry.get(server).register(
-                        new LeftOverRadSource(server, item.blockPosition(), leftOver, now, true));
+                        LeftOverRadSource.fromItem(server, item.blockPosition(), leftOver, now));
             }
         }
     }
@@ -107,6 +108,7 @@ public class RadSourceEvents {
     @SubscribeEvent
     public void onLevelTick(LevelTickEvent.Post event) {
         if (!(event.getLevel() instanceof ServerLevel server)) return;
+        WorldSourceRegistry.get(server).tickFalloutDustCleanup();
         if (!RadiationConfig.masterEnabled()) return;
         long now = server.getGameTime();
         MeltdownParticles.getOrCreate(server).spawnTick(server);
