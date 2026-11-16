@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": "minecraft:gold_block",
+    "G": "nuclear_radiation:rad_shielding_light",
     "I": "minecraft:iron_ingot",
     "L": "minecraft:lapis_lazuli"
   },

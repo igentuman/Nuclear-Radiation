@@ -3,14 +3,13 @@
   "category": "misc",
   "key": {
     "B": "minecraft:copper_ingot",
-    "C": "minecraft:clay_ball",
-    "I": "minecraft:iron_nugget",
-    "L": "minecraft:leather"
+    "C": "nuclear_radiation:hazmat_fiber",
+    "I": "minecraft:iron_nugget"
   },
   "pattern": [
-    "BLB",
+    "BBB",
     "ICI",
-    "BLB"
+    "BBB"
   ],
   "result": {
     "count": 4,

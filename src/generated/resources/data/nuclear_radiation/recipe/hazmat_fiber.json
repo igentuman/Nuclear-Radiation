@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": "minecraft:leather",
+    "P": "minecraft:phantom_membrane",
+    "S": "minecraft:string",
+    "Y": "minecraft:yellow_dye"
+  },
+  "pattern": [
+    "YSY",
+    " P ",
+    "LSL"
+  ],
+  "result": {
+    "count": 2,
+    "id": "nuclear_radiation:hazmat_fiber"
+  }
+}

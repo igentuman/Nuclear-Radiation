@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": "minecraft:diamond",
-    "N": "minecraft:netherite_ingot"
+    "D": "minecraft:netherite_ingot",
+    "N": "nuclear_radiation:rad_shielding_heavy"
   },
   "pattern": [
     "DDD",

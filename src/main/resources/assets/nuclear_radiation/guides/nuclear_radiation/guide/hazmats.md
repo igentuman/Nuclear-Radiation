@@ -4,6 +4,7 @@ navigation:
   parent: index.md
   position: 5
 item_ids:
+  - nuclear_radiation:hazmat_fiber
   - nuclear_radiation:hazmat_helmet
   - nuclear_radiation:hazmat_chestplate
   - nuclear_radiation:hazmat_leggings
@@ -13,6 +14,15 @@ item_ids:
 # Hazmat Suit
 
 A full armor set designed for working in radioactive environments.
+
+## Hazmat Fiber
+
+Craft 2 Hazmat Fibers from 2 string, 2 yellow dye, 2 leather, and 1 phantom membrane
+in the symmetric pattern shown below, with the phantom membrane in the center.
+Use only Hazmat Fiber in the standard armor patterns to craft
+each piece. Hazmat Fiber can also repair the armor in an anvil.
+
+<RecipeFor id="hazmat_fiber" />
 
 ## Armor Pieces
 

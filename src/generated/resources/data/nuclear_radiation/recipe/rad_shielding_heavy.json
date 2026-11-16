@@ -4,7 +4,7 @@
   "key": {
     "G": "minecraft:gold_ingot",
     "O": "minecraft:obsidian",
-    "P": "minecraft:prismarine"
+    "P": "nuclear_radiation:rad_shielding_medium"
   },
   "pattern": [
     "OGO",

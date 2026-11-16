@@ -1,4 +1,6 @@
 {
   "replace": false,
-  "values": ["minecraft:phantom_membrane"]
+  "values": [
+    "nuclear_radiation:hazmat_fiber"
+  ]
 }

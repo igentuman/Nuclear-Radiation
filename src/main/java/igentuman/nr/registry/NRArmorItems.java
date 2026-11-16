@@ -21,6 +21,8 @@ public final class NRArmorItems {
 
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(NuclearRadiation.MODID);
 
+    public static final DeferredItem<Item> HAZMAT_FIBER = ITEMS.registerSimpleItem("hazmat_fiber");
+
     public static final ResourceKey<EquipmentAsset> HAZMAT_ASSET = ResourceKey.create(
             EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(NuclearRadiation.MODID, "hazmat"));
     public static final TagKey<Item> REPAIRS_HAZMAT = TagKey.create(

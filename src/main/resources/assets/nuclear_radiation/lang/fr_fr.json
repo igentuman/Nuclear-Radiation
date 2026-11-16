@@ -11,6 +11,7 @@
   "item.nuclear_radiation.geiger_counter": "Compteur Geiger",
   "item.nuclear_radiation.dosimeter": "Dosimètre",
 
+  "item.nuclear_radiation.hazmat_fiber": "Fibre anti-radiations",
   "item.nuclear_radiation.hazmat_helmet": "Casque anti-radiations",
   "item.nuclear_radiation.hazmat_chestplate": "Combinaison anti-radiations",
   "item.nuclear_radiation.hazmat_leggings": "Jambières anti-radiations",

@@ -2,12 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "H": "minecraft:phantom_membrane",
-    "X": "minecraft:leather_chestplate"
+    "H": "nuclear_radiation:hazmat_fiber"
   },
   "pattern": [
     "H H",
-    "HXH",
+    "HHH",
     "HHH"
   ],
   "result": {

@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_phantom_membrane": {
+    "has_hazmat_fiber": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:phantom_membrane"
+            "items": "nuclear_radiation:hazmat_fiber"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_phantom_membrane"
+      "has_hazmat_fiber"
     ]
   ],
   "rewards": {

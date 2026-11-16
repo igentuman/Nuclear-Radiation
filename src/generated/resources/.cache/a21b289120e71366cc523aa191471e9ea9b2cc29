@@ -1,4 +1,4 @@
-// 26.1.2	2026-10-10T19:28:19.229249696	Nuclear Radiation Bindings
+// 26.1.2	2026-11-16T12:21:48.198089444	Nuclear Radiation Bindings
 fc43ebe76f57fdac8e80d9a50983bd0564237d6b data/nuclear_radiation/nuclear_radiation/bindings/actinium_225.json
 d6f323c778f8ddf09403680df39309f0bdf76814 data/nuclear_radiation/nuclear_radiation/bindings/americium_241.json
 13749f2cff166dd833d1addf9550c67d777a97d9 data/nuclear_radiation/nuclear_radiation/bindings/americium_242.json
@@ -29,7 +29,7 @@ f022300ab44e83dab1a8ef202a3a87acf0611481 data/nuclear_radiation/nuclear_radiatio
 88ae0b1fa73d46469c316c9de7b1ae3e448b10c3 data/nuclear_radiation/nuclear_radiation/bindings/dust_ruthenium.json
 41effc1fb518f53d36cc3a9e38a339e2bf0bc3cc data/nuclear_radiation/nuclear_radiation/bindings/dust_strontium.json
 ce7995c86e1c4601d61cf9b05e05ad67bd168bee data/nuclear_radiation/nuclear_radiation/bindings/dusts_tbp.json
-9456ce1793c10c1c513c286cff4bde3e1fd800ac data/nuclear_radiation/nuclear_radiation/bindings/dusts_thorium.json
+e0b1d7e0c5e958fc5ce74c51e99337505ac9d27e data/nuclear_radiation/nuclear_radiation/bindings/dusts_thorium.json
 083b401d2b432773b35a5556fe10a548cf918caa data/nuclear_radiation/nuclear_radiation/bindings/europium_155_dust.json
 9d24926437f956c4c4cae9794bd7202b2561879c data/nuclear_radiation/nuclear_radiation/bindings/fallout_dust.json
 ad6e353658183553789ede5299e5e13a3a71c59e data/nuclear_radiation/nuclear_radiation/bindings/fallout_dust_block.json

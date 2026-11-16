@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_clay_ball": {
+    "has_hazmat_fiber": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:clay_ball"
+            "items": "nuclear_radiation:hazmat_fiber"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_clay_ball"
+      "has_hazmat_fiber"
     ]
   ],
   "rewards": {
