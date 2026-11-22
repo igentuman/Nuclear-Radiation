@@ -73,10 +73,28 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
+// GameTest smoke suite: compiled against the main mod, shipped as the separate `nr_gametest` mod.
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
 neoForge {
     version = project.neo_version
 
     // accessTransformers.add('src/main/resources/META-INF/accesstransformer.cfg')
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+        // Test-only companion mod; loaded exclusively by the gameTestServer run.
+        nr_gametest {
+            sourceSet(sourceSets.gametest)
+        }
+    }
 
     runs {
         client {
@@ -92,9 +110,21 @@ neoForge {
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
+        // Smoke-test suite (src/gametest). Runs in its own game directory so the KubeJS fixture
+        // scripts and the throwaway test world never touch the dev client's run/ folder.
+        //   ./gradlew runGameTestServer                                  -> all tests
+        //   ./gradlew runGameTestServer -Pgametests='nr_gametest:kubejs/*' -> filtered
+        // Exit code = number of failed required tests; JUnit XML in build/reports/gametest/.
         gameTestServer {
             type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            sourceSet = sourceSets.gametest
+            loadedMods = [mods."${mod_id}", mods.nr_gametest]
+            gameDirectory = project.file('run-gametest')
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'nr_gametest'
+            programArguments.addAll '--report', file('build/reports/gametest/nr-gametest.xml').getAbsolutePath()
+            if (project.hasProperty('gametests')) {
+                programArguments.addAll '--tests', project.property('gametests').toString()
+            }
         }
 
         data {
@@ -115,14 +145,30 @@ neoForge {
         }
     }
 
-    mods {
-        "${mod_id}" {
-            sourceSet(sourceSets.main)
-        }
-    }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+neoForge.addModdingDependenciesTo(sourceSets.gametest)
+
+// Copy KubeJS fixture scripts into the isolated gametest game directory before each run.
+// Sync also deletes stale scripts there, so the fixture set always matches src/gametest/kubejs.
+def prepareGameTestKubeJS = tasks.register('prepareGameTestKubeJS', Sync) {
+    from 'src/gametest/kubejs'
+    into 'run-gametest/kubejs'
+    preserve {
+        include 'config/**'
+        include 'assets/**'
+        include 'data/**'
+        include 'client_scripts/**'
+        include 'README.txt'
+    }
+}
+def gameTestReportDir = file('build/reports/gametest')
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    dependsOn prepareGameTestKubeJS
+    doFirst { gameTestReportDir.mkdirs() }   // vanilla JUnit reporter crashes if the folder is missing
+}
 
 
 dependencies {
@@ -139,7 +185,6 @@ dependencies {
     implementation "curse.maven:the-one-probe-245211:8797594"
 
     implementation "curse.maven:megaton-nuclear-warfare-pro-edition-1713281:9072435"
-
 }
 
 sourceSets.main.java {
@@ -160,6 +205,8 @@ sourceSets.main.java {
 configurations {
     localRuntime
     runtimeClasspath.extendsFrom(localRuntime)
+    gametestImplementation.extendsFrom(implementation)
+    gametestRuntimeOnly.extendsFrom(runtimeOnly, localRuntime)
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
