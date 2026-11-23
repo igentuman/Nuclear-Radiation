@@ -21,7 +21,10 @@ public final class MegatonRadiationBridge {
     private static final double FALLOUT_SV_PER_GAME_RAD = 1.0e-6;
     private static final double DIRECT_SV_PER_GAME_RAD = 1.0e-4;
     private static final double RAD_DISPLAY_PER_SV = 50.0; // 400 on MEGATON's meter at NR's 8 Sv lethal career threshold.
-    private static final boolean PRESENT = ModList.get().isLoaded("nuclearcraft");
+    // MEGATON shares the "nuclearcraft" mod id with NuclearCraft: Neoteric, so the id alone
+    // does not identify it. Require MEGATON's own radiation class as well.
+    private static final String DATA_CLASS = "com.nuclearcraft.system.RadiationData";
+    private static final boolean PRESENT = ModList.get().isLoaded("nuclearcraft") && classExists(DATA_CLASS);
     private static final Method DATA_GET;
     private static final Method DOSE_AT;
     private static final Method CONFIG_FLAG;
@@ -35,7 +38,7 @@ public final class MegatonRadiationBridge {
         Object radiationFlag = null;
         if (PRESENT) {
             try {
-                Class<?> data = Class.forName("com.nuclearcraft.system.RadiationData");
+                Class<?> data = Class.forName(DATA_CLASS);
                 Class<?> config = Class.forName("com.nuclearcraft.NuclearConfig");
                 Class<?> booleanValue = Class.forName("com.nuclearcraft.config.ConfigSpec$BooleanValue");
                 dataGet = data.getMethod("get", ServerLevel.class);
@@ -58,6 +61,15 @@ public final class MegatonRadiationBridge {
     }
 
     private MegatonRadiationBridge() {}
+
+    private static boolean classExists(String name) {
+        try {
+            Class.forName(name, false, MegatonRadiationBridge.class.getClassLoader());
+            return true;
+        } catch (ClassNotFoundException | LinkageError ex) {
+            return false;
+        }
+    }
 
     /** Returns MEGATON's zone rate only. NR binds its carried items separately. */
     public static double zoneRate(ServerLevel level, Vec3 position) {
